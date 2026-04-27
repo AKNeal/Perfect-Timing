@@ -323,7 +323,14 @@
   @media (max-width: 540px) {
     .nealmedia-float { width: 50px; height: 50px; bottom: 14px; left: 14px; }
   }
-</style>
+
+  /* Coming-soon greyed-out modifier */
+  .coming-soon { opacity: 0.45; filter: grayscale(0.7); }
+  .coming-soon b { color: #999 !important; }
+  .usual-line.coming-soon { border-color: #555; }
+  .sub-toggle.coming-soon { border-color: #555; color: #888; cursor: not-allowed; pointer-events: auto; }
+  .sub-toggle.coming-soon input { pointer-events: none; }
+  </style>
 </head>
 <body>
 <div class="hazard-top"></div>
@@ -340,9 +347,9 @@
     <span class="kicker">◆ ORDER AHEAD · NORTH POLE AK</span>
     <h1><span class="accent">Perfectly Timed</span><br>Coffee &amp; Breakfast</h1>
     <p class="tagline">Orders must be placed before midnight the day before pickup. Pick your window. Grab it hot on your way.</p>
-    <div class="usual-line">
-      <b>▲ THE USUAL</b>
-      Eat the same thing every weekday? Sign up for The Usual — your standing weekday order, auto-placed so you never miss a morning. Cancel or skip a day anytime.
+    <div class="usual-line coming-soon">
+      <b>▲ THE USUAL — COMING SOON</b>
+      Auto-orders launching after our hard opening. Same meal every weekday, never think about breakfast again.
     </div>
   </section>
 
@@ -403,6 +410,7 @@
         <div class="order-form">
           <div><label>Name</label><input type="text" class="cust-name" placeholder="Full name" autocomplete="name"></div>
           <div><label>Phone</label><input type="tel" class="cust-phone" placeholder="(###) ###-####" autocomplete="tel"></div>
+          <div><label>Email</label><input type="email" class="cust-email" placeholder="you@example.com" autocomplete="email" required></div>
           <div class="full"><label>Order Notes / Allergies</label><textarea class="cust-notes" placeholder="Food-specific requests only (e.g. 'no onions', 'extra crispy', allergies). Drink customizations are already saved with your drink."></textarea></div>
         </div>
         <label class="sub-toggle cash-toggle">
@@ -412,11 +420,11 @@
             Bring cash at pickup and we'll knock $2 off each meal in your order.
           </span>
         </label>
-        <label class="sub-toggle">
-          <input type="checkbox" class="cust-sub">
+        <label class="sub-toggle coming-soon">
+          <input type="checkbox" class="cust-sub" disabled>
           <span class="sub-toggle-text">
-            <b>▲ Sign Up For The Usual</b>
-            Auto-order this meal every weekday. Cancel or skip a day anytime.
+            <b>▲ Sign Up For The Usual — Coming Soon</b>
+            Auto-orders launching after our hard opening.
           </span>
         </label>
         <div class="payment-note">▲ PAY AT PICKUP · CASH OR CARD · ORDER BY MIDNIGHT THE DAY BEFORE</div>
@@ -1253,6 +1261,7 @@
           body: JSON.stringify({
             _subject: `New Order — ${payload.customer_name || 'unnamed'} — ${payload.pickup_date} @ ${payload.pickup_slot}`,
             customer_name: payload.customer_name,
+      customer_email: payload.customer_email,
             customer_phone: payload.customer_phone,
             pickup_date: payload.pickup_date,
             pickup_slot: payload.pickup_slot,
@@ -1336,7 +1345,7 @@
     });
 
     const payload = {
-      customer_name: name, customer_phone: phone,
+      customer_email: (() => { const e = (document.querySelector(".cust-email")?.value || "").trim(); if (!e) { alert("Please enter your email so we can confirm pickup."); throw new Error("email required"); } return e; })(), customer_name: name, customer_phone: phone,
       pickup_date: dateIso, pickup_slot: slotLbl,
       items: flatItems,
       items_summary: itemsSummary,
