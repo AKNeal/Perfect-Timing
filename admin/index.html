@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow">
+<title>Admin — Perfect Timing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Oswald:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; }
+  body { min-height: 100vh; background: #1a1a1a; color: #f5f1e8; font-family: 'Oswald', sans-serif; }
+
+  .hazard-top { height: 14px; background: repeating-linear-gradient(135deg, #ffcc00 0 20px, #1a1a1a 20px 40px); border-bottom: 3px solid #000; }
+  .site-header { background: #0f0f0f; border-bottom: 1px solid #333; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .brand { font-family: 'Staatliches', sans-serif; font-size: 38px; color: #f5f1e8; letter-spacing: 0.02em; text-transform: uppercase; text-decoration: none; line-height: 1; }
+  .brand .accent { color: #ffcc00; }
+  .brand .badge { margin-left: 8px; display: inline-block; padding: 3px 8px; font-family: 'Roboto Mono', monospace; font-size: 10px; background: #ff4040; color: #fff; letter-spacing: 0.15em; vertical-align: middle; }
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+  .header-actions button { padding: 8px 14px; background: #1a1a1a; border: 1px solid #333; color: #b8b2a2; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: 0.15em; cursor: pointer; text-transform: uppercase; }
+  .header-actions button:hover { color: #ffcc00; border-color: #ffcc00; }
+  .header-actions .refresh-btn { background: #ffcc00; color: #000; border-color: #000; font-weight: 700; }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 30px 32px 80px; }
+
+  /* Login */
+  .login-box { max-width: 420px; margin: 80px auto; background: #252525; border: 2px solid #ffcc00; padding: 32px; }
+  .login-box h2 { font-family: 'Staatliches', sans-serif; font-size: 32px; letter-spacing: 0.05em; margin-bottom: 8px; text-transform: uppercase; }
+  .login-box p { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #888; margin-bottom: 24px; letter-spacing: 0.1em; }
+  .login-box label { display: block; font-family: 'Roboto Mono', monospace; color: #ffcc00; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 6px; text-transform: uppercase; }
+  .login-box input { width: 100%; padding: 12px; background: #1a1a1a; border: 2px solid #333; color: #f5f1e8; font-family: 'Oswald', sans-serif; font-size: 14px; outline: none; margin-bottom: 16px; }
+  .login-box input:focus { border-color: #ffcc00; }
+  .login-btn { width: 100%; padding: 14px; background: #ffcc00; color: #000; border: 2px solid #000; font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0 #000; }
+  .login-btn:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #000; }
+  .login-err { margin-top: 12px; padding: 10px; background: #3a1a1a; border: 1px solid #ff4040; color: #ff8080; font-family: 'Roboto Mono', monospace; font-size: 11px; display: none; }
+  .login-err.show { display: block; }
+
+  /* Main tabs */
+  .main-tabs { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 2px solid #333; flex-wrap: wrap; }
+  .main-tab { padding: 14px 22px; background: transparent; border: none; color: #b8b2a2; font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 0.05em; cursor: pointer; text-transform: uppercase; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+  .main-tab:hover { color: #ffcc00; }
+  .main-tab.active { color: #ffcc00; border-bottom-color: #ffcc00; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Sub-tabs (Day/Week/Month inside Dashboard) */
+  .sub-tabs { display: flex; gap: 4px; margin-bottom: 20px; }
+  .sub-tab { padding: 10px 20px; background: #252525; border: 1px solid #333; color: #b8b2a2; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: 0.15em; cursor: pointer; text-transform: uppercase; }
+  .sub-tab:hover { color: #ffcc00; border-color: #ffcc00; }
+  .sub-tab.active { background: #ffcc00; color: #000; border-color: #000; font-weight: 700; }
+
+  /* Date nav */
+  .date-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  .date-nav .nav-btns { display: flex; gap: 6px; }
+  .date-nav button { padding: 8px 14px; background: #252525; border: 1px solid #444; color: #f5f1e8; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; }
+  .date-nav button:hover { border-color: #ffcc00; color: #ffcc00; }
+  .date-nav .today-btn { background: #ffcc00; color: #000; border-color: #000; font-weight: 700; }
+  .date-nav .current-label { font-family: 'Staatliches', sans-serif; font-size: 28px; letter-spacing: 0.02em; text-transform: uppercase; }
+  .date-nav .status-legend { display: flex; gap: 12px; font-family: 'Roboto Mono', monospace; font-size: 10px; letter-spacing: 0.1em; }
+  .legend-dot { display: inline-block; width: 10px; height: 10px; margin-right: 4px; vertical-align: middle; border-radius: 50%; }
+  .legend-dot.pending { background: #ffcc00; }
+  .legend-dot.prepping { background: #60a5fa; }
+  .legend-dot.complete { background: #4ade80; }
+
+  /* Day grid */
+  .day-grid { display: grid; grid-template-columns: 120px 1fr; gap: 0; border: 2px solid #333; }
+  .day-slot-label { background: #1a1a1a; padding: 14px 16px; border-right: 2px solid #333; border-bottom: 1px solid #333; font-family: 'Staatliches', sans-serif; font-size: 20px; color: #ffcc00; letter-spacing: 0.05em; }
+  .day-slot-label .range { display: block; font-family: 'Roboto Mono', monospace; font-size: 10px; color: #888; letter-spacing: 0.1em; margin-top: 2px; }
+  .day-slot-label .cap { display: block; font-family: 'Roboto Mono', monospace; font-size: 10px; color: #888; letter-spacing: 0.1em; margin-top: 2px; }
+  .day-slot-cell { background: #252525; padding: 10px; border-bottom: 1px solid #333; min-height: 60px; display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
+  .day-slot-cell.empty { color: #555; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: 0.1em; align-items: center; }
+  .order-block { padding: 8px 12px; font-family: 'Roboto Mono', monospace; font-size: 12px; cursor: pointer; border: 2px solid #000; min-width: 140px; transition: transform 0.1s; }
+  .order-block:hover { transform: translate(-1px, -1px); }
+  .order-block.status-pending { background: #ffcc00; color: #000; }
+  .order-block.status-prepping { background: #60a5fa; color: #000; }
+  .order-block.status-complete { background: #4ade80; color: #000; }
+  .order-block .ob-name { font-weight: 700; letter-spacing: 0.05em; margin-bottom: 2px; text-transform: uppercase; }
+  .order-block .ob-meta { font-size: 10px; letter-spacing: 0.08em; opacity: 0.8; }
+
+  /* Calendar */
+  .calendar-grid { display: grid; gap: 2px; background: #333; border: 2px solid #333; }
+  .calendar-grid.week { grid-template-columns: repeat(7, 1fr); }
+  .calendar-grid.month { grid-template-columns: repeat(7, 1fr); }
+  .cal-cell-head { background: #1a1a1a; padding: 10px; text-align: center; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #ffcc00; letter-spacing: 0.2em; text-transform: uppercase; }
+  .cal-cell { background: #252525; padding: 16px 12px; min-height: 110px; cursor: pointer; transition: background 0.1s; display: flex; flex-direction: column; }
+  .cal-cell:hover { background: #2a2a2a; }
+  .cal-cell.out-of-month { opacity: 0.3; }
+  .cal-cell.today { border: 2px solid #ffcc00; padding: 14px 10px; }
+  .cal-cell-date { font-family: 'Staatliches', sans-serif; font-size: 24px; color: #f5f1e8; line-height: 1; margin-bottom: 4px; }
+  .cal-cell-weekday { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #888; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 10px; }
+  .cal-cell-count { margin-top: auto; font-family: 'Staatliches', sans-serif; font-size: 36px; color: #ffcc00; line-height: 1; }
+  .cal-cell-count .lbl { display: block; font-family: 'Roboto Mono', monospace; font-size: 10px; color: #888; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 2px; }
+  .cal-cell.empty-count .cal-cell-count { color: #333; }
+
+  /* Recipes */
+  .recipe-search { width: 100%; padding: 10px 14px; background: #1a1a1a; border: 2px solid #333; color: #f5f1e8; font-family: 'Oswald', sans-serif; font-size: 14px; outline: none; margin-bottom: 12px; }
+  .recipe-search:focus { border-color: #ffcc00; }
+  .recipe-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .recipe-filter button { padding: 6px 12px; background: #1a1a1a; border: 1px solid #333; color: #b8b2a2; font-family: 'Roboto Mono', monospace; font-size: 10px; letter-spacing: 0.15em; cursor: pointer; text-transform: uppercase; }
+  .recipe-filter button:hover { color: #ffcc00; border-color: #ffcc00; }
+  .recipe-filter button.active { background: #ffcc00; color: #000; border-color: #000; font-weight: 700; }
+  .recipe-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .recipe-card { background: #252525; border: 2px solid #333; padding: 16px; }
+  .recipe-card h4 { font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 4px; }
+  .recipe-card .cat { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ffcc00; letter-spacing: 0.15em; margin-bottom: 10px; }
+  .recipe-card .text { font-family: 'Oswald', sans-serif; font-size: 13px; color: #d5cfbe; line-height: 1.5; white-space: pre-wrap; }
+
+  /* Customers */
+  .data-table { width: 100%; border-collapse: collapse; background: #252525; border: 2px solid #333; }
+  .data-table th { background: #1a1a1a; padding: 12px; text-align: left; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #ffcc00; letter-spacing: 0.15em; text-transform: uppercase; border-bottom: 2px solid #ffcc00; }
+  .data-table td { padding: 12px; font-family: 'Oswald', sans-serif; font-size: 14px; border-bottom: 1px solid #333; color: #f5f1e8; }
+  .data-table tr:hover td { background: #2a2a2a; }
+  .data-table td .mono { font-family: 'Roboto Mono', monospace; font-size: 12px; color: #b8b2a2; }
+
+  /* Menu mgmt */
+  .menu-mgmt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+  .menu-mgmt-card { background: #252525; border: 2px solid #333; padding: 16px; }
+  .menu-mgmt-card h4 { font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 4px; }
+  .menu-mgmt-card .code { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ffcc00; letter-spacing: 0.15em; margin-bottom: 10px; }
+  .menu-mgmt-card label { display: block; font-family: 'Roboto Mono', monospace; color: #ffcc00; font-size: 10px; letter-spacing: 0.15em; margin: 8px 0 4px; text-transform: uppercase; }
+  .menu-mgmt-card input, .menu-mgmt-card textarea { width: 100%; padding: 8px 10px; background: #1a1a1a; border: 2px solid #333; color: #f5f1e8; font-family: 'Oswald', sans-serif; font-size: 13px; outline: none; }
+  .menu-mgmt-card input:focus, .menu-mgmt-card textarea:focus { border-color: #ffcc00; }
+  .menu-mgmt-card textarea { resize: vertical; min-height: 60px; }
+  .avail-toggle { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px; background: #1a1a1a; border: 1px dashed #ffcc00; cursor: pointer; }
+  .avail-toggle input { width: 20px; height: 20px; accent-color: #ffcc00; cursor: pointer; }
+  .avail-toggle .label { font-family: 'Roboto Mono', monospace; font-size: 12px; color: #ffcc00; letter-spacing: 0.1em; }
+  .menu-mgmt-card .save-row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .menu-mgmt-card .save-btn { padding: 8px 14px; background: #ffcc00; color: #000; border: 2px solid #000; font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; cursor: pointer; text-transform: uppercase; }
+  .menu-mgmt-card .save-status { font-family: 'Roboto Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: #4ade80; }
+
+  /* Analytics */
+  .analytics-period { display: flex; gap: 6px; margin-bottom: 20px; }
+  .analytics-period button { padding: 10px 18px; background: #252525; border: 1px solid #333; color: #b8b2a2; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: 0.15em; cursor: pointer; text-transform: uppercase; }
+  .analytics-period button:hover { color: #ffcc00; border-color: #ffcc00; }
+  .analytics-period button.active { background: #ffcc00; color: #000; border-color: #000; font-weight: 700; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .stat-card { background: #252525; border: 2px solid #333; padding: 20px; }
+  .stat-card .stat-label { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ffcc00; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-card .stat-value { font-family: 'Staatliches', sans-serif; font-size: 42px; line-height: 1; color: #f5f1e8; }
+  .stat-card .stat-sub { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #888; margin-top: 4px; }
+  .top-items { display: grid; grid-template-columns: 1fr; gap: 6px; }
+  .top-item-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: #252525; border: 1px solid #333; font-family: 'Roboto Mono', monospace; font-size: 12px; }
+  .top-item-row .rank { background: #ffcc00; color: #000; padding: 3px 8px; font-weight: 700; letter-spacing: 0.15em; }
+  .top-item-row .name { flex: 1; color: #f5f1e8; font-family: 'Oswald', sans-serif; font-size: 14px; }
+  .top-item-row .count { color: #ffcc00; font-weight: 700; letter-spacing: 0.1em; }
+
+  /* Settings */
+  .settings-h3 { font-family: 'Staatliches', sans-serif; font-size: 24px; letter-spacing: 0.03em; margin-bottom: 8px; text-transform: uppercase; }
+  .settings-note { font-family: 'Roboto Mono', monospace; font-size: 12px; color: #888; letter-spacing: 0.1em; margin-bottom: 20px; line-height: 1.5; }
+  .sched-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .sched-field { background: #252525; border: 2px solid #333; padding: 14px; }
+  .sched-field label { display: block; font-family: 'Roboto Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: #ffcc00; text-transform: uppercase; margin-bottom: 6px; }
+  .sched-field input, .sched-field select { width: 100%; padding: 8px 10px; background: #1a1a1a; border: 2px solid #333; color: #f5f1e8; font-family: 'Oswald', sans-serif; font-size: 14px; outline: none; }
+  .sched-field input:focus, .sched-field select:focus { border-color: #ffcc00; }
+
+  .days-open-block { margin-bottom: 24px; }
+  .days-open-label, .closed-days-label { display: block; font-family: 'Roboto Mono', monospace; color: #ffcc00; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 10px; }
+  .days-open-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .day-chk { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #252525; border: 2px solid #333; cursor: pointer; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: 0.15em; color: #f5f1e8; user-select: none; text-transform: uppercase; }
+  .day-chk:hover { border-color: #ffcc00; }
+  .day-chk.checked { background: #ffcc00; color: #000; border-color: #000; font-weight: 700; }
+  .day-chk input { display: none; }
+
+  .closed-days-block { margin-bottom: 24px; }
+  .closed-days-add { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .closed-days-add input { padding: 10px 12px; background: #1a1a1a; border: 2px solid #333; color: #f5f1e8; font-family: 'Oswald', sans-serif; font-size: 14px; outline: none; }
+  .closed-days-add input:focus { border-color: #ffcc00; }
+  .add-closed-btn { padding: 10px 16px; background: #1a1a1a; border: 2px solid #ffcc00; color: #ffcc00; font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; cursor: pointer; text-transform: uppercase; }
+  .add-closed-btn:hover { background: #ffcc00; color: #000; }
+  .closed-days-list { display: flex; gap: 6px; flex-wrap: wrap; }
+  .closed-day-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: #252525; border: 1px solid #444; font-family: 'Roboto Mono', monospace; font-size: 12px; color: #f5f1e8; }
+  .closed-day-chip .remove-x { color: #ff8080; cursor: pointer; font-weight: 700; }
+  .closed-day-chip .remove-x:hover { color: #ff5050; }
+  .closed-day-chip.range-chip { border-color: #ffcc00; background: #1f1f1a; }
+  .closed-day-chip.range-chip .range-icon { color: #ffcc00; font-weight: 700; }
+  .closed-day-chip.range-chip.indef { border-color: #ff8080; background: #2a1a1a; }
+
+  .range-form { background: #1a1a1a; border: 1px dashed #ffcc00; padding: 14px 16px; margin-bottom: 12px; }
+  .range-form-title { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #ffcc00; letter-spacing: 0.15em; margin-bottom: 10px; text-transform: uppercase; }
+  .range-form-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+  .range-form-row label { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #b8b2a2; letter-spacing: 0.05em; min-width: 70px; }
+  .range-form-row input[type="date"] { padding: 8px 10px; background: #0f0f0f; border: 2px solid #333; color: #f5f1e8; font-family: 'Oswald', sans-serif; font-size: 14px; outline: none; }
+  .range-form-row input[type="date"]:focus { border-color: #ffcc00; }
+  .range-form-row input[type="date"]:disabled { opacity: 0.4; }
+  .range-indef-row { display: flex; gap: 8px; align-items: center; padding: 8px 0; }
+  .range-indef-row input[type="checkbox"] { accent-color: #ffcc00; cursor: pointer; }
+  .range-indef-row label { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #f5f1e8; letter-spacing: 0.05em; cursor: pointer; }
+  .range-add-btn { padding: 10px 16px; background: #ffcc00; color: #000; border: 2px solid #000; font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; cursor: pointer; text-transform: uppercase; }
+  .range-add-btn:hover { background: #fff; }
+  .range-add-btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+  .closed-days-empty { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #555; letter-spacing: 0.1em; padding: 10px 0; }
+
+  .settings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .slot-setting { background: #252525; border: 2px solid #333; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .slot-setting .slot-time { font-family: 'Staatliches', sans-serif; font-size: 22px; color: #ffcc00; letter-spacing: 0.03em; }
+  .slot-setting .cap-input { display: flex; align-items: center; gap: 0; border: 2px solid #ffcc00; }
+  .slot-setting .cap-btn { width: 32px; height: 36px; background: #1a1a1a; border: none; color: #ffcc00; font-family: 'Roboto Mono', monospace; font-size: 18px; font-weight: 700; cursor: pointer; }
+  .slot-setting .cap-btn:hover { background: #2a2a2a; }
+  .slot-setting .cap-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .slot-setting .cap-val { min-width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: #ffcc00; color: #000; font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 700; }
+  .settings-save-row { margin-top: 20px; display: flex; align-items: center; justify-content: flex-end; gap: 14px; }
+  .save-all-btn { padding: 12px 24px; background: #ffcc00; color: #000; border: 2px solid #000; font-family: 'Staatliches', sans-serif; font-size: 18px; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0 #000; }
+  .save-all-btn:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #000; }
+  .settings-save-status { font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: #4ade80; }
+
+  /* Staff */
+  .staff-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+  .staff-card { background: #252525; border: 2px solid #333; overflow: hidden; display: flex; flex-direction: column; }
+  .staff-card .img-slot { width: 100%; aspect-ratio: 16/9; background: repeating-linear-gradient(135deg, #1a1a1a 0 20px, #252525 20px 40px); display: flex; align-items: center; justify-content: center; border-bottom: 2px solid #333; position: relative; }
+  .staff-card .img-slot::before { content: '▲ ADD PHOTO'; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #555; letter-spacing: 0.2em; text-transform: uppercase; }
+  .staff-card .img-slot img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .staff-card .img-slot img + *::before { display: none; }
+  .staff-card .body { padding: 18px 20px 20px; }
+  .staff-card .code-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .staff-card .code { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ffcc00; letter-spacing: 0.2em; }
+  .staff-card .cat-pill { display: inline-block; padding: 2px 8px; background: #000; border: 1px solid #ffcc00; font-family: 'Roboto Mono', monospace; font-size: 9px; color: #ffcc00; letter-spacing: 0.15em; text-transform: uppercase; }
+  .staff-card h4 { font-family: 'Staatliches', sans-serif; font-size: 24px; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 12px; }
+  .staff-card .time-strip { display: flex; gap: 12px; padding: 10px 12px; background: #1a1a1a; border-left: 3px solid #ffcc00; margin-bottom: 14px; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #b8b2a2; letter-spacing: 0.05em; flex-wrap: wrap; }
+  .staff-card .time-strip b { color: #ffcc00; }
+  .staff-card .steps-h { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ffcc00; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 10px; }
+  .staff-card ol { padding-left: 0; list-style: none; counter-reset: step; }
+  .staff-card ol li { counter-increment: step; font-family: 'Oswald', sans-serif; font-size: 13px; color: #d5cfbe; line-height: 1.5; padding: 8px 0 8px 32px; border-bottom: 1px dashed #333; position: relative; }
+  .staff-card ol li::before { content: counter(step); position: absolute; left: 0; top: 8px; width: 22px; height: 22px; background: #ffcc00; color: #000; font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .staff-card ol li:last-child { border-bottom: none; }
+  .staff-card .tip { margin-top: 12px; padding: 10px 12px; background: #1f1f1a; border: 1px dashed #ffcc00; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #ffcc00; letter-spacing: 0.05em; line-height: 1.6; }
+  .staff-card .tip b { display: block; letter-spacing: 0.2em; margin-bottom: 4px; text-transform: uppercase; }
+
+  /* Modal */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+  .overlay.show { display: flex; }
+  .modal-box { background: #fff; color: #222; padding: 28px; max-width: 500px; width: 100%; font-family: 'Roboto Mono', monospace; max-height: 90vh; overflow-y: auto; }
+  .modal-box h3 { font-family: 'Staatliches', sans-serif; font-size: 24px; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 12px; }
+  .modal-box .meta { font-size: 12px; color: #666; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .modal-box .meta b { color: #000; }
+  .modal-box .items-block { margin: 14px 0; padding: 12px; background: #f5f1e8; border-left: 3px solid #000; font-size: 12px; white-space: pre-wrap; line-height: 1.6; }
+  .modal-box .notes-block { margin: 12px 0; padding: 10px; background: #fff8d6; border-left: 3px solid #ffcc00; font-size: 12px; line-height: 1.5; white-space: pre-wrap; }
+  .modal-status-row { display: flex; gap: 6px; margin-top: 16px; flex-wrap: wrap; }
+  .modal-status-row button { flex: 1; min-width: 100px; padding: 10px; background: #eee; color: #222; border: 2px solid #ccc; font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 11px; letter-spacing: 0.15em; cursor: pointer; text-transform: uppercase; }
+  .modal-status-row button:hover { border-color: #000; }
+  .modal-status-row button.set-pending.active { background: #ffcc00; border-color: #000; }
+  .modal-status-row button.set-prepping.active { background: #60a5fa; border-color: #000; color: #fff; }
+  .modal-status-row button.set-complete.active { background: #4ade80; border-color: #000; }
+  .modal-close { margin-top: 16px; padding: 10px 20px; background: #000; color: #fff; border: none; font-family: 'Roboto Mono', monospace; font-weight: 700; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; font-size: 11px; width: 100%; }
+
+  .loading, .empty-msg { text-align: center; padding: 40px; font-family: 'Roboto Mono', monospace; color: #888; font-size: 13px; letter-spacing: 0.15em; }
+
+  /* Chart */
+  .chart-wrap { background: #252525; border: 2px solid #333; padding: 20px; margin-bottom: 20px; }
+  .chart-title { font-family: 'Staatliches', sans-serif; font-size: 20px; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 16px; color: #ffcc00; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 200px; border-bottom: 2px solid #333; padding: 10px 0; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-width: 30px; }
+  .bar { width: 100%; background: #ffcc00; transition: height 0.3s; position: relative; }
+  .bar:hover { background: #ffd940; }
+  .bar-label { font-family: 'Roboto Mono', monospace; font-size: 9px; color: #888; letter-spacing: 0.1em; margin-top: 6px; text-transform: uppercase; text-align: center; }
+  .bar-value { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ffcc00; font-weight: 700; margin-bottom: 4px; }
+
+  @media (max-width: 900px) {
+    .day-grid { grid-template-columns: 1fr; }
+    .day-slot-label { border-right: none; }
+    .calendar-grid.month .cal-cell { min-height: 80px; padding: 10px 6px; }
+    .calendar-grid.month .cal-cell-date { font-size: 18px; }
+    .calendar-grid.month .cal-cell-count { font-size: 24px; }
+    .calendar-grid.month .cal-cell-weekday { display: none; }
+    .main-tab { padding: 10px 14px; font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="hazard-top"></div>
+<header class="site-header">
+  <a href="/" class="brand">PERFECT <span class="accent">TIMING</span><span class="badge">ADMIN</span></a>
+  <div class="header-actions" id="header-actions" style="display:none;">
+    <button class="refresh-btn" id="refresh-btn">↻ Refresh</button>
+    <button id="logout-btn">Logout</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div class="login-box" id="login-box">
+    <h2>Admin Login</h2>
+    <p>▲ RESTRICTED AREA</p>
+    <label>Email</label>
+    <input type="email" id="login-email" autocomplete="email">
+    <label>Password</label>
+    <input type="password" id="login-pass" autocomplete="current-password">
+    <button class="login-btn" id="login-btn">Sign In</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+
+  <!-- ADMIN HUB -->
+  <div id="admin-hub" style="display:none;">
+    <div class="main-tabs">
+      <button class="main-tab active" data-section="dashboard">Dashboard</button>
+      <button class="main-tab" data-section="recipes">Recipes</button>
+      <button class="main-tab" data-section="staff">Staff</button>
+      <button class="main-tab" data-section="customers">Customers</button>
+      <button class="main-tab" data-section="menu-mgmt">Menu Mgmt</button>
+      <button class="main-tab" data-section="analytics">Analytics</button>
+      <button class="main-tab" data-section="settings">Settings</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="section active" id="section-dashboard">
+      <div class="sub-tabs">
+        <button class="sub-tab active" data-view="day">Day</button>
+        <button class="sub-tab" data-view="week">Week</button>
+        <button class="sub-tab" data-view="month">Month</button>
+      </div>
+      <div class="date-nav">
+        <div class="nav-btns">
+          <button id="prev-btn">◀ Prev</button>
+          <button class="today-btn" id="today-btn">Today</button>
+          <button id="next-btn">Next ▶</button>
+        </div>
+        <div class="current-label" id="current-label"></div>
+        <div class="status-legend">
+          <span><span class="legend-dot pending"></span>Pending</span>
+          <span><span class="legend-dot prepping"></span>Prepping</span>
+          <span><span class="legend-dot complete"></span>Complete</span>
+        </div>
+      </div>
+      <div id="view-area"><div class="loading">Loading orders…</div></div>
+    </div>
+
+    <!-- RECIPES -->
+    <div class="section" id="section-recipes">
+      <input type="text" class="recipe-search" id="recipe-search" placeholder="Search recipes (e.g. 'coffee', 'oats', 'bacon')…">
+      <div class="recipe-filter" id="recipe-filter"></div>
+      <div class="recipe-list" id="recipe-list"></div>
+    </div>
+
+    <!-- STAFF -->
+    <div class="section" id="section-staff">
+      <p class="settings-note">▲ Step-by-step prep instructions with images for every menu item. Use this as a training reference or day-of cheat sheet. Image slots are placeholders — swap in real photos later.</p>
+      <input type="text" class="recipe-search" id="staff-search" placeholder="Search items (e.g. 'coffee', 'casserole', 'potatoes')…">
+      <div class="staff-list" id="staff-list"></div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div class="section" id="section-customers">
+      <div id="customers-area"><div class="loading">Loading customers…</div></div>
+    </div>
+
+    <!-- MENU MGMT -->
+    <div class="section" id="section-menu-mgmt">
+      <p style="font-family: 'Roboto Mono', monospace; font-size: 12px; color: #888; letter-spacing: 0.1em; margin-bottom: 16px;">▲ Edit name, description, price, or availability for each menu item. Changes save instantly to the database and reflect on the customer site after refresh.</p>
+      <div id="menu-mgmt-area"><div class="loading">Loading menu items…</div></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="section" id="section-analytics">
+      <div class="analytics-period">
+        <button class="active" data-period="day">Today</button>
+        <button data-period="week">This Week</button>
+        <button data-period="month">This Month</button>
+        <button data-period="all">All Time</button>
+      </div>
+      <div id="analytics-area"><div class="loading">Crunching numbers…</div></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="section" id="section-settings">
+      <h3 class="settings-h3">Business Schedule</h3>
+      <p class="settings-note">▲ Configure pickup hours, slot duration, and which days you're open. Schedule changes apply to future dates only — existing orders are always preserved.</p>
+
+      <div class="sched-grid">
+        <div class="sched-field">
+          <label>Start Time</label>
+          <input type="time" id="sched-start">
+        </div>
+        <div class="sched-field">
+          <label>End Time</label>
+          <input type="time" id="sched-end">
+        </div>
+        <div class="sched-field">
+          <label>Slot Duration</label>
+          <select id="sched-dur">
+            <option value="10">10 min</option>
+            <option value="15">15 min</option>
+            <option value="20">20 min</option>
+            <option value="30">30 min</option>
+            <option value="60">60 min</option>
+          </select>
+        </div>
+        <div class="sched-field">
+          <label>Default Orders/Slot</label>
+          <select id="sched-cap">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="days-open-block">
+        <label class="days-open-label">Days Open</label>
+        <p class="settings-note" style="margin-bottom:10px;">Pick which days of the week you accept orders. Customers won't see closed weekdays in the date picker. Click a day to toggle it. Don't forget to click <b>Save All Settings</b> at the bottom.</p>
+        <div class="days-open-row" id="days-open-row"></div>
+      </div>
+
+      <div class="closed-days-block">
+        <label class="closed-days-label">Closed Days</label>
+        <p class="settings-note" style="margin-bottom:10px;">Add one-off dates when you're closed. Use <b>single date</b> for individual days or <b>date range</b> for vacations / extended closures (saves immediately, no need to click Save All Settings).</p>
+
+        <div class="range-form-title">Single Date</div>
+        <div class="closed-days-add">
+          <input type="date" id="closed-add-input">
+          <button class="add-closed-btn" id="closed-add-btn">+ Add Closed Day</button>
+        </div>
+
+        <div class="range-form">
+          <div class="range-form-title">Date Range</div>
+          <div class="range-form-row">
+            <label>Start</label>
+            <input type="date" id="range-start-input">
+          </div>
+          <div class="range-form-row">
+            <label>End</label>
+            <input type="date" id="range-end-input">
+          </div>
+          <div class="range-indef-row">
+            <input type="checkbox" id="range-indef-cb">
+            <label for="range-indef-cb">Indefinite (no end date — closed until you remove this range)</label>
+          </div>
+          <button class="range-add-btn" id="range-add-btn">+ Add Range</button>
+        </div>
+
+        <div class="closed-days-list" id="closed-days-list"></div>
+      </div>
+
+      <h3 class="settings-h3" style="margin-top:32px;">Per-Slot Capacity</h3>
+      <p class="settings-note">▲ Override capacity for individual slots. Defaults to the "Default Orders/Slot" value above. Min 1, max 5.</p>
+      <div class="settings-grid" id="settings-slots"></div>
+
+      <div class="settings-save-row">
+        <span class="settings-save-status" id="settings-save-status"></span>
+        <button class="save-all-btn" id="save-settings-btn">Save All Settings</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ORDER POPUP -->
+<div class="overlay" id="order-modal">
+  <div class="modal-box" id="modal-inner"></div>
+</div>
+
+<script>
+  // CONFIG
+  const SUPABASE_URL      = 'https://zhjygvidkjvuuefwgjjg.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpoanlndmlka2p2dXVlZndnampnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5MDA2MDMsImV4cCI6MjA5MjQ3NjYwM30.9uEoIa7PZMH1RmjV1ma9nqh76yul_Bh1D8W90trS27s';
+
+  // DEFAULT MENU DATA (fallback if DB has no overrides)
+  const DEFAULT_DRINKS = [
+    { code: 'C-01', name: 'Hot Coffee',   category: 'drink', price: 3, description: 'Fresh brewed drip coffee, 16 oz. Customize with cream or sweetener.', recipe: 'Scoop 2 tbsp ground coffee per 16 oz cup. Brew in drip machine. Pour into to-go cup with lid. CHECK ORDER NOTES for customer extras — format: "Creamer ×2, Sugar ×3". Number after × = tablespoons. Whipped Cream (no number) = one dollop. Sleeve + napkin.' },
+    { code: 'C-02', name: 'Iced Coffee',  category: 'drink', price: 4, description: 'Strong drip coffee over ice, 20 oz. Customize with cream or sweetener.', recipe: 'Brew STRONG drip coffee (double grounds). Cool 10 min. Fill 20 oz cup with ice, pour over. CHECK ORDER NOTES — format: "Creamer ×2". Number = tablespoons. Extra Ice ×N = N scoops. Whipped Cream = one dollop. Stir. Domed lid + straw.' },
+    { code: 'C-03', name: 'Hot Cocoa',    category: 'drink', price: 4, description: 'Rich chocolate cocoa. Customize with creamer or half & half.', recipe: 'Boil 10 oz water. Empty 1 Swiss Miss packet (or 3 tbsp cocoa mix + 2 tbsp sugar) into cup. Pour water, stir smooth. CHECK ORDER NOTES — format: "Half & Half ×1". Number = tablespoons. Whipped Cream = dollop on top. Lid + sleeve.' }
+  ];
+  const DEFAULT_FOODS = [
+    { code: 'M-01', name: 'Egg & Cheese Mug',             category: 'microwave',   price: 6, description: 'Fluffy scrambled eggs + melted cheddar in a mug. 2 minutes.', recipe: 'Crack 2 eggs into 12-oz mug. Add splash of milk, pinch salt, whisk. Microwave 45 sec, stir, microwave 45 sec more. Top with shredded cheddar while hot. Lid loose.' },
+    { code: 'M-02', name: 'Loaded Oatmeal Bowl',          category: 'microwave',   price: 5, description: 'Hot oats with brown sugar, banana, and cinnamon.', recipe: 'Combine 1/2 cup oats + 1 cup water in microwave-safe bowl. Microwave 90 sec. Stir. Top with sliced banana, 1 tbsp brown sugar, dash cinnamon. Cover with lid.' },
+    { code: 'M-03', name: 'PB Banana Toast Melt',         category: 'microwave',   price: 5, description: 'Toasted bread, peanut butter, banana, drizzle of honey.', recipe: 'Toast 2 slices of bread. Spread 2 tbsp peanut butter on each. Slice half banana on top. Drizzle honey. Microwave 15 sec to melt slightly. Fold + wrap in foil.' },
+    { code: 'S-01', name: 'Overnight Steel-Cut Oats',     category: 'slow-cooker', price: 5, description: 'Creamy oats, cinnamon, apples, pecans. Prepped the night before.', recipe: 'Prep night before: 1 cup steel-cut oats + 4 cups water + diced apples + pecans + cinnamon in slow cooker on LOW 8 hrs. Morning: stir, portion into 8-oz containers. Serve hot with lid.' },
+    { code: 'S-02', name: 'Breakfast Casserole Cup',      category: 'slow-cooker', price: 8, description: 'Eggs, sausage, hash browns, cheddar. Hearty and filling.', recipe: 'Prep night before: hash browns + cooked sausage + beaten eggs + shredded cheese layered in slow cooker, LOW 6-8 hrs. Morning: scoop into 8-oz containers. Top with fresh cheese before serving.' },
+    { code: 'S-03', name: 'Cinnamon Roll Bake',           category: 'slow-cooker', price: 6, description: 'Soft cinnamon roll pieces with cream cheese glaze.', recipe: 'Prep night before: tear 2 cans cinnamon rolls into chunks, layer with egg/cream/cinnamon mix in slow cooker, LOW 4-5 hrs. Morning: drizzle icing, portion into 6-oz containers.' },
+    { code: 'A-01', name: 'Air Fryer Bacon & Egg Bites',  category: 'air-fryer',   price: 7, description: 'Crispy bacon + fluffy egg cups. Protein-packed.', recipe: 'Beat 3 eggs + splash cream. Pour into silicone cups, top each with crumbled cooked bacon + cheese. Air fry 360°F for 8 min. Cool 1 min, pop out. Pack 2 per order in container.' },
+    { code: 'A-02', name: 'Air Fryer Breakfast Potatoes', category: 'air-fryer',   price: 6, description: 'Golden crispy potatoes with peppers and onions.', recipe: 'Dice 2 potatoes + 1 bell pepper + 1/2 onion. Toss with olive oil, salt, pepper, paprika. Air fry 400°F for 15 min, shaking halfway. Portion 1 cup per order in vented container.' },
+    { code: 'A-03', name: 'Air Fryer French Toast Sticks',category: 'air-fryer',   price: 6, description: 'Cinnamon-dusted, crispy outside, soft inside. With syrup.', recipe: 'Cut bread into sticks. Dip in egg/milk/cinnamon/vanilla mixture. Air fry 375°F for 8 min, flip halfway. Dust with cinnamon sugar. Pack 6 sticks with 2-oz syrup cup.' }
+  ];
+  const DEFAULT_ADDONS = [
+    { code: 'X-01', name: 'B.Y.O.C.', category: 'addon', price: 1.00, description: 'Bring Your Own Cup. $1 refill up to 32 oz.', recipe: 'Refill customer\'s cup up to 32 ounces. Pair with any food purchase. Confirm customer brought their cup. $1 charge per food item — count the B.Y.O.C. indicators on the order.' }
+  ];
+
+  // Detailed step-by-step instructions for the Staff tab
+  const STAFF_INSTRUCTIONS = {
+    'C-01': {
+      category: 'drink',
+      prep_time: '2 min',
+      serves: '1 cup (16 oz)',
+      steps: [
+        'Grab a 16 oz paper to-go cup with matching lid.',
+        'Scoop 2 tablespoons of ground coffee into the drip machine filter.',
+        'Brew fresh — do not reuse grounds from a prior batch.',
+        'Pour hot coffee into the to-go cup, leave ~1 inch of headroom.',
+        'Check ORDER NOTES on the ticket for any customer extras (format: "Creamer ×2").',
+        'Add extras: 1 unit per tablespoon. Whipped Cream (no number) = one dollop on top.',
+        'Stir gently if anything was added. Lid the cup.',
+        'Slip on a cup sleeve and attach a napkin with tape or rubber band.'
+      ],
+      tip: 'If the coffee has been sitting more than 30 min, brew a fresh pot before serving.'
+    },
+    'C-02': {
+      category: 'drink',
+      prep_time: '5 min',
+      serves: '1 cup (20 oz)',
+      steps: [
+        'Brew STRONG coffee: 4 tablespoons grounds per 16 oz water (double strength).',
+        'Let brewed coffee cool for 10 minutes so it doesn\'t melt all the ice.',
+        'Grab a 20 oz clear plastic cup with domed lid.',
+        'Fill cup with ice (about 2/3 full).',
+        'Pour cooled coffee over ice, leaving room for extras.',
+        'Check ORDER NOTES for extras. Extra Ice ×N = add N more scoops of ice.',
+        'Add counted extras. Whipped Cream = one dollop on top under the dome.',
+        'Stir, snap on the domed lid, insert a straw, hand off.'
+      ],
+      tip: 'Pre-brew 2–3 strong pots at start of shift and refrigerate them. Faster turnaround and less waste.'
+    },
+    'C-03': {
+      category: 'drink',
+      prep_time: '3 min',
+      serves: '1 cup (12 oz)',
+      steps: [
+        'Boil 10 oz of water in the kettle.',
+        'Empty 1 Swiss Miss cocoa packet into a 12 oz to-go cup (or use 3 tbsp cocoa mix + 2 tbsp sugar).',
+        'Pour hot water over the cocoa powder slowly.',
+        'Stir vigorously with a spoon until fully dissolved and smooth.',
+        'Check ORDER NOTES for extras like Half & Half ×1.',
+        'Whipped Cream = generous dollop on top after stirring.',
+        'Lid the cup, attach a sleeve.'
+      ],
+      tip: 'If cocoa looks clumpy after stirring, microwave for 15 seconds and stir again.'
+    },
+    'M-01': {
+      category: 'microwave',
+      prep_time: '2 min',
+      serves: '1 mug',
+      steps: [
+        'Crack 2 large eggs into a 12 oz ceramic mug.',
+        'Add a splash of milk (~1 tbsp) and a pinch of salt.',
+        'Whisk thoroughly with a fork until fully combined.',
+        'Microwave uncovered on HIGH for 45 seconds.',
+        'Stir eggs with fork, breaking up any set portions.',
+        'Microwave again on HIGH for 45 seconds until eggs are just set.',
+        'Top with 2 tablespoons shredded cheddar while eggs are hot (it will melt).',
+        'Place lid loosely on top so steam can escape. Pack with a napkin and plastic fork.'
+      ],
+      tip: 'If eggs look too wet after second round, add 15 seconds. If rubbery, the first round was too long.'
+    },
+    'M-02': {
+      category: 'microwave',
+      prep_time: '3 min',
+      serves: '1 bowl',
+      steps: [
+        'Measure 1/2 cup rolled oats into a microwave-safe 16 oz bowl.',
+        'Add 1 cup water (or milk for richer texture).',
+        'Microwave on HIGH for 90 seconds.',
+        'Stir well — oats will thicken as they sit.',
+        'Slice 1/2 banana on top.',
+        'Sprinkle 1 tablespoon brown sugar.',
+        'Dust with a pinch of cinnamon.',
+        'Cover with lid (steam vent open). Pack with a spoon.'
+      ],
+      tip: 'Watch for overflow at the 60-second mark; oats can boil over. Use a deeper bowl if it\'s been happening.'
+    },
+    'M-03': {
+      category: 'microwave',
+      prep_time: '2 min',
+      serves: '1 sandwich',
+      steps: [
+        'Toast 2 slices of sandwich bread in the toaster (medium setting).',
+        'Spread 1 tbsp peanut butter on each slice while still warm.',
+        'Slice 1/2 banana lengthwise, lay slices on one piece of bread.',
+        'Drizzle 1 tsp honey over the banana.',
+        'Close the sandwich.',
+        'Microwave on HIGH for 15 seconds to soften the peanut butter slightly.',
+        'Cut on the diagonal and wrap in foil or parchment.'
+      ],
+      tip: 'Don\'t skip toasting — raw bread gets soggy from the banana and honey.'
+    },
+    'S-01': {
+      category: 'slow-cooker',
+      prep_time: 'Overnight + 2 min portioning',
+      serves: '6–8 portions (8 oz each)',
+      steps: [
+        'NIGHT BEFORE: Add 1 cup steel-cut oats + 4 cups water to slow cooker.',
+        'Dice 1 apple and add to the cooker.',
+        'Toss in 1/3 cup pecan pieces.',
+        'Sprinkle 1 tsp cinnamon + pinch of salt.',
+        'Set slow cooker to LOW for 8 hours. Lid on. Leave overnight.',
+        'MORNING: Stir thoroughly to combine — there may be a crust on top.',
+        'Portion 1 cup (~8 oz) into each to-go container.',
+        'Lid the containers, pack with a spoon. Serve warm.'
+      ],
+      tip: 'If it\'s too thick, stir in a splash of hot water before portioning. Steel-cut oats reheat well in the microwave — 45 sec per portion.'
+    },
+    'S-02': {
+      category: 'slow-cooker',
+      prep_time: 'Overnight + 3 min portioning',
+      serves: '6–8 portions (8 oz each)',
+      steps: [
+        'NIGHT BEFORE: Cook 1 lb breakfast sausage in a skillet, drain grease.',
+        'Layer frozen hash browns (4 cups) in the bottom of the slow cooker.',
+        'Add cooked sausage as the second layer.',
+        'Beat 8 large eggs with 1/2 cup milk, salt, and pepper. Pour over sausage.',
+        'Top with 1.5 cups shredded cheddar cheese.',
+        'Set slow cooker to LOW for 6–8 hours. Lid on. Leave overnight.',
+        'MORNING: Scoop 1 cup portions into to-go containers.',
+        'Top each portion with a pinch of fresh shredded cheese before serving.'
+      ],
+      tip: 'Prep extra sausage during shift — keep hot in a warming tray so you can top orders if someone asks for extra meat.'
+    },
+    'S-03': {
+      category: 'slow-cooker',
+      prep_time: 'Overnight + 2 min portioning',
+      serves: '6 portions (6 oz each)',
+      steps: [
+        'NIGHT BEFORE: Tear 2 cans of refrigerated cinnamon rolls into 1-inch chunks. Reserve the icing packets.',
+        'Layer chunks in the slow cooker (line with parchment for easy cleanup).',
+        'Whisk 4 eggs + 1/2 cup heavy cream + 1 tsp cinnamon + 1 tsp vanilla.',
+        'Pour mixture evenly over the cinnamon roll chunks.',
+        'Set slow cooker to LOW for 4–5 hours. Check at 4 hrs — done when set but still soft.',
+        'MORNING: Let cool 10 min, then portion 6 oz (~3/4 cup) into containers.',
+        'Warm the reserved icing packets briefly (microwave 10 sec) and drizzle generously on top.'
+      ],
+      tip: 'Set an alarm — this one can dry out if it goes past 5 hours. If that happens, save it as tomorrow\'s French toast base.'
+    },
+    'A-01': {
+      category: 'air-fryer',
+      prep_time: '12 min',
+      serves: '2 bites per order',
+      steps: [
+        'Cook 4 strips of bacon in a skillet until crispy. Drain, crumble, set aside.',
+        'Beat 3 large eggs with a splash of cream, salt, and pepper.',
+        'Grease 4 silicone egg cups with cooking spray.',
+        'Divide egg mixture among the cups (about 2/3 full).',
+        'Top each with crumbled bacon and a pinch of shredded cheese.',
+        'Place cups in air fryer basket. Cook at 360°F for 8 minutes.',
+        'Let cool 1 minute, then run a butter knife around the edge to release.',
+        'Pack 2 bites per order in a lidded container.'
+      ],
+      tip: 'Eggs puff while cooking and collapse as they cool — that\'s normal. Don\'t over-fill the cups or they\'ll overflow.'
+    },
+    'A-02': {
+      category: 'air-fryer',
+      prep_time: '18 min',
+      serves: '1 cup per order',
+      steps: [
+        'Dice 2 medium russet potatoes into 1/2" cubes (leave skin on).',
+        'Dice 1 bell pepper and 1/2 yellow onion into similar-sized pieces.',
+        'Toss all together with 2 tbsp olive oil, 1 tsp salt, 1/2 tsp pepper, 1 tsp smoked paprika.',
+        'Preheat air fryer to 400°F.',
+        'Spread seasoned mixture in the basket in a single layer (don\'t overcrowd).',
+        'Cook for 15 minutes total, shaking the basket every 5 minutes.',
+        'Check for tenderness — a fork should go in easily. Add 2 min if still firm.',
+        'Portion 1 cup per order in vented containers (so they don\'t steam and get soggy).'
+      ],
+      tip: 'Cook 2 batches at start of shift and keep warm in an oven at 200°F. Refresh in air fryer 2 min if they lose their crisp.'
+    },
+    'A-03': {
+      category: 'air-fryer',
+      prep_time: '12 min',
+      serves: '6 sticks per order',
+      steps: [
+        'Cut 4 slices of thick bread (Texas toast or brioche works best) into sticks — 4 per slice.',
+        'Whisk 3 eggs + 1/2 cup milk + 1 tsp cinnamon + 1 tsp vanilla + 1 tbsp sugar.',
+        'Dip each stick briefly into the mixture — don\'t soak, or they get mushy.',
+        'Arrange sticks in air fryer basket in a single layer, slight gap between each.',
+        'Cook at 375°F for 4 minutes.',
+        'Flip each stick carefully with tongs.',
+        'Cook another 4 minutes until golden and slightly crispy on the outside.',
+        'Dust with cinnamon sugar while still hot. Pack 6 sticks + a 2-oz cup of syrup per order.'
+      ],
+      tip: 'Use day-old bread if possible — it absorbs the egg mix better. Fresh bread can fall apart.'
+    },
+    'X-01': {
+      category: 'addon',
+      prep_time: '1 min',
+      serves: 'Varies',
+      steps: [
+        'Confirm the customer has brought their own cup to the counter.',
+        'Verify the cup is clean and in good condition (no cracks, no off smells).',
+        'Check the order ticket for which drink to refill.',
+        'Fill the customer\'s cup with the selected drink up to 32 ounces maximum.',
+        'Add any customer-requested extras listed in the order notes.',
+        'The $1 B.Y.O.C. charge is already on the order — no additional transaction.'
+      ],
+      tip: 'If the cup looks dirty or has residue from a different drink, politely offer to rinse it for them before filling.'
+    }
+  };
+
+  // Slots are now generated from business_schedule
+  const DEFAULT_SCHEDULE = {
+    start_time: '05:00',
+    end_time: '10:00',
+    slot_minutes: 15,
+    default_capacity: 1,
+    days_open: [1,2,3,4,5]
+  };
+  let slots = []; // populated by applySchedule()
+
+  function timeToMin(t) { const [h,m] = t.split(':').map(Number); return h*60 + m; }
+  function minToTime(m) { const h = Math.floor(m/60); const mm = m%60; const ampm = h >= 12 ? 'PM' : 'AM'; const h12 = h % 12 === 0 ? 12 : h % 12; return `${h12}:${String(mm).padStart(2,'0')} ${ampm}`; }
+  function minToHHMM(m) { const h = Math.floor(m/60); const mm = m%60; return `${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`; }
+
+  function generateSlots(sched) {
+    const startMin = timeToMin(sched.start_time);
+    const endMin   = timeToMin(sched.end_time);
+    const dur      = sched.slot_minutes;
+    const out = [];
+    // Last slot must finish by end_time, so its start must be <= endMin - dur
+    for (let t = startMin; t + dur <= endMin; t += dur) {
+      out.push({ label: minToTime(t), range: `${minToHHMM(t)} – ${minToHHMM(t + dur)}` });
+    }
+    return out;
+  }
+
+  const MAX_CAPACITY = 5;
+
+  const state = {
+    token: null,
+    section: 'dashboard',
+    view: 'day',
+    anchorDate: new Date(),
+    orders: [],
+    loading: false,
+    selectedOrder: null,
+    menuItems: [],
+    slotSettings: {},
+    analyticsPeriod: 'day',
+    schedule: { ...DEFAULT_SCHEDULE },
+    closedDays: new Set(),
+    closedRanges: []  // [{ id, start_date, end_date (null = indefinite) }]
+  };
+
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => Array.from(document.querySelectorAll(s));
+  const escHtml = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  // ============================================================
+  // AUTH
+  // ============================================================
+  function setupLogin() {
+    $('#login-btn').addEventListener('click', async () => {
+      const email = $('#login-email').value.trim();
+      const pass  = $('#login-pass').value;
+      const err   = $('#login-err');
+      err.classList.remove('show');
+      if (!email || !pass) { err.textContent = 'Enter email and password.'; err.classList.add('show'); return; }
+      if (!SUPABASE_URL || SUPABASE_URL.includes('YOUR_')) { err.textContent = 'Supabase not configured. See SETUP.md.'; err.classList.add('show'); return; }
+      try {
+        const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password: pass })
+        });
+        const data = await r.json();
+        if (!r.ok) { err.textContent = data.error_description || data.msg || 'Login failed.'; err.classList.add('show'); return; }
+        state.token = data.access_token;
+        try { sessionStorage.setItem('pt_token', data.access_token); } catch(e) {}
+        showHub();
+      } catch(e) { err.textContent = 'Network error: ' + e.message; err.classList.add('show'); }
+    });
+
+    $('#logout-btn').addEventListener('click', () => {
+      state.token = null;
+      try { sessionStorage.removeItem('pt_token'); } catch(e) {}
+      $('#login-box').style.display = 'block';
+      $('#admin-hub').style.display = 'none';
+      $('#header-actions').style.display = 'none';
+    });
+
+    try {
+      const existing = sessionStorage.getItem('pt_token');
+      if (existing) { state.token = existing; showHub(); }
+    } catch(e) {}
+  }
+
+  function showHub() {
+    $('#login-box').style.display = 'none';
+    $('#admin-hub').style.display = 'block';
+    $('#header-actions').style.display = 'flex';
+    setupHub();
+    loadAll();
+  }
+
+  // ============================================================
+  // DATA LOADING
+  // ============================================================
+  async function apiFetch(path, opts = {}) {
+    const url = `${SUPABASE_URL}${path}`;
+    const headers = {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${state.token}`,
+      ...(opts.headers || {})
+    };
+    const r = await fetch(url, { ...opts, headers });
+    if (r.status === 401) {
+      state.token = null;
+      try { sessionStorage.removeItem('pt_token'); } catch(e) {}
+      $('#login-box').style.display = 'block';
+      $('#admin-hub').style.display = 'none';
+      $('#header-actions').style.display = 'none';
+      throw new Error('Session expired');
+    }
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r;
+  }
+
+  async function loadAll() {
+    state.loading = true;
+    renderDashboard();
+    try {
+      await Promise.all([loadOrders(), loadSchedule(), loadClosedDays(), loadClosedRanges(), loadSlotSettings(), loadMenuOverrides()]);
+      // Regenerate slots from loaded schedule
+      slots = generateSlots(state.schedule);
+      // Fill in defaults for any new slots that don't have capacity set
+      slots.forEach(s => {
+        if (state.slotSettings[s.label] === undefined) state.slotSettings[s.label] = state.schedule.default_capacity;
+      });
+    } catch(e) { console.error(e); }
+    state.loading = false;
+    renderCurrentSection();
+  }
+
+  async function loadSchedule() {
+    try {
+      const r = await apiFetch('/rest/v1/business_schedule?select=*&id=eq.1');
+      const rows = await r.json();
+      if (Array.isArray(rows) && rows.length > 0) {
+        const s = rows[0];
+        state.schedule = {
+          start_time: s.start_time || '05:00',
+          end_time: s.end_time || '10:00',
+          slot_minutes: s.slot_minutes || 15,
+          default_capacity: s.default_capacity || 1,
+          days_open: Array.isArray(s.days_open) ? s.days_open : [1,2,3,4,5]
+        };
+      }
+    } catch(e) {
+      console.warn('business_schedule table not found; using defaults. Run SQL in SETUP.md Step 2.5.', e);
+    }
+  }
+
+  async function loadClosedDays() {
+    try {
+      const r = await apiFetch('/rest/v1/closed_days?select=closed_date&order=closed_date.asc');
+      const rows = await r.json();
+      state.closedDays = new Set(rows.map(x => x.closed_date));
+    } catch(e) {
+      console.warn('closed_days table not found. Run SQL in SETUP.md Step 2.5.', e);
+    }
+  }
+
+  async function loadClosedRanges() {
+    try {
+      const r = await apiFetch('/rest/v1/closed_ranges?select=*&order=start_date.asc');
+      const rows = await r.json();
+      state.closedRanges = rows;
+    } catch(e) {
+      console.warn('closed_ranges table not found. Run SQL build script.', e);
+      state.closedRanges = [];
+    }
+  }
+
+  async function loadOrders() {
+    const r = await apiFetch('/rest/v1/orders?select=*&order=pickup_date.asc,pickup_slot.asc');
+    state.orders = await r.json();
+  }
+
+  async function loadSlotSettings() {
+    try {
+      const r = await apiFetch('/rest/v1/slot_settings?select=*');
+      const rows = await r.json();
+      state.slotSettings = {};
+      rows.forEach(row => { state.slotSettings[row.slot_label] = row.capacity; });
+    } catch(e) {
+      console.warn('slot_settings table not found. Run SQL in SETUP.md Step 2.5.', e);
+      state.slotSettings = {};
+    }
+  }
+
+  async function loadMenuOverrides() {
+    const all = [...DEFAULT_DRINKS, ...DEFAULT_FOODS, ...DEFAULT_ADDONS];
+    try {
+      const r = await apiFetch('/rest/v1/menu_items?select=*');
+      const overrides = await r.json();
+      const byCode = {};
+      overrides.forEach(o => { byCode[o.code] = o; });
+      state.menuItems = all.map(def => {
+        const override = byCode[def.code];
+        if (!override) return { ...def, available: true };
+        return {
+          ...def,
+          name: override.name !== null && override.name !== undefined ? override.name : def.name,
+          description: override.description !== null && override.description !== undefined ? override.description : def.description,
+          price: override.price !== null && override.price !== undefined ? Number(override.price) : def.price,
+          available: override.available !== false
+        };
+      });
+    } catch(e) {
+      console.warn('menu_items table not found; using defaults. Run SQL in SETUP.md Step 2.5.', e);
+      state.menuItems = all.map(def => ({ ...def, available: true }));
+    }
+  }
+
+  async function updateOrderStatus(orderId, newStatus) {
+    try {
+      await apiFetch(`/rest/v1/orders?id=eq.${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const ord = state.orders.find(o => o.id === orderId);
+      if (ord) ord.status = newStatus;
+      if (state.selectedOrder && state.selectedOrder.id === orderId) {
+        state.selectedOrder.status = newStatus;
+        renderOrderModal();
+      }
+      renderDashboard();
+    } catch(e) { alert('Update failed: ' + e.message); }
+  }
+
+  async function saveAllSettings() {
+    const btn = $('#save-settings-btn');
+    const status = $('#settings-save-status');
+    btn.disabled = true;
+    status.textContent = 'Saving…';
+    status.style.color = '#ffcc00';
+    try {
+      // 1. Save business_schedule (upsert id=1)
+      await apiFetch('/rest/v1/business_schedule', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates, return=minimal'
+        },
+        body: JSON.stringify({
+          id: 1,
+          start_time: state.schedule.start_time,
+          end_time: state.schedule.end_time,
+          slot_minutes: state.schedule.slot_minutes,
+          default_capacity: state.schedule.default_capacity,
+          days_open: state.schedule.days_open
+        })
+      });
+
+      // 2. Wipe & re-seed slot_settings for the new slot list
+      //    (old slots that no longer exist in schedule become stale but harmless)
+      const newSlots = generateSlots(state.schedule);
+      for (const s of newSlots) {
+        const cap = state.slotSettings[s.label] !== undefined ? state.slotSettings[s.label] : state.schedule.default_capacity;
+        await apiFetch('/rest/v1/slot_settings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Prefer': 'resolution=merge-duplicates, return=minimal'
+          },
+          body: JSON.stringify({ slot_label: s.label, capacity: cap })
+        });
+      }
+
+      // 3. Closed days — additions & removals are handled in their own handlers
+      //    (add happens in handleAddClosedDay, remove in handleRemoveClosedDay)
+      //    No bulk save needed here.
+
+      slots = newSlots;
+      status.textContent = '✓ All settings saved';
+      status.style.color = '#4ade80';
+      setTimeout(() => { status.textContent = ''; }, 4000);
+    } catch(e) {
+      status.textContent = '✗ Error: ' + e.message;
+      status.style.color = '#ff8080';
+    }
+    btn.disabled = false;
+  }
+
+  async function handleAddClosedDay(iso) {
+    try {
+      await apiFetch('/rest/v1/closed_days', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates, return=minimal'
+        },
+        body: JSON.stringify({ closed_date: iso })
+      });
+      state.closedDays.add(iso);
+      renderSettings();
+    } catch(e) { alert('Failed to add: ' + e.message); }
+  }
+
+  async function handleRemoveClosedDay(iso) {
+    try {
+      await apiFetch(`/rest/v1/closed_days?closed_date=eq.${iso}`, {
+        method: 'DELETE',
+        headers: { 'Prefer': 'return=minimal' }
+      });
+      state.closedDays.delete(iso);
+      renderSettings();
+    } catch(e) { alert('Failed to remove: ' + e.message); }
+  }
+
+  async function handleAddClosedRange(startIso, endIso) {
+    // endIso === null means indefinite
+    if (!startIso) { alert('Pick a start date.'); return; }
+    if (endIso !== null && endIso < startIso) { alert('End date must be on or after start date.'); return; }
+    try {
+      const r = await apiFetch('/rest/v1/closed_ranges', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({ start_date: startIso, end_date: endIso })
+      });
+      const rows = await r.json();
+      if (Array.isArray(rows) && rows.length > 0) {
+        state.closedRanges.push(rows[0]);
+        state.closedRanges.sort((a,b) => a.start_date.localeCompare(b.start_date));
+      }
+      renderSettings();
+    } catch(e) { alert('Failed to add range: ' + e.message); }
+  }
+
+  async function handleRemoveClosedRange(id) {
+    try {
+      await apiFetch(`/rest/v1/closed_ranges?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: { 'Prefer': 'return=minimal' }
+      });
+      state.closedRanges = state.closedRanges.filter(r => r.id !== id);
+      renderSettings();
+    } catch(e) { alert('Failed to remove range: ' + e.message); }
+  }
+
+  async function saveMenuItem(code, updates) {
+    const row = { code, ...updates };
+    await apiFetch('/rest/v1/menu_items', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates, return=minimal'
+      },
+      body: JSON.stringify(row)
+    });
+    // Update local state
+    const item = state.menuItems.find(i => i.code === code);
+    if (item) Object.assign(item, updates);
+  }
+
+  // ============================================================
+  // DATE HELPERS
+  // ============================================================
+  function toISO(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${dd}`;
+  }
+  function parseISO(iso) { const [y,m,d] = iso.split('-').map(Number); return new Date(y, m-1, d); }
+  function sameDay(a, b) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+  function startOfWeek(d) { const x = new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate() - x.getDay()); return x; }
+  function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function startOfMonth(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
+  function endOfMonth(d) { return new Date(d.getFullYear(), d.getMonth()+1, 0); }
+
+  // ============================================================
+  // HUB SETUP
+  // ============================================================
+  function setupHub() {
+    $$('.main-tab').forEach(b => {
+      b.addEventListener('click', () => {
+        state.section = b.dataset.section;
+        $$('.main-tab').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        $$('.section').forEach(x => x.classList.remove('active'));
+        $(`#section-${state.section}`).classList.add('active');
+        renderCurrentSection();
+      });
+    });
+
+    $$('.sub-tab').forEach(b => {
+      b.addEventListener('click', () => {
+        state.view = b.dataset.view;
+        $$('.sub-tab').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        renderDashboard();
+      });
+    });
+    $('#prev-btn').addEventListener('click', () => { navigate(-1); });
+    $('#next-btn').addEventListener('click', () => { navigate(1); });
+    $('#today-btn').addEventListener('click', () => { state.anchorDate = new Date(); renderDashboard(); });
+    $('#refresh-btn').addEventListener('click', loadAll);
+
+    $('#recipe-search').addEventListener('input', renderRecipes);
+    $('#staff-search').addEventListener('input', renderStaff);
+    const categories = ['all', 'drink', 'microwave', 'slow-cooker', 'air-fryer', 'addon'];
+    $('#recipe-filter').innerHTML = categories.map(c => `<button data-cat="${c}" class="${c==='all'?'active':''}">${c.replace('-', ' ')}</button>`).join('');
+    $('#recipe-filter').addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        $$('#recipe-filter button').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        renderRecipes();
+      }
+    });
+
+    $$('.analytics-period button').forEach(b => {
+      b.addEventListener('click', () => {
+        state.analyticsPeriod = b.dataset.period;
+        $$('.analytics-period button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        renderAnalytics();
+      });
+    });
+
+    $('#save-settings-btn').addEventListener('click', saveAllSettings);
+
+    $('#order-modal').addEventListener('click', (e) => {
+      if (e.target === $('#order-modal')) {
+        $('#order-modal').classList.remove('show');
+        state.selectedOrder = null;
+      }
+    });
+  }
+
+  function navigate(dir) {
+    if (state.view === 'day') state.anchorDate = addDays(state.anchorDate, dir);
+    else if (state.view === 'week') state.anchorDate = addDays(state.anchorDate, dir * 7);
+    else if (state.view === 'month') state.anchorDate = new Date(state.anchorDate.getFullYear(), state.anchorDate.getMonth() + dir, 1);
+    renderDashboard();
+  }
+
+  function renderCurrentSection() {
+    if (state.section === 'dashboard') renderDashboard();
+    if (state.section === 'recipes') renderRecipes();
+    if (state.section === 'staff') renderStaff();
+    if (state.section === 'customers') renderCustomers();
+    if (state.section === 'menu-mgmt') renderMenuMgmt();
+    if (state.section === 'analytics') renderAnalytics();
+    if (state.section === 'settings') renderSettings();
+  }
+
+  // ============================================================
+  // DASHBOARD (schedule)
+  // ============================================================
+  function renderDashboard() {
+    if (state.loading) {
+      $('#view-area').innerHTML = `<div class="loading">Loading orders…</div>`;
+      $('#current-label').textContent = '';
+      return;
+    }
+    if (state.view === 'day')    renderDay();
+    if (state.view === 'week')   renderWeek();
+    if (state.view === 'month')  renderMonth();
+  }
+
+  function renderDay() {
+    const d = state.anchorDate;
+    const iso = toISO(d);
+    $('#current-label').textContent = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+    const ordersToday = state.orders.filter(o => o.pickup_date === iso);
+    $('#view-area').innerHTML = `<div class="day-grid">
+      ${slots.map(s => {
+        const slotOrders = ordersToday.filter(o => o.pickup_slot === s.label);
+        const cap = state.slotSettings[s.label] || 1;
+        const slotOrdersActive = slotOrders.filter(o => o.status !== 'complete').length;
+        const totalSlotOrders = slotOrders.length;
+        const cellContent = slotOrders.length === 0
+          ? `<div class="day-slot-cell empty">— no orders —</div>`
+          : `<div class="day-slot-cell">${slotOrders.map(o => renderOrderBlock(o)).join('')}</div>`;
+        return `<div class="day-slot-label">${s.label}<span class="range">${s.range}</span><span class="cap">${totalSlotOrders} / ${cap}</span></div>${cellContent}`;
+      }).join('')}
+    </div>`;
+    wireOrderBlocks();
+  }
+
+  function renderOrderBlock(o) {
+    const status = o.status || 'pending';
+    const nameShort = (o.customer_name || 'Anon').split(' ')[0];
+    // Prefer meal_count for new meal-based orders, fall back to item count
+    let countLabel;
+    if (o.meal_count && o.meal_count > 0) {
+      countLabel = `${o.meal_count} meal${o.meal_count===1?'':'s'}`;
+    } else if (Array.isArray(o.items)) {
+      const n = o.items.reduce((s,i) => s + (i.qty||1), 0);
+      countLabel = `${n} item${n===1?'':'s'}`;
+    } else {
+      countLabel = '—';
+    }
+    const cashTag = o.cash_payment ? ' · 💵' : '';
+    return `<div class="order-block status-${status}" data-order-id="${escHtml(o.id)}">
+      <div class="ob-name">${escHtml(nameShort)}</div>
+      <div class="ob-meta">${countLabel} · $${Number(o.total||0).toFixed(0)}${cashTag}</div>
+    </div>`;
+  }
+
+  function wireOrderBlocks() {
+    $$('.order-block').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.dataset.orderId;
+        const order = state.orders.find(o => o.id === id);
+        if (order) openOrderModal(order);
+      });
+    });
+  }
+
+  function renderWeek() {
+    const weekStart = startOfWeek(state.anchorDate);
+    const days = Array.from({length: 7}, (_, i) => addDays(weekStart, i));
+    const endDay = days[6];
+    const fmt = (d) => d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    $('#current-label').textContent = `${fmt(weekStart)} – ${fmt(endDay)}, ${endDay.getFullYear()}`;
+    const weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const today = new Date();
+    $('#view-area').innerHTML = `<div class="calendar-grid week">
+      ${weekdays.map(w => `<div class="cal-cell-head">${w}</div>`).join('')}
+      ${days.map(d => {
+        const iso = toISO(d);
+        const count = state.orders.filter(o => o.pickup_date === iso).length;
+        const isToday = sameDay(d, today);
+        const cls = ['cal-cell', count === 0 ? 'empty-count' : '', isToday ? 'today' : ''].filter(Boolean).join(' ');
+        return `<div class="${cls}" data-date="${iso}">
+          <div class="cal-cell-date">${d.getDate()}</div>
+          <div class="cal-cell-weekday">${d.toLocaleDateString('en-US', { month:'short' })}</div>
+          <div class="cal-cell-count">${count}<span class="lbl">order${count===1?'':'s'}</span></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+    wireDayClicks();
+  }
+
+  function renderMonth() {
+    const anchor = state.anchorDate;
+    const first = startOfMonth(anchor);
+    const last = endOfMonth(anchor);
+    $('#current-label').textContent = anchor.toLocaleDateString('en-US', { month:'long', year:'numeric' });
+    const gridStart = startOfWeek(first);
+    const gridEnd = addDays(startOfWeek(last), 6);
+    const days = [];
+    for (let d = new Date(gridStart); d <= gridEnd; d = addDays(d, 1)) days.push(new Date(d));
+    const weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const today = new Date();
+    $('#view-area').innerHTML = `<div class="calendar-grid month">
+      ${weekdays.map(w => `<div class="cal-cell-head">${w}</div>`).join('')}
+      ${days.map(d => {
+        const iso = toISO(d);
+        const count = state.orders.filter(o => o.pickup_date === iso).length;
+        const outOfMonth = d.getMonth() !== anchor.getMonth();
+        const isToday = sameDay(d, today);
+        const cls = ['cal-cell', count === 0 ? 'empty-count' : '', outOfMonth ? 'out-of-month' : '', isToday ? 'today' : ''].filter(Boolean).join(' ');
+        return `<div class="${cls}" data-date="${iso}">
+          <div class="cal-cell-date">${d.getDate()}</div>
+          <div class="cal-cell-count">${count}<span class="lbl">order${count===1?'':'s'}</span></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+    wireDayClicks();
+  }
+
+  function wireDayClicks() {
+    $$('.cal-cell[data-date]').forEach(el => {
+      el.addEventListener('click', () => {
+        const iso = el.dataset.date;
+        state.anchorDate = parseISO(iso);
+        state.view = 'day';
+        $$('.sub-tab').forEach(x => x.classList.toggle('active', x.dataset.view === 'day'));
+        renderDashboard();
+      });
+    });
+  }
+
+  // ============================================================
+  // ORDER MODAL
+  // ============================================================
+  function openOrderModal(order) {
+    state.selectedOrder = order;
+    renderOrderModal();
+    $('#order-modal').classList.add('show');
+  }
+
+  function renderOrderModal() {
+    const o = state.selectedOrder;
+    if (!o) return;
+    const created = o.created_at ? new Date(o.created_at).toLocaleString() : '';
+    const pickupDate = o.pickup_date ? parseISO(o.pickup_date).toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' }) : '';
+    const status = o.status || 'pending';
+    const cashPayment = !!o.cash_payment;
+    const mealCount = o.meal_count || (Array.isArray(o.meals) ? o.meals.length : 0);
+    const subtotal = Number(o.subtotal || 0);
+    const discount = Number(o.discount || 0);
+
+    let itemsBlock = '';
+    if (Array.isArray(o.meals) && o.meals.length) {
+      // New meal-based format
+      itemsBlock = o.meals.map(m => {
+        let line = `Meal ${m.meal_number} — $${Number(m.net||0).toFixed(0)}${m.cash_discount ? ` (cash, was $${Number(m.meal_price||0).toFixed(0)})` : ''}`;
+        if (m.food) line += `\n    Food: ${m.food.name}`;
+        if (m.drink) {
+          line += `\n    Drink: ${m.drink.name}`;
+          if (m.drink.extras) line += ` (${m.drink.extras})`;
+        }
+        return line;
+      }).join('\n');
+    } else if (Array.isArray(o.items) && o.items.length) {
+      // Fallback: old item-based format
+      itemsBlock = o.items.map(it => {
+        let line = `${it.qty || 1}× ${it.name}${it.item_subtotal ? ` — $${Number(it.item_subtotal).toFixed(0)}` : ''}`;
+        if (it.extras) line += `\n    + ${it.extras}`;
+        return line;
+      }).join('\n');
+    } else if (o.items_summary) {
+      itemsBlock = o.items_summary;
+    }
+
+    $('#modal-inner').innerHTML = `
+      <h3>${escHtml(o.customer_name || 'Unnamed')}</h3>
+      <div class="meta">Phone: <b>${escHtml(o.customer_phone || '—')}</b></div>
+      <div class="meta">Pickup: <b>${escHtml(pickupDate)} at ${escHtml(o.pickup_slot || '—')}</b></div>
+      <div class="meta">Total: <b>$${Number(o.total||0).toFixed(0)}</b>${mealCount?` · <b>${mealCount} meal${mealCount===1?'':'s'}</b>`:''}</div>
+      ${cashPayment ? `<div class="meta" style="color:#080;">▲ <b>CASH PAYMENT</b> — saved $${discount.toFixed(0)}</div>` : ''}
+      ${o.subscription ? `<div class="meta">The Usual: <b>YES</b></div>` : ''}
+      <div class="meta" style="color:#999;">Placed: ${escHtml(created)}</div>
+      <div class="items-block">${escHtml(itemsBlock)}</div>
+      ${o.notes ? `<div class="notes-block"><b>Notes:</b><br>${escHtml(o.notes)}</div>` : ''}
+      <div class="modal-status-row">
+        <button class="set-pending${status==='pending'?' active':''}" data-new-status="pending">Pending</button>
+        <button class="set-prepping${status==='prepping'?' active':''}" data-new-status="prepping">Prepping</button>
+        <button class="set-complete${status==='complete'?' active':''}" data-new-status="complete">Complete</button>
+      </div>
+      <button class="modal-close" id="modal-close-btn">Close</button>`;
+    $$('#modal-inner [data-new-status]').forEach(b => {
+      b.addEventListener('click', () => { updateOrderStatus(o.id, b.dataset.newStatus); });
+    });
+    $('#modal-close-btn').addEventListener('click', () => {
+      $('#order-modal').classList.remove('show');
+      state.selectedOrder = null;
+    });
+  }
+
+  // ============================================================
+  // RECIPES
+  // ============================================================
+  function renderRecipes() {
+    if (state.menuItems.length === 0) {
+      $('#recipe-list').innerHTML = `<div class="loading">Loading…</div>`;
+      return;
+    }
+    const q = ($('#recipe-search').value || '').toLowerCase().trim();
+    const activeFilter = $('#recipe-filter button.active')?.dataset.cat || 'all';
+    const filtered = state.menuItems.filter(r => {
+      if (activeFilter !== 'all' && r.category !== activeFilter) return false;
+      if (!q) return true;
+      return (r.name.toLowerCase().includes(q) || (r.recipe||'').toLowerCase().includes(q));
+    });
+    if (filtered.length === 0) {
+      $('#recipe-list').innerHTML = `<div class="empty-msg">No recipes match.</div>`;
+      return;
+    }
+    $('#recipe-list').innerHTML = filtered.map(r => `
+      <div class="recipe-card">
+        <h4>${escHtml(r.name)}</h4>
+        <div class="cat">▲ ${escHtml(r.code)} · ${escHtml(r.category.replace('-',' ').toUpperCase())}${r.available === false ? ' · UNAVAILABLE' : ''}</div>
+        <div class="text">${escHtml(r.recipe || '(No recipe set)')}</div>
+      </div>
+    `).join('');
+  }
+
+  // ============================================================
+  // STAFF (detailed instructions with image placeholders)
+  // ============================================================
+  function renderStaff() {
+    if (state.menuItems.length === 0) {
+      $('#staff-list').innerHTML = `<div class="loading">Loading…</div>`;
+      return;
+    }
+    const q = ($('#staff-search').value || '').toLowerCase().trim();
+    const filtered = state.menuItems.filter(r => {
+      if (!q) return true;
+      const inst = STAFF_INSTRUCTIONS[r.code];
+      const stepText = inst ? inst.steps.join(' ').toLowerCase() : '';
+      return r.name.toLowerCase().includes(q) || (r.code||'').toLowerCase().includes(q) || stepText.includes(q);
+    });
+    if (filtered.length === 0) {
+      $('#staff-list').innerHTML = `<div class="empty-msg">No items match.</div>`;
+      return;
+    }
+    $('#staff-list').innerHTML = filtered.map(item => {
+      const inst = STAFF_INSTRUCTIONS[item.code];
+      const catLabel = item.category.replace('-',' ').toUpperCase();
+      if (!inst) {
+        return `<div class="staff-card">
+          <div class="img-slot"></div>
+          <div class="body">
+            <div class="code-row">
+              <span class="code">▲ ${escHtml(item.code)}</span>
+              <span class="cat-pill">${escHtml(catLabel)}</span>
+            </div>
+            <h4>${escHtml(item.name)}</h4>
+            <div class="tip"><b>NO STAFF INSTRUCTIONS</b>Add instructions to STAFF_INSTRUCTIONS in admin/index.html for this item code.</div>
+          </div>
+        </div>`;
+      }
+      return `<div class="staff-card">
+        <div class="img-slot"></div>
+        <div class="body">
+          <div class="code-row">
+            <span class="code">▲ ${escHtml(item.code)}</span>
+            <span class="cat-pill">${escHtml(catLabel)}</span>
+          </div>
+          <h4>${escHtml(item.name)}</h4>
+          <div class="time-strip">
+            <span><b>Prep:</b> ${escHtml(inst.prep_time)}</span>
+            <span><b>Yields:</b> ${escHtml(inst.serves)}</span>
+          </div>
+          <div class="steps-h">▲ Step-By-Step</div>
+          <ol>
+            ${inst.steps.map(s => `<li>${escHtml(s)}</li>`).join('')}
+          </ol>
+          ${inst.tip ? `<div class="tip"><b>★ TIP</b>${escHtml(inst.tip)}</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ============================================================
+  // CUSTOMERS
+  // ============================================================
+  function renderCustomers() {
+    if (state.loading) { $('#customers-area').innerHTML = `<div class="loading">Loading…</div>`; return; }
+    const byPhone = {};
+    state.orders.forEach(o => {
+      const key = (o.customer_phone || '').replace(/\D/g, '');
+      if (!key) return;
+      if (!byPhone[key]) {
+        byPhone[key] = { name: o.customer_name || 'Unknown', phone: o.customer_phone || '—', orders: 0, spend: 0, lastDate: null, subscriber: false };
+      }
+      byPhone[key].orders++;
+      byPhone[key].spend += Number(o.total || 0);
+      if (!byPhone[key].lastDate || o.pickup_date > byPhone[key].lastDate) byPhone[key].lastDate = o.pickup_date;
+      if (o.subscription) byPhone[key].subscriber = true;
+      // Use most recent name
+      if (o.customer_name) byPhone[key].name = o.customer_name;
+    });
+    const customers = Object.values(byPhone).sort((a,b) => b.spend - a.spend);
+    if (customers.length === 0) {
+      $('#customers-area').innerHTML = `<div class="empty-msg">No customers yet.</div>`;
+      return;
+    }
+    $('#customers-area').innerHTML = `
+      <p style="font-family: 'Roboto Mono', monospace; font-size: 12px; color: #888; letter-spacing: 0.1em; margin-bottom: 12px;">▲ ${customers.length} unique customer${customers.length===1?'':'s'} · sorted by lifetime spend</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Name</th><th>Phone</th><th>Orders</th><th>Spend</th><th>Last Order</th><th>Sub?</th></tr>
+        </thead>
+        <tbody>
+          ${customers.map(c => `
+            <tr>
+              <td>${escHtml(c.name)}</td>
+              <td><span class="mono">${escHtml(c.phone)}</span></td>
+              <td><span class="mono">${c.orders}</span></td>
+              <td><span class="mono">$${c.spend.toFixed(0)}</span></td>
+              <td><span class="mono">${c.lastDate ? parseISO(c.lastDate).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'2-digit'}) : '—'}</span></td>
+              <td>${c.subscriber ? '<span class="mono" style="color:#4ade80;">YES</span>' : '<span class="mono" style="color:#666;">—</span>'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  // ============================================================
+  // MENU MGMT
+  // ============================================================
+  function renderMenuMgmt() {
+    if (state.loading) { $('#menu-mgmt-area').innerHTML = `<div class="loading">Loading…</div>`; return; }
+    $('#menu-mgmt-area').innerHTML = `<div class="menu-mgmt-grid">
+      ${state.menuItems.map(item => `
+        <div class="menu-mgmt-card" data-code="${item.code}">
+          <div class="code">▲ ${item.code} · ${item.category.replace('-',' ').toUpperCase()}</div>
+          <h4>${escHtml(item.name)}</h4>
+          <label>Name</label>
+          <input type="text" class="mm-name" value="${escHtml(item.name)}">
+          <label>Description</label>
+          <textarea class="mm-desc">${escHtml(item.description || '')}</textarea>
+          <label>Price ($)</label>
+          <input type="number" step="1" min="0" class="mm-price" value="${Number(item.price).toFixed(0)}">
+          <label class="avail-toggle">
+            <input type="checkbox" class="mm-avail" ${item.available === false ? '' : 'checked'}>
+            <span class="label">Available for ordering</span>
+          </label>
+          <div class="save-row">
+            <span class="save-status"></span>
+            <button class="save-btn">Save</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+
+    $$('.menu-mgmt-card').forEach(card => {
+      const btn = card.querySelector('.save-btn');
+      const status = card.querySelector('.save-status');
+      btn.addEventListener('click', async () => {
+        const code = card.dataset.code;
+        const updates = {
+          name: card.querySelector('.mm-name').value.trim(),
+          description: card.querySelector('.mm-desc').value.trim(),
+          price: Number(card.querySelector('.mm-price').value),
+          available: card.querySelector('.mm-avail').checked,
+          category: state.menuItems.find(i => i.code === code).category
+        };
+        btn.disabled = true;
+        status.textContent = 'Saving…';
+        status.style.color = '#ffcc00';
+        try {
+          await saveMenuItem(code, updates);
+          status.textContent = '✓ Saved';
+          status.style.color = '#4ade80';
+          setTimeout(() => { status.textContent = ''; }, 3000);
+        } catch(e) {
+          status.textContent = '✗ ' + e.message;
+          status.style.color = '#ff8080';
+        }
+        btn.disabled = false;
+      });
+    });
+  }
+
+  // ============================================================
+  // ANALYTICS
+  // ============================================================
+  function renderAnalytics() {
+    if (state.loading) { $('#analytics-area').innerHTML = `<div class="loading">Loading…</div>`; return; }
+
+    const now = new Date();
+    let ordersInPeriod;
+    if (state.analyticsPeriod === 'day') {
+      const iso = toISO(now);
+      ordersInPeriod = state.orders.filter(o => o.pickup_date === iso);
+    } else if (state.analyticsPeriod === 'week') {
+      const start = startOfWeek(now);
+      const end = addDays(start, 7);
+      ordersInPeriod = state.orders.filter(o => {
+        const d = parseISO(o.pickup_date);
+        return d >= start && d < end;
+      });
+    } else if (state.analyticsPeriod === 'month') {
+      const mStart = toISO(startOfMonth(now));
+      const mEnd = toISO(endOfMonth(now));
+      ordersInPeriod = state.orders.filter(o => o.pickup_date >= mStart && o.pickup_date <= mEnd);
+    } else {
+      ordersInPeriod = [...state.orders];
+    }
+
+    const totalRevenue = ordersInPeriod.reduce((s,o) => s + Number(o.total||0), 0);
+    const totalOrders = ordersInPeriod.length;
+    const avgOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+    const uniqueCustomers = new Set(ordersInPeriod.map(o => (o.customer_phone||'').replace(/\D/g,''))).size;
+
+    // Top items
+    const itemCounts = {};
+    ordersInPeriod.forEach(o => {
+      const items = Array.isArray(o.items) ? o.items : [];
+      items.forEach(it => {
+        const key = it.name || it.code;
+        if (!key) return;
+        itemCounts[key] = (itemCounts[key] || 0) + (it.qty || 1);
+      });
+    });
+    const topItems = Object.entries(itemCounts).sort((a,b) => b[1]-a[1]).slice(0, 5);
+
+    // Revenue by day (last 7 days or last 30 days depending on period)
+    let chartDays;
+    if (state.analyticsPeriod === 'day') chartDays = 1;
+    else if (state.analyticsPeriod === 'week') chartDays = 7;
+    else if (state.analyticsPeriod === 'month') chartDays = 30;
+    else chartDays = 30;
+
+    const chartData = [];
+    for (let i = chartDays - 1; i >= 0; i--) {
+      const d = addDays(now, -i);
+      const iso = toISO(d);
+      const rev = state.orders.filter(o => o.pickup_date === iso).reduce((s,o) => s + Number(o.total||0), 0);
+      chartData.push({ date: d, iso, rev });
+    }
+    const maxRev = Math.max(1, ...chartData.map(x => x.rev));
+
+    $('#analytics-area').innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Revenue</div>
+          <div class="stat-value">$${totalRevenue.toFixed(0)}</div>
+          <div class="stat-sub">${totalOrders} order${totalOrders===1?'':'s'}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg Order</div>
+          <div class="stat-value">$${avgOrder.toFixed(0)}</div>
+          <div class="stat-sub">per customer</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Customers</div>
+          <div class="stat-value">${uniqueCustomers}</div>
+          <div class="stat-sub">unique</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Orders</div>
+          <div class="stat-value">${totalOrders}</div>
+          <div class="stat-sub">total</div>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-title">Revenue (Last ${chartDays} Day${chartDays===1?'':'s'})</div>
+        <div class="bar-chart">
+          ${chartData.map(d => {
+            const h = (d.rev / maxRev) * 100;
+            const dateLbl = d.date.toLocaleDateString('en-US', { month:'numeric', day:'numeric' });
+            return `<div class="bar-col">
+              <div class="bar-value">$${d.rev.toFixed(0)}</div>
+              <div class="bar" style="height: ${Math.max(2, h)}%;" title="$${d.rev.toFixed(0)} on ${dateLbl}"></div>
+              <div class="bar-label">${dateLbl}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-title">Top Items</div>
+        ${topItems.length === 0 ? '<div class="empty-msg">No items sold in this period.</div>' : `
+          <div class="top-items">
+            ${topItems.map(([name, count], i) => `
+              <div class="top-item-row">
+                <span class="rank">#${i+1}</span>
+                <span class="name">${escHtml(name)}</span>
+                <span class="count">${count} sold</span>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+    `;
+  }
+
+  // ============================================================
+  // SETTINGS
+  // ============================================================
+  function renderSettings() {
+    if (state.loading) { $('#settings-slots').innerHTML = `<div class="loading">Loading…</div>`; return; }
+
+    // Schedule fields
+    $('#sched-start').value = state.schedule.start_time;
+    $('#sched-end').value = state.schedule.end_time;
+    $('#sched-dur').value = String(state.schedule.slot_minutes);
+    $('#sched-cap').value = String(state.schedule.default_capacity);
+
+    // Wire schedule field changes to state
+    $('#sched-start').oninput = (e) => { state.schedule.start_time = e.target.value || '05:00'; };
+    $('#sched-end').oninput = (e) => { state.schedule.end_time = e.target.value || '10:00'; };
+    $('#sched-dur').onchange = (e) => { state.schedule.slot_minutes = parseInt(e.target.value, 10); renderSettingsSlotGrid(); };
+    $('#sched-cap').onchange = (e) => { state.schedule.default_capacity = parseInt(e.target.value, 10); };
+
+    // Days open
+    const dayLabels = [
+      { idx: 0, lbl: 'Sun' },
+      { idx: 1, lbl: 'Mon' },
+      { idx: 2, lbl: 'Tue' },
+      { idx: 3, lbl: 'Wed' },
+      { idx: 4, lbl: 'Thu' },
+      { idx: 5, lbl: 'Fri' },
+      { idx: 6, lbl: 'Sat' }
+    ];
+    const openSet = new Set(state.schedule.days_open);
+    $('#days-open-row').innerHTML = dayLabels.map(d => {
+      const checked = openSet.has(d.idx);
+      return `<label class="day-chk${checked ? ' checked' : ''}" data-day="${d.idx}">
+        <input type="checkbox" ${checked ? 'checked' : ''}>
+        <span>${d.lbl}</span>
+      </label>`;
+    }).join('');
+    $$('#days-open-row .day-chk').forEach(el => {
+      el.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        const day = parseInt(el.dataset.day, 10);
+        const idx = state.schedule.days_open.indexOf(day);
+        if (idx === -1) state.schedule.days_open.push(day);
+        else state.schedule.days_open.splice(idx, 1);
+        state.schedule.days_open.sort((a,b) => a-b);
+        el.classList.toggle('checked');
+        el.querySelector('input').checked = !el.querySelector('input').checked;
+      });
+    });
+
+    // Closed days
+    renderClosedDaysList();
+    // Set min date on add input to tomorrow
+    const tomorrow = addDays(new Date(), 1);
+    const tomorrowIso = toISO(tomorrow);
+    $('#closed-add-input').min = tomorrowIso;
+    $('#closed-add-btn').onclick = async () => {
+      const val = $('#closed-add-input').value;
+      if (!val) { alert('Pick a date first.'); return; }
+      if (state.closedDays.has(val)) { alert('That date is already marked closed.'); return; }
+      await handleAddClosedDay(val);
+      $('#closed-add-input').value = '';
+    };
+
+    // Range form
+    const rsInput = $('#range-start-input');
+    const reInput = $('#range-end-input');
+    const indefCb = $('#range-indef-cb');
+    rsInput.min = tomorrowIso;
+    reInput.min = tomorrowIso;
+    indefCb.checked = false;
+    indefCb.onchange = () => {
+      reInput.disabled = indefCb.checked;
+      if (indefCb.checked) reInput.value = '';
+    };
+    rsInput.onchange = () => {
+      // End date must be on or after start
+      if (rsInput.value) reInput.min = rsInput.value;
+    };
+    $('#range-add-btn').onclick = async () => {
+      const start = rsInput.value;
+      const end = indefCb.checked ? null : reInput.value;
+      if (!start) { alert('Pick a start date.'); return; }
+      if (!indefCb.checked && !end) { alert('Pick an end date or check Indefinite.'); return; }
+      await handleAddClosedRange(start, end);
+      rsInput.value = '';
+      reInput.value = '';
+      reInput.disabled = false;
+      indefCb.checked = false;
+    };
+
+    // Per-slot capacity grid
+    renderSettingsSlotGrid();
+  }
+
+  function renderClosedDaysList() {
+    const singleDays = Array.from(state.closedDays).sort();
+    const ranges = state.closedRanges || [];
+    const el = $('#closed-days-list');
+
+    if (singleDays.length === 0 && ranges.length === 0) {
+      el.innerHTML = `<div class="closed-days-empty">— No closed days set —</div>`;
+      return;
+    }
+
+    let html = '';
+
+    // Render ranges first (more visually prominent)
+    ranges.forEach(r => {
+      const startD = parseISO(r.start_date);
+      const startLbl = startD.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      let endLbl, dayCount, indef = false;
+      if (r.end_date) {
+        const endD = parseISO(r.end_date);
+        endLbl = endD.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        // Inclusive day count
+        const ms = endD - startD;
+        dayCount = Math.round(ms / 86400000) + 1;
+      } else {
+        endLbl = 'Indefinite';
+        indef = true;
+      }
+      html += `<span class="closed-day-chip range-chip${indef ? ' indef' : ''}">
+        <span class="range-icon">⟷</span>
+        <span>${escHtml(startLbl)} — ${escHtml(endLbl)}${dayCount ? ` <span style="opacity:0.6;">(${dayCount} day${dayCount===1?'':'s'})</span>` : ''}</span>
+        <span class="remove-x" data-range-id="${r.id}">✕</span>
+      </span>`;
+    });
+
+    // Render single days
+    singleDays.forEach(iso => {
+      const d = parseISO(iso);
+      const lbl = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+      html += `<span class="closed-day-chip">
+        <span>${escHtml(lbl)}</span>
+        <span class="remove-x" data-iso="${iso}">✕</span>
+      </span>`;
+    });
+
+    el.innerHTML = html;
+    $$('#closed-days-list .remove-x[data-iso]').forEach(elx => {
+      elx.addEventListener('click', () => handleRemoveClosedDay(elx.dataset.iso));
+    });
+    $$('#closed-days-list .remove-x[data-range-id]').forEach(elx => {
+      elx.addEventListener('click', () => {
+        if (confirm('Remove this closed range? Any orders blocked during this period will become available again.')) {
+          handleRemoveClosedRange(elx.dataset.rangeId);
+        }
+      });
+    });
+  }
+
+  function renderSettingsSlotGrid() {
+    // Use preview slots based on current in-state schedule (not yet saved)
+    const previewSlots = generateSlots(state.schedule);
+    $('#settings-slots').innerHTML = previewSlots.map(s => {
+      const cap = state.slotSettings[s.label] !== undefined ? state.slotSettings[s.label] : state.schedule.default_capacity;
+      return `<div class="slot-setting" data-slot="${escHtml(s.label)}">
+        <div class="slot-time">${escHtml(s.label)}</div>
+        <div class="cap-input">
+          <button type="button" class="cap-btn cap-minus" ${cap <= 1 ? 'disabled' : ''}>−</button>
+          <span class="cap-val">${cap}</span>
+          <button type="button" class="cap-btn cap-plus" ${cap >= MAX_CAPACITY ? 'disabled' : ''}>+</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    $$('#settings-slots .slot-setting').forEach(el => {
+      const slot = el.dataset.slot;
+      el.querySelector('.cap-plus').addEventListener('click', () => {
+        const cur = state.slotSettings[slot] !== undefined ? state.slotSettings[slot] : state.schedule.default_capacity;
+        if (cur < MAX_CAPACITY) {
+          state.slotSettings[slot] = cur + 1;
+          renderSettingsSlotGrid();
+        }
+      });
+      el.querySelector('.cap-minus').addEventListener('click', () => {
+        const cur = state.slotSettings[slot] !== undefined ? state.slotSettings[slot] : state.schedule.default_capacity;
+        if (cur > 1) {
+          state.slotSettings[slot] = cur - 1;
+          renderSettingsSlotGrid();
+        }
+      });
+    });
+  }
+
+  // INIT
+  setupLogin();
+</script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menu — Perfect Timing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Oswald:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; }
+  body {
+    min-height: 100vh;
+    background: #1a1a1a;
+    color: #f5f1e8;
+    font-family: 'Oswald', sans-serif;
+  }
+
+  .hazard-top {
+    height: 14px;
+    background: repeating-linear-gradient(135deg, #ffcc00 0 20px, #1a1a1a 20px 40px);
+    border-bottom: 3px solid #000;
+  }
+  .site-header {
+    background: #0f0f0f;
+    border-bottom: 1px solid #333;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .brand {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 38px;
+    color: #f5f1e8;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .brand .accent { color: #ffcc00; }
+  .nav { display: flex; gap: 4px; }
+  .nav a {
+    padding: 8px 16px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+    color: #b8b2a2;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+  .nav a:hover { color: #ffcc00; border-color: #333; }
+  .nav a.active { color: #000; background: #ffcc00; border-color: #000; font-weight: 700; }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 32px 120px;
+  }
+
+  .hero {
+    margin-bottom: 48px;
+  }
+  .hero .kicker {
+    display: inline-block;
+    background: #ffcc00;
+    color: #000;
+    padding: 5px 14px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    margin-bottom: 20px;
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0 #000;
+  }
+  .hero h1 {
+    font-family: 'Staatliches', sans-serif;
+    font-size: clamp(52px, 10vw, 120px);
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+  .hero h1 .accent { color: #ffcc00; }
+  .hero .tagline {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 13px;
+    max-width: 640px;
+    color: #b8b2a2;
+    border-left: 4px solid #ffcc00;
+    padding-left: 16px;
+    line-height: 1.6;
+    margin-top: 20px;
+  }
+
+  .order-cta {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 16px 28px;
+    background: #ffcc00;
+    color: #000;
+    border: 2px solid #000;
+    font-family: 'Staatliches', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 4px 4px 0 #000;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .order-cta:hover {
+    transform: translate(-2px,-2px);
+    box-shadow: 6px 6px 0 #000;
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 2px solid #ffcc00;
+    padding-bottom: 12px;
+    margin: 48px 0 24px;
+    flex-wrap: wrap;
+  }
+  .cat-header .num {
+    font-family: 'Roboto Mono', monospace;
+    color: #ffcc00;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+  }
+  .cat-header h2 {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 38px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .cat-header .tag {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 0.15em;
+  }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .item {
+    background: #252525;
+    border: 2px solid #333;
+    padding: 22px;
+  }
+  .item-code {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+    color: #ffcc00;
+    letter-spacing: 0.2em;
+    margin-bottom: 6px;
+  }
+  .item-name {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 24px;
+    line-height: 1;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .item-desc {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    color: #b8b2a2;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .item-price {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    color: #ffcc00;
+  }
+
+  .note-card {
+    background: #252525;
+    border: 2px dashed #ffcc00;
+    padding: 20px 24px;
+    margin: 48px 0 24px;
+  }
+  .note-card h3 {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 24px;
+    color: #ffcc00;
+    margin-bottom: 10px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .note-card p {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    color: #d5cfbe;
+    line-height: 1.6;
+  }
+
+  .extras-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .extras-list .ex {
+    padding: 8px 12px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    color: #f5f1e8;
+    letter-spacing: 0.05em;
+  }
+  .extras-list .ex .tag {
+    color: #ffcc00;
+    font-size: 10px;
+    margin-left: 6px;
+  }
+
+  .site-footer {
+    background: #0f0f0f;
+    border-top: 2px solid #ffcc00;
+    padding: 40px 32px 24px;
+    margin-top: 80px;
+    color: #b8b2a2;
+  }
+  .footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 32px;
+  }
+  .footer-col h4 {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+    color: #ffcc00;
+    letter-spacing: 0.2em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .footer-col p, .footer-col a {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: inherit;
+    text-decoration: none;
+    display: block;
+  }
+  .footer-col a:hover { color: #ffcc00; }
+  .footer-brand h3 {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 28px;
+    color: #f5f1e8;
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .socials { display: flex; gap: 8px; margin-top: 10px; }
+  .socials a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #ffcc00;
+    color: #ffcc00;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .socials a:hover { background: #ffcc00; color: #000; }
+  .footer-bottom {
+    max-width: 1400px;
+    margin: 28px auto 0;
+    padding-top: 18px;
+    border-top: 1px solid #333;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: #666;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  @media (max-width: 760px) { .footer-inner { grid-template-columns: 1fr; } }
+
+  /* Floating NealMedia button */
+  .nealmedia-float {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1500;
+    padding: 0;
+    transition: transform 0.2s;
+    display: block;
+  }
+  .nealmedia-float:hover { transform: scale(1.1); }
+  .nealmedia-float img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  @media (max-width: 540px) {
+    .nealmedia-float { width: 50px; height: 50px; bottom: 14px; left: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="hazard-top"></div>
+<header class="site-header">
+  <a href="/" class="brand">PERFECT <span class="accent">TIMING</span></a>
+  <nav class="nav">
+    <a href="/">Order</a>
+    <a href="/menu.html" class="active">Menu</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <span class="kicker">◆ FULL MENU · NORTH POLE AK</span>
+    <h1>The <span class="accent">Menu</span></h1>
+    <p class="tagline">Everything we make, all in one place. Every meal = 1 food + 1 drink for $12 (food only $10, drink only $4). Pay cash to save $2 per meal.</p>
+    <a href="/" class="order-cta">Order Now →</a>
+  </section>
+
+  <!-- DRINKS -->
+  <div class="cat-header">
+    <span class="num">SECTION 01 //</span>
+    <h2>Drinks</h2>
+    <span class="tag">HOT · ICED · COCOA</span>
+  </div>
+  <div class="menu-grid">
+    <div class="item">
+      <div class="item-code">▲ C-01</div>
+      <div class="item-name">Hot Coffee</div>
+      <div class="item-desc">Fresh brewed drip coffee, 16 oz. Customize with cream or sweetener when you order.</div>
+    </div>
+    <div class="item">
+      <div class="item-code">▲ C-02</div>
+      <div class="item-name">Iced Coffee</div>
+      <div class="item-desc">Strong drip coffee over ice, 20 oz. Customize with cream or sweetener when you order.</div>
+    </div>
+    <div class="item">
+      <div class="item-code">▲ C-03</div>
+      <div class="item-name">Hot Cocoa</div>
+      <div class="item-desc">Rich chocolate cocoa. Customize with creamer or half &amp; half for extra smoothness.</div>
+    </div>
+  </div>
+
+  <div class="note-card">
+    <h3>Customize Your Drink</h3>
+    <p>On any drink, you can add any of these at no extra charge. Each unit = 1 tablespoon (up to 12). Whipped cream is on/off.</p>
+    <div class="extras-list">
+      <div class="ex">Creamer <span class="tag">0–12 tbsp</span></div>
+      <div class="ex">Half &amp; Half <span class="tag">0–12 tbsp</span></div>
+      <div class="ex">Sugar <span class="tag">0–12 tbsp</span></div>
+      <div class="ex">Agave <span class="tag">0–12 tbsp</span></div>
+      <div class="ex">Honey <span class="tag">0–12 tbsp</span></div>
+      <div class="ex">Extra Ice <span class="tag">0–12 scoops</span></div>
+      <div class="ex">Whipped Cream <span class="tag">on / off</span></div>
+    </div>
+  </div>
+
+  <!-- FOOD -->
+  <div class="cat-header">
+    <span class="num">SECTION 02 //</span>
+    <h2>Food</h2>
+    <span class="tag">FROM-SCRATCH BREAKFAST</span>
+  </div>
+  <div class="menu-grid">
+    <div class="item">
+      <div class="item-code">▲ A-01</div>
+      <div class="item-name">Air Fryer Bacon &amp; Egg Bites</div>
+      <div class="item-desc">Crispy bacon + fluffy egg cups. Protein-packed breakfast.</div>
+    </div>
+    <div class="item">
+      <div class="item-code">▲ A-02</div>
+      <div class="item-name">Air Fryer Breakfast Potatoes</div>
+      <div class="item-desc">Golden crispy potatoes with peppers and onions.</div>
+    </div>
+    <div class="item">
+      <div class="item-code">▲ A-03</div>
+      <div class="item-name">Air Fryer French Toast Sticks</div>
+      <div class="item-desc">Cinnamon-dusted, crispy outside, soft inside. Served with syrup.</div>
+    </div>
+    <div class="item">
+      <div class="item-code">▲ S-02</div>
+      <div class="item-name">Breakfast Casserole Cup</div>
+      <div class="item-desc">Eggs, sausage, hash browns, cheddar. Hearty and filling.</div>
+    </div>
+    <div class="item">
+      <div class="item-code">▲ S-03</div>
+      <div class="item-name">Cinnamon Roll Bake</div>
+      <div class="item-desc">Soft cinnamon roll pieces with cream cheese glaze.</div>
+    </div>
+    <div class="item">
+      <div class="item-code">▲ M-01</div>
+      <div class="item-name">Egg &amp; Cheese Mug</div>
+      <div class="item-desc">Fluffy scrambled eggs + melted cheddar in a mug. Hot and ready in 2 minutes.</div>
+    </div>
+    <div class="item">
+      <div class="item-code">▲ M-02</div>
+      <div class="item-name">Loaded Oatmeal Bowl</div>
+      <div class="item-desc">Hot oats with brown sugar, banana, and cinnamon.</div>
+    </div>
+    <div class="item">
+      <div class="item-code">▲ S-01</div>
+      <div class="item-name">Overnight Steel-Cut Oats</div>
+      <div class="item-desc">Creamy oats, cinnamon, apples, pecans. Prepped the night before.</div>
+    </div>
+    <div class="item">
+      <div class="item-code">▲ M-03</div>
+      <div class="item-name">PB Banana Toast Melt</div>
+      <div class="item-desc">Toasted bread, peanut butter, banana, drizzle of honey.</div>
+    </div>
+  </div>
+
+  <!-- CTA BOTTOM -->
+  <div style="text-align:center;margin-top:60px;">
+    <a href="/" class="order-cta">Ready To Order? Let's Go →</a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col footer-brand">
+      <h3>PERFECT TIMING</h3>
+      <p>[TAGLINE — Coffee and breakfast for the folks who start before sunrise. Order ahead, pick your window, get on with your day.]</p>
+      <div class="socials">
+        <a href="[INSTAGRAM URL]" aria-label="Instagram">IG</a>
+        <a href="[FACEBOOK URL]" aria-label="Facebook">FB</a>
+        <a href="[TIKTOK URL]" aria-label="TikTok">TT</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Visit</h4>
+      <p>[STREET ADDRESS]<br>[CITY, STATE ZIP]</p>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="tel:[PHONE]">[PHONE]</a>
+      <a href="mailto:[EMAIL]">[EMAIL]</a>
+    </div>
+    <div class="footer-col">
+      <h4>Hours</h4>
+      <p>Mon – Fri<br>5:00 AM – 10:00 AM</p>
+      <p style="margin-top:8px;">Sat – Sun<br>[WEEKEND HOURS]</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Perfect Timing</span>
+    <span>perfecttiming.space</span>
+  </div>
+</footer>
+
+<a href="https://NealMedia.app" target="_blank" rel="noopener noreferrer" class="nealmedia-float" aria-label="Visit NealMedia.app">
+  <img src="/assets/nealmedia-logo.png" alt="NealMedia">
+</a>
+
+</body>
+</html>

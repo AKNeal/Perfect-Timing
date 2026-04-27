@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Perfect Timing — Order Ahead</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Oswald:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { }
+  body { min-height: 100vh; background: #1a1a1a; color: #f5f1e8; font-family: 'Oswald', sans-serif; }
+
+  .hazard-top { height: 14px; background: repeating-linear-gradient(135deg, #ffcc00 0 20px, #1a1a1a 20px 40px); border-bottom: 3px solid #000; }
+  .site-header { background: #0f0f0f; border-bottom: 1px solid #333; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 12px; }
+  .brand {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 38px;
+    color: #f5f1e8;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .brand .accent { color: #ffcc00; }
+  .nav { display: flex; gap: 4px; }
+  .nav a { padding: 8px 16px; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #b8b2a2; text-decoration: none; text-transform: uppercase; letter-spacing: 0.15em; border: 1px solid transparent; transition: all 0.15s; }
+  .nav a:hover { color: #ffcc00; border-color: #333; }
+  .nav a.active { color: #000; background: #ffcc00; border-color: #000; font-weight: 700; }
+
+  .main-wrap { max-width: 1400px; margin: 0 auto; padding: 40px 32px 120px; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 40px; align-items: start; }
+
+  .hero { grid-column: 1; margin-bottom: 12px; }
+  .how-strip { grid-column: 1; background: rgba(26, 26, 26, 0.92); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: none; padding: 14px 18px; margin-bottom: 32px; position: sticky; top: 100px; z-index: 50; box-shadow: 0 6px 16px rgba(0,0,0,0.5); }
+  .hero .kicker { display: inline-block; background: #ffcc00; color: #000; padding: 5px 14px; font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; margin-bottom: 20px; border: 2px solid #000; box-shadow: 4px 4px 0 #000; }
+  .hero h1 { font-family: 'Staatliches', sans-serif; font-size: clamp(36px, 5.5vw, 68px); line-height: 0.95; letter-spacing: -0.01em; margin-bottom: 16px; text-transform: uppercase; }
+  .hero h1 .accent { color: #ffcc00; }
+  .hero .tagline { font-family: 'Roboto Mono', monospace; font-size: 13px; max-width: 560px; color: #b8b2a2; border-left: 4px solid #ffcc00; padding-left: 16px; line-height: 1.6; }
+  .hero .usual-line { margin-top: 14px; padding: 14px 16px; background: #252525; border: 1px dashed #ffcc00; max-width: 560px; font-family: 'Roboto Mono', monospace; font-size: 12px; color: #f5f1e8; line-height: 1.6; letter-spacing: 0.02em; }
+  .hero .usual-line b { color: #ffcc00; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+
+  .how-title { font-family: 'Staatliches', sans-serif; font-size: 22px; color: #ffcc00; letter-spacing: 0.05em; margin-bottom: 22px; text-transform: uppercase; }
+  .how-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .how-step {
+    background: #000;
+    border-radius: 22px;
+    padding: 26px 22px 22px;
+    position: relative;
+    overflow: visible;
+    transition: all 0.2s;
+  }
+  .how-step-tag {
+    position: absolute;
+    top: -14px;
+    left: 14px;
+    background: repeating-linear-gradient(135deg, #ffcc00 0 10px, #1a1a1a 10px 20px);
+    border-radius: 999px;
+    padding: 3px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .how-step-tag-inner {
+    background: #000;
+    padding: 4px 14px 4px 10px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .how-led {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #ff3030;
+    box-shadow: 0 0 8px rgba(255,48,48,0.7);
+    flex-shrink: 0;
+  }
+  .how-step.done .how-led { background: #4ade80; box-shadow: 0 0 10px rgba(74,222,128,0.7); }
+  .how-step.done .how-led-label { color: #4ade80; }
+  .how-step .num {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    color: #ffcc00;
+    line-height: 1;
+    margin-bottom: 6px;
+    margin-top: 8px;
+    letter-spacing: 0.01em;
+  }
+  .how-step .label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: 0;
+  }
+  .how-step .sub {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+    color: #888;
+    margin-top: 10px;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 700px) { .how-steps { grid-template-columns: 1fr; } }
+
+  .order-main { grid-column: 1; min-width: 0; }
+  .step-section { margin-bottom: 40px; scroll-margin-top: 100px; }
+  .step-section.locked { opacity: 0.4; pointer-events: none; filter: grayscale(0.5); }
+  .step-header { display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #ffcc00; padding-bottom: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .step-header .step-num { font-family: 'Roboto Mono', monospace; color: #ffcc00; font-size: 13px; font-weight: 700; letter-spacing: 0.15em; }
+  .step-header h2 { font-family: 'Staatliches', sans-serif; font-size: 38px; letter-spacing: 0.03em; text-transform: uppercase; }
+  .step-header .done-badge { margin-left: auto; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #4ade80; letter-spacing: 0.15em; }
+
+  /* 5-day date picker */
+  .date-block { background: #252525; border: 2px solid #333; padding: 24px; }
+  .date-block .block-label { font-family: 'Roboto Mono', monospace; color: #ffcc00; font-size: 11px; letter-spacing: 0.15em; margin-bottom: 12px; text-transform: uppercase; }
+  .date-picker-row { display: flex; align-items: stretch; gap: 10px; }
+  .date-arrow { padding: 0 14px; background: #1a1a1a; border: 2px solid #444; color: #ffcc00; font-family: 'Roboto Mono', monospace; font-size: 18px; font-weight: 700; cursor: pointer; min-width: 46px; }
+  .date-arrow:hover:not(:disabled) { border-color: #ffcc00; background: #222; }
+  .date-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+  .date-cards { flex: 1; display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; min-width: 0; }
+  .date-card { background: #1a1a1a; border: 2px solid #333; padding: 14px 8px; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .date-card:hover { border-color: #ffcc00; background: #222; }
+  .date-card.selected { background: #ffcc00; color: #000; border-color: #000; }
+  .date-card .weekday { font-family: 'Roboto Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: #888; text-transform: uppercase; margin-bottom: 4px; }
+  .date-card.selected .weekday { color: #000; font-weight: 700; }
+  .date-card .day-num { font-family: 'Staatliches', sans-serif; font-size: 28px; line-height: 1; margin-bottom: 2px; }
+  .date-card .month { font-family: 'Roboto Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #666; text-transform: uppercase; }
+  .date-card.selected .month { color: #1a1a1a; }
+  .date-hint { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #888; margin-top: 10px; letter-spacing: 0.05em; }
+  .date-empty { padding: 24px; text-align: center; color: #888; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: 0.1em; border: 1px dashed #444; }
+  @media (max-width: 540px) {
+    .date-cards { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); }
+  }
+
+  /* Time slots */
+  .slots-wrap { margin-top: 20px; display: none; }
+  .slots-wrap.show { display: block; }
+  .slots-wrap-label { font-family: 'Roboto Mono', monospace; color: #ffcc00; font-size: 11px; letter-spacing: 0.15em; margin-bottom: 10px; text-transform: uppercase; }
+  .time-slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+  .slot { background: #1a1a1a; border: 2px solid #333; padding: 14px 10px; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .slot:hover { border-color: #ffcc00; background: #222; }
+  .slot.selected { background: #ffcc00; color: #000; border-color: #000; }
+  .slot-time { font-family: 'Staatliches', sans-serif; font-size: 22px; line-height: 1; margin-bottom: 2px; }
+  .slot-range { font-family: 'Roboto Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #888; }
+  .slot.selected .slot-range { color: #1a1a1a; }
+  .slot-empty-msg { padding: 20px; text-align: center; color: #888; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: 0.1em; border: 1px dashed #444; }
+
+  .menu-cat { margin-bottom: 28px; }
+  .cat-label { font-family: 'Staatliches', sans-serif; font-size: 22px; color: #f5f1e8; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #333; }
+  .cat-label .tag { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ffcc00; letter-spacing: 0.2em; margin-left: 10px; }
+  .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+  .item { background: #252525; border: 2px solid #333; padding: 20px; cursor: pointer; transition: all 0.15s; position: relative; }
+  .item:hover { border-color: #ffcc00; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #ffcc00; }
+  .item.selected { background: #ffcc00; color: #000; border-color: #000; box-shadow: 6px 6px 0 #000; }
+  .item.unavailable { opacity: 0.4; cursor: not-allowed; }
+  .item.unavailable:hover { transform: none; box-shadow: none; border-color: #333; }
+  .item-code { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ffcc00; letter-spacing: 0.2em; margin-bottom: 6px; }
+  .item.selected .item-code { color: #000; }
+  .item-name { font-family: 'Staatliches', sans-serif; font-size: 22px; line-height: 1; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.02em; }
+  .item-desc { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; color: #b8b2a2; line-height: 1.4; margin-bottom: 10px; }
+  .item.selected .item-desc { color: #1a1a1a; }
+  .item-price { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 16px; }
+  .item.item-info { cursor: default !important; border-style: dashed; }
+  .item.item-info:hover { transform: none !important; box-shadow: none !important; }
+
+  .continue-btn-wrap { margin-top: 24px; text-align: right; }
+  .continue-btn { padding: 16px 32px; background: #ffcc00; color: #000; border: 2px solid #000; font-family: 'Staatliches', sans-serif; font-size: 22px; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0 #000; transition: all 0.15s; }
+  .continue-btn:hover:not(:disabled) { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+  .continue-btn:disabled { background: #444; color: #888; cursor: not-allowed; box-shadow: none; }
+
+  /* Meal builder */
+  .meals-info { padding: 12px 16px; background: #1a1a1a; border-left: 3px solid #ffcc00; font-family: 'Roboto Mono', monospace; font-size: 12px; color: #b8b2a2; line-height: 1.6; letter-spacing: 0.02em; margin-bottom: 20px; }
+  .meals-info b { color: #ffcc00; }
+  .meal-block { background: #252525; border: 2px solid #333; padding: 20px; margin-bottom: 16px; }
+  .meal-block-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px dashed #444; flex-wrap: wrap; gap: 10px; }
+  .meal-block-head h3 { font-family: 'Staatliches', sans-serif; font-size: 24px; color: #ffcc00; letter-spacing: 0.05em; text-transform: uppercase; }
+  .meal-block-head .meal-price { font-family: 'Roboto Mono', monospace; font-size: 13px; color: #f5f1e8; font-weight: 700; letter-spacing: 0.1em; }
+  .meal-block-head .meal-price .strike { color: #888; text-decoration: line-through; margin-right: 8px; font-weight: 400; }
+  .meal-remove { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ff8080; cursor: pointer; letter-spacing: 0.15em; padding: 6px 10px; border: 1px solid #555; background: transparent; text-transform: uppercase; }
+  .meal-remove:hover { color: #fff; background: #ff5050; border-color: #ff5050; }
+  .meal-section-label { font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ffcc00; letter-spacing: 0.2em; margin: 12px 0 8px; text-transform: uppercase; }
+  .meal-picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .meal-pick-card { background: #1a1a1a; border: 2px solid #333; padding: 12px 10px; cursor: pointer; transition: all 0.15s; min-height: 60px; display: flex; flex-direction: column; justify-content: center; }
+  .meal-pick-card:hover { border-color: #ffcc00; background: #222; }
+  .meal-pick-card.selected { background: #ffcc00; color: #000; border-color: #000; font-weight: 700; }
+  .meal-pick-card .code { font-family: 'Roboto Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: #ffcc00; margin-bottom: 4px; }
+  .meal-pick-card.selected .code { color: #000; }
+  .meal-pick-card .name { font-family: 'Oswald', sans-serif; font-size: 14px; line-height: 1.2; }
+  .meal-pick-card .extras-summary { font-family: 'Roboto Mono', monospace; font-size: 9px; color: #888; margin-top: 4px; line-height: 1.3; letter-spacing: 0.05em; }
+  .meal-pick-card.selected .extras-summary { color: #1a1a1a; }
+  .meal-clear-btn { display: inline-block; margin-top: 8px; font-family: 'Roboto Mono', monospace; font-size: 10px; color: #888; cursor: pointer; letter-spacing: 0.1em; padding: 4px 0; }
+  .meal-clear-btn:hover { color: #ffcc00; }
+  .add-meal-wrap { margin-top: 8px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .add-meal-btn { padding: 12px 20px; background: #1a1a1a; border: 2px dashed #ffcc00; color: #ffcc00; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.15em; cursor: pointer; text-transform: uppercase; }
+  .add-meal-btn:hover:not(:disabled) { background: #ffcc00; color: #000; }
+  .add-meal-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .add-meal-note { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #888; letter-spacing: 0.1em; }
+  .cash-toggle { border-color: #4ade80; }
+  .cash-toggle .sub-toggle-text b { color: #4ade80; }
+  .cash-toggle input { accent-color: #4ade80; }
+
+  .submit-block { background: #252525; border: 2px solid #333; padding: 28px; }
+  .order-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .order-form .full { grid-column: 1 / -1; }
+  .order-form label { display: block; font-family: 'Roboto Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #ffcc00; text-transform: uppercase; margin-bottom: 6px; }
+  .order-form input, .order-form textarea { width: 100%; padding: 12px; background: #1a1a1a; border: 2px solid #333; color: #f5f1e8; font-family: 'Oswald', sans-serif; font-size: 14px; outline: none; }
+  .order-form input:focus, .order-form textarea:focus { border-color: #ffcc00; }
+  .order-form textarea { resize: vertical; min-height: 80px; }
+  .sub-toggle { margin-top: 8px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; background: #1a1a1a; border: 2px dashed #ffcc00; color: #ffcc00; }
+  .sub-toggle input { width: 20px; height: 20px; margin-top: 2px; accent-color: #ffcc00; cursor: pointer; flex-shrink: 0; }
+  .sub-toggle-text { font-family: 'Oswald', sans-serif; color: #f5f1e8; font-size: 13px; line-height: 1.5; }
+  .sub-toggle-text b { display: block; color: #ffcc00; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .payment-note { margin: 14px 0; padding: 10px 14px; background: #1a1a1a; border-left: 3px solid #ffcc00; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #888; letter-spacing: 0.05em; }
+  .submit-btn { width: 100%; padding: 20px; background: #ffcc00; color: #000; border: 2px solid #000; font-family: 'Staatliches', sans-serif; font-size: 26px; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0 #000; transition: all 0.15s; }
+  .submit-btn:hover:not(:disabled) { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #000; }
+  .submit-btn:disabled { background: #444; color: #888; cursor: not-allowed; box-shadow: none; }
+
+  .cart-col { grid-column: 2; position: sticky; top: 100px; align-self: start; max-height: calc(100vh - 120px); }
+  .cart { background: #252525; border: 2px solid #ffcc00; overflow: hidden; max-height: calc(100vh - 120px); display: flex; flex-direction: column; }
+  .cart-head { padding: 14px 18px; background: #1a1a1a; border-bottom: 2px solid #ffcc00; font-family: 'Staatliches', sans-serif; font-size: 22px; text-transform: uppercase; letter-spacing: 0.05em; display: flex; justify-content: space-between; align-items: baseline; flex-shrink: 0; }
+  .cart-head .count { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #ffcc00; letter-spacing: 0.15em; }
+  .cart-body { padding: 14px 18px; overflow-y: auto; flex: 1 1 auto; min-height: 0; }
+  .cart-empty { padding: 20px 0; text-align: center; color: #888; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: 0.1em; }
+  .cart-line { padding: 10px 0; border-bottom: 1px dashed #444; }
+  .cart-line:last-child { border-bottom: none; }
+  .cart-line .row1 { display: flex; justify-content: space-between; gap: 10px; font-family: 'Roboto Mono', monospace; font-size: 12px; }
+  .cart-line .name { color: #f5f1e8; }
+  .cart-line .price { color: #ffcc00; font-weight: 700; flex-shrink: 0; }
+  .cart-line .sub { font-family: 'Oswald', sans-serif; font-size: 12px; color: #888; margin-top: 4px; padding-left: 8px; border-left: 2px solid #333; white-space: pre-wrap; }
+  .cart-line .remove { display: inline-block; margin-top: 4px; font-family: 'Roboto Mono', monospace; font-size: 10px; color: #ff8080; cursor: pointer; letter-spacing: 0.1em; }
+  .cart-line .remove:hover { color: #ff5050; text-decoration: underline; }
+  .byoc-check { margin-top: 6px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #ffcc00; }
+  .byoc-check input { accent-color: #ffcc00; cursor: pointer; }
+  .cart-total { padding: 14px 18px; background: #1a1a1a; border-top: 2px solid #ffcc00; display: flex; justify-content: space-between; align-items: baseline; flex-shrink: 0; }
+  .cart-total .label { font-family: 'Roboto Mono', monospace; font-size: 12px; color: #888; letter-spacing: 0.1em; }
+  .cart-total .val { font-family: 'Staatliches', sans-serif; font-size: 32px; color: #ffcc00; }
+  .cart-pickup { padding: 10px 18px; background: #1a1a1a; border-top: 1px dashed #444; font-family: 'Roboto Mono', monospace; font-size: 11px; color: #ffcc00; display: flex; justify-content: space-between; letter-spacing: 0.1em; flex-shrink: 0; }
+  .cart-pickup .not-set { color: #666; }
+
+  @media (max-width: 900px) {
+    .main-wrap { grid-template-columns: 1fr; padding: 24px 18px 80px; }
+    .cart-col { grid-column: 1; position: static; max-height: none; }
+    .cart { position: static; max-height: none; display: block; }
+    .cart-body { max-height: none; }
+    .how-strip { position: static; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; padding: 0; box-shadow: none; }
+    .order-form { grid-template-columns: 1fr; }
+    .site-header { padding: 12px 18px; }
+    .brand { font-size: 30px; }
+  }
+
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+  .overlay.show { display: flex; }
+  .modal-box { background: #fff; color: #222; padding: 32px; max-width: 460px; width: 100%; font-family: 'Roboto Mono', monospace; max-height: 90vh; overflow-y: auto; }
+  .modal-box h3 { font-size: 24px; margin-bottom: 12px; font-family: 'Staatliches', sans-serif; letter-spacing: 0.05em; text-transform: uppercase; text-align: center; }
+  .modal-box p { font-size: 13px; line-height: 1.6; margin-bottom: 16px; }
+  .modal-box button { padding: 12px 24px; background: #000; color: #fff; border: none; font-family: 'Roboto Mono', monospace; font-weight: 700; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; font-size: 12px; }
+  .modal-box button.secondary { background: #666; }
+
+  .extras-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 20px; }
+  .extra-opt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 2px solid #ddd; font-size: 14px; background: #fff; transition: all 0.15s; user-select: none; min-height: 48px; flex-wrap: wrap; }
+  .extra-opt.toggle-row { cursor: pointer; }
+  .extra-opt.toggle-row:hover { border-color: #999; }
+  .extra-opt.counted-row { justify-content: space-between; }
+  .extra-opt.selected { border-color: #000; background: #000; color: #fff; font-weight: 700; }
+  .extra-chk-label { display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; }
+  .extra-chk, .extra-chk-plain { width: 18px; height: 18px; cursor: pointer; accent-color: currentColor; flex-shrink: 0; }
+  .extra-label { flex: 1; }
+  .extra-counter { display: none; align-items: center; border: 2px solid currentColor; }
+  .ct-btn { width: 30px; height: 30px; background: transparent; border: none; color: inherit; font-family: 'Roboto Mono', monospace; font-size: 18px; font-weight: 700; cursor: pointer; }
+  .ct-btn:hover { background: rgba(0,0,0,0.08); }
+  .extra-opt.selected .ct-btn:hover { background: rgba(255,255,255,0.15); }
+  .ct-value { min-width: 32px; text-align: center; font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 700; }
+  @media (max-width: 420px) { .extras-grid { grid-template-columns: 1fr; } }
+
+  .confirm-text { text-align: left; margin-bottom: 20px; }
+  .confirm-text b { color: #000; }
+  .center-btn { text-align: center; }
+
+  .site-footer { background: #0f0f0f; border-top: 2px solid #ffcc00; padding: 40px 32px 24px; margin-top: 60px; color: #b8b2a2; }
+  .footer-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
+  .footer-col h4 { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #ffcc00; letter-spacing: 0.2em; margin-bottom: 10px; text-transform: uppercase; }
+  .footer-col p, .footer-col a { font-family: 'Oswald', sans-serif; font-size: 13px; line-height: 1.6; color: inherit; text-decoration: none; display: block; }
+  .footer-col a:hover { color: #ffcc00; }
+  .footer-brand h3 { font-family: 'Staatliches', sans-serif; font-size: 28px; color: #f5f1e8; margin-bottom: 6px; letter-spacing: 0.02em; }
+  .socials { display: flex; gap: 8px; margin-top: 10px; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid #ffcc00; color: #ffcc00; font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 700; }
+  .socials a:hover { background: #ffcc00; color: #000; }
+  .footer-bottom { max-width: 1400px; margin: 28px auto 0; padding-top: 18px; border-top: 1px solid #333; font-family: 'Roboto Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #666; text-transform: uppercase; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  @media (max-width: 760px) { .footer-inner { grid-template-columns: 1fr; } }
+
+  /* Floating NealMedia button */
+  .nealmedia-float {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1500;
+    padding: 0;
+    transition: transform 0.2s;
+    display: block;
+  }
+  .nealmedia-float:hover { transform: scale(1.1); }
+  .nealmedia-float img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  @media (max-width: 540px) {
+    .nealmedia-float { width: 50px; height: 50px; bottom: 14px; left: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="hazard-top"></div>
+<header class="site-header">
+  <a href="/" class="brand">PERFECT <span class="accent">TIMING</span></a>
+  <nav class="nav">
+    <a href="/" class="active">Order</a>
+    <a href="/menu.html">Menu</a>
+  </nav>
+</header>
+
+<div class="main-wrap">
+  <section class="hero">
+    <span class="kicker">◆ ORDER AHEAD · NORTH POLE AK</span>
+    <h1><span class="accent">Perfectly Timed</span><br>Coffee &amp; Breakfast</h1>
+    <p class="tagline">Orders must be placed before midnight the day before pickup. Pick your window. Grab it hot on your way.</p>
+    <div class="usual-line">
+      <b>▲ THE USUAL</b>
+      Eat the same thing every weekday? Sign up for The Usual — your standing weekday order, auto-placed so you never miss a morning. Cancel or skip a day anytime.
+    </div>
+  </section>
+
+  <div class="how-strip">
+    <div class="how-title">How It Works</div>
+    <div class="how-steps">
+      <div class="how-step" id="how-1">
+        <div class="how-step-tag"><div class="how-step-tag-inner"><span class="how-led"></span><span class="how-led-label">Incomplete</span></div></div>
+        <div class="num">PT-01.</div>
+        <div class="label">Choose your pick-up time</div>
+        <div class="sub">Earliest pickup is the next open day. Slots are 30-min windows.</div>
+      </div>
+      <div class="how-step" id="how-2">
+        <div class="how-step-tag"><div class="how-step-tag-inner"><span class="how-led"></span><span class="how-led-label">Incomplete</span></div></div>
+        <div class="num">PT-02.</div>
+        <div class="label">Build your meal</div>
+        <div class="sub">Pick a food and a drink for each meal. Up to 3 meals per order.</div>
+      </div>
+      <div class="how-step" id="how-3">
+        <div class="how-step-tag"><div class="how-step-tag-inner"><span class="how-led"></span><span class="how-led-label">Incomplete</span></div></div>
+        <div class="num">PT-03.</div>
+        <div class="label">Submit your order</div>
+        <div class="sub">Name, phone, notes. Pay cash at pickup to save $2 per meal.</div>
+      </div>
+    </div>
+  </div>
+
+  <main class="order-main">
+
+    <section class="step-section" id="step-1">
+      <div class="step-header"><span class="step-num">STEP 01 //</span><h2>Pick Your Date &amp; Time</h2><span class="done-badge" id="done-1" style="display:none;">✓ DONE</span></div>
+      <div class="date-block">
+        <div class="block-label">Pickup Date</div>
+        <div id="date-picker-area">
+          <div class="date-empty">Loading available dates…</div>
+        </div>
+        <div class="date-hint">▲ Earliest pickup is the next open day. Fully booked or closed days are hidden.</div>
+        <div class="slots-wrap" id="slots-wrap">
+          <div class="slots-wrap-label">Pickup Window (30-min)</div>
+          <div class="time-slots" id="slots"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step-section locked" id="step-2">
+      <div class="step-header"><span class="step-num">STEP 02 //</span><h2>Build Your Meal</h2><span class="done-badge" id="done-2" style="display:none;">✓ DONE</span></div>
+      <div class="meals-info">▲ Each meal = 1 food + 1 drink for <b>$12</b>. Food only = $10. Drink only = $4. Pay with cash to save $2 per meal.</div>
+      <div id="meals-area"></div>
+      <div class="add-meal-wrap">
+        <button class="add-meal-btn" id="add-meal-btn">+ Add Another Meal</button>
+        <span class="add-meal-note" id="add-meal-note"></span>
+      </div>
+    </section>
+
+    <section class="step-section locked" id="step-3">
+      <div class="step-header"><span class="step-num">STEP 03 //</span><h2>Finish Up</h2></div>
+      <div class="submit-block">
+        <div class="order-form">
+          <div><label>Name</label><input type="text" class="cust-name" placeholder="Full name" autocomplete="name"></div>
+          <div><label>Phone</label><input type="tel" class="cust-phone" placeholder="(###) ###-####" autocomplete="tel"></div>
+          <div class="full"><label>Order Notes / Allergies</label><textarea class="cust-notes" placeholder="Food-specific requests only (e.g. 'no onions', 'extra crispy', allergies). Drink customizations are already saved with your drink."></textarea></div>
+        </div>
+        <label class="sub-toggle cash-toggle">
+          <input type="checkbox" class="cust-cash">
+          <span class="sub-toggle-text">
+            <b>▲ I'll Pay With Cash — Save $2 Per Meal</b>
+            Bring cash at pickup and we'll knock $2 off each meal in your order.
+          </span>
+        </label>
+        <label class="sub-toggle">
+          <input type="checkbox" class="cust-sub">
+          <span class="sub-toggle-text">
+            <b>▲ Sign Up For The Usual</b>
+            Auto-order this meal every weekday. Cancel or skip a day anytime.
+          </span>
+        </label>
+        <div class="payment-note">▲ PAY AT PICKUP · CASH OR CARD · ORDER BY MIDNIGHT THE DAY BEFORE</div>
+        <button class="submit-btn" id="submit-btn" disabled>Lock It In</button>
+      </div>
+    </section>
+
+  </main>
+
+  <aside class="cart-col">
+    <div class="cart">
+      <div class="cart-head">Your Order<span class="count" id="cart-count">0 items</span></div>
+      <div class="cart-body" id="cart-body"><div class="cart-empty">Pick a date to start building your order.</div></div>
+      <div class="cart-pickup" id="cart-pickup"><span>PICKUP</span><span class="not-set">— not set —</span></div>
+      <div class="cart-total"><span class="label">TOTAL</span><span class="val" id="cart-total">$0.00</span></div>
+    </div>
+  </aside>
+</div>
+
+<div class="overlay" id="extras-modal">
+  <div class="modal-box">
+    <h3 id="extras-title">Customize Your Drink</h3>
+    <p>Tap a checkbox to add an extra (starts at 1). Use + / − to adjust (max 12). <b>1 unit = 1 tablespoon.</b> Whipped cream is on/off. Your choices are saved directly to this drink — staff sees them on the order.</p>
+    <div id="extras-options"></div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:16px;">
+      <button class="secondary" onclick="cancelExtras()">Skip</button>
+      <button onclick="confirmExtras()">Add to Order</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="confirm-modal">
+  <div class="modal-box">
+    <h3>Order Locked In</h3>
+    <div class="confirm-text" id="confirm-text"></div>
+    <div class="center-btn"><button onclick="closeConfirm()">OK</button></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col footer-brand">
+      <h3>PERFECT TIMING</h3>
+      <p>[TAGLINE — Coffee and breakfast for the folks who start before sunrise. Order ahead, pick your window, get on with your day.]</p>
+      <div class="socials"><a href="[INSTAGRAM URL]" aria-label="Instagram">IG</a><a href="[FACEBOOK URL]" aria-label="Facebook">FB</a><a href="[TIKTOK URL]" aria-label="TikTok">TT</a></div>
+    </div>
+    <div class="footer-col"><h4>Visit</h4><p>[STREET ADDRESS]<br>[CITY, STATE ZIP]</p></div>
+    <div class="footer-col"><h4>Contact</h4><a href="tel:[PHONE]">[PHONE]</a><a href="mailto:[EMAIL]">[EMAIL]</a></div>
+    <div class="footer-col"><h4>Hours</h4><p>Mon – Fri<br>5:00 AM – 10:00 AM</p><p style="margin-top:8px;">Sat – Sun<br>[WEEKEND HOURS]</p></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 Perfect Timing</span><span>perfecttiming.space</span></div>
+</footer>
+
+<script>
+  // CONFIG
+  const SUPABASE_URL       = 'https://zhjygvidkjvuuefwgjjg.supabase.co';
+  const SUPABASE_ANON_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpoanlndmlka2p2dXVlZndnampnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5MDA2MDMsImV4cCI6MjA5MjQ3NjYwM30.9uEoIa7PZMH1RmjV1ma9nqh76yul_Bh1D8W90trS27s';
+  const FORMSPREE_FORM_ID  = 'xbdqpzwr';
+
+  // DEFAULTS — fallback if DB empty or not configured
+  const DEFAULT_DRINKS = [
+    { code: 'C-01', name: 'Hot Coffee',   description: 'Fresh brewed drip coffee, 16 oz. Customize with cream or sweetener.', price: 3, hasExtras: true },
+    { code: 'C-02', name: 'Iced Coffee',  description: 'Strong drip coffee over ice, 20 oz. Customize with cream or sweetener.', price: 4, hasExtras: true },
+    { code: 'C-03', name: 'Hot Cocoa',    description: 'Rich chocolate cocoa. Customize with creamer or half & half.', price: 4, hasExtras: true }
+  ];
+  const drinkExtras = [
+    { id: 'creamer',       label: 'Creamer',       counted: true },
+    { id: 'half-half',     label: 'Half & Half',   counted: true },
+    { id: 'sugar',         label: 'Sugar',         counted: true },
+    { id: 'agave',         label: 'Agave',         counted: true },
+    { id: 'honey',         label: 'Honey',         counted: true },
+    { id: 'ice',           label: 'Extra Ice',     counted: true },
+    { id: 'whipped-cream', label: 'Whipped Cream', counted: false }
+  ];
+  const DEFAULT_FOODS = [
+    { code: 'M-01', name: 'Egg & Cheese Mug',             category: 'microwave',   description: 'Fluffy scrambled eggs + melted cheddar in a mug. 2 minutes.', price: 6 },
+    { code: 'M-02', name: 'Loaded Oatmeal Bowl',          category: 'microwave',   description: 'Hot oats with brown sugar, banana, and cinnamon.', price: 5 },
+    { code: 'M-03', name: 'PB Banana Toast Melt',         category: 'microwave',   description: 'Toasted bread, peanut butter, banana, drizzle of honey.', price: 5 },
+    { code: 'S-01', name: 'Overnight Steel-Cut Oats',     category: 'slow-cooker', description: 'Creamy oats, cinnamon, apples, pecans. Prepped the night before.', price: 5 },
+    { code: 'S-02', name: 'Breakfast Casserole Cup',      category: 'slow-cooker', description: 'Eggs, sausage, hash browns, cheddar. Hearty and filling.', price: 8 },
+    { code: 'S-03', name: 'Cinnamon Roll Bake',           category: 'slow-cooker', description: 'Soft cinnamon roll pieces with cream cheese glaze.', price: 6 },
+    { code: 'A-01', name: 'Air Fryer Bacon & Egg Bites',  category: 'air-fryer',   description: 'Crispy bacon + fluffy egg cups. Protein-packed.', price: 7 },
+    { code: 'A-02', name: 'Air Fryer Breakfast Potatoes', category: 'air-fryer',   description: 'Golden crispy potatoes with peppers and onions.', price: 6 },
+    { code: 'A-03', name: 'Air Fryer French Toast Sticks',category: 'air-fryer',   description: 'Cinnamon-dusted, crispy outside, soft inside. With syrup.', price: 6 }
+  ];
+
+  // These get populated by loadMenuFromDB
+  let drinks = [...DEFAULT_DRINKS];
+  let foods = [...DEFAULT_FOODS];
+
+  const ALL_SLOTS_FALLBACK = [
+    { idx: '01', label: '5:00 AM', range: '05:00 – 05:15' },
+    { idx: '02', label: '5:15 AM', range: '05:15 – 05:30' },
+    { idx: '03', label: '5:30 AM', range: '05:30 – 05:45' },
+    { idx: '04', label: '5:45 AM', range: '05:45 – 06:00' },
+    { idx: '05', label: '6:00 AM', range: '06:00 – 06:15' },
+    { idx: '06', label: '6:15 AM', range: '06:15 – 06:30' },
+    { idx: '07', label: '6:30 AM', range: '06:30 – 06:45' },
+    { idx: '08', label: '6:45 AM', range: '06:45 – 07:00' },
+    { idx: '09', label: '7:00 AM', range: '07:00 – 07:15' },
+    { idx: '10', label: '7:15 AM', range: '07:15 – 07:30' },
+    { idx: '11', label: '7:30 AM', range: '07:30 – 07:45' },
+    { idx: '12', label: '7:45 AM', range: '07:45 – 08:00' },
+    { idx: '13', label: '8:00 AM', range: '08:00 – 08:15' },
+    { idx: '14', label: '8:15 AM', range: '08:15 – 08:30' },
+    { idx: '15', label: '8:30 AM', range: '08:30 – 08:45' },
+    { idx: '16', label: '8:45 AM', range: '08:45 – 09:00' },
+    { idx: '17', label: '9:00 AM', range: '09:00 – 09:15' },
+    { idx: '18', label: '9:15 AM', range: '09:15 – 09:30' },
+    { idx: '19', label: '9:30 AM', range: '09:30 – 09:45' },
+    { idx: '20', label: '9:45 AM', range: '09:45 – 10:00' },
+    { idx: '21', label: '10:00 AM', range: '10:00 – 10:15' }
+  ];
+  let ALL_SLOTS = [...ALL_SLOTS_FALLBACK];
+
+  // PRICING — flat-rate meal model
+  const MEAL_FULL    = 12;  // food + drink
+  const MEAL_FOOD_ONLY = 10; // $12 - $2 (no drink)
+  const MEAL_DRINK_ONLY = 4; // $12 - $8 (no food)
+  const CASH_DISCOUNT_PER_MEAL = 2;
+  const MAX_MEALS = 3;
+
+  // STATE
+  const state = {
+    date: null,
+    slot: null,
+    meals: [{ id: 1, food: null, drink: null, drinkExtras: {} }], // start with 1 empty meal
+    nextMealId: 2,
+    cashPayment: false,
+    datePage: 0,
+    slotSettings: {},
+    slotCounts: {},
+    schedule: {
+      start_time: '05:00',
+      end_time: '10:00',
+      slot_minutes: 15,
+      default_capacity: 1,
+      days_open: [1,2,3,4,5]
+    },
+    closedDays: new Set(),
+    closedRanges: []  // [{ id, start_date, end_date (null = indefinite) }]
+  };
+
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+  const escHtml = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  function isFood(code) { return foods.some(f => f.code === code); }
+  function isDrink(code) { return drinks.some(d => d.code === code); }
+  function getItem(code) { return [...drinks, ...foods].find(x => x.code === code); }
+  function formatPickupDate(iso) {
+    if (!iso) return '';
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m-1, d).toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+  }
+  function toISO(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${dd}`;
+  }
+
+  // ============================================================
+  // DATA LOADING (menu, slot settings, slot counts)
+  // ============================================================
+  async function loadMenuFromDB() {
+    if (!SUPABASE_URL || SUPABASE_URL.includes('YOUR_')) return; // skip if not configured
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/menu_items?select=*`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      if (!r.ok) return; // table doesn't exist yet, use defaults
+      const overrides = await r.json();
+      if (!Array.isArray(overrides) || overrides.length === 0) return;
+      const byCode = {};
+      overrides.forEach(o => { byCode[o.code] = o; });
+      const applyOverrides = (arr) => arr.map(def => {
+        const o = byCode[def.code];
+        if (!o) return { ...def };
+        if (o.available === false) return null; // filter out unavailable items
+        return {
+          ...def,
+          name: o.name || def.name,
+          description: o.description || def.description,
+          price: o.price !== null && o.price !== undefined ? Number(o.price) : def.price
+        };
+      }).filter(Boolean);
+      drinks = applyOverrides(DEFAULT_DRINKS).map(d => ({ ...d, hasExtras: true }));
+      foods = applyOverrides(DEFAULT_FOODS);
+    } catch(e) { console.warn('Menu fetch failed, using defaults:', e); }
+  }
+
+  function timeToMin(t) { const [h,m] = t.split(':').map(Number); return h*60 + m; }
+  function minToTime(m) { const h = Math.floor(m/60); const mm = m%60; const ampm = h >= 12 ? 'PM' : 'AM'; const h12 = h % 12 === 0 ? 12 : h % 12; return `${h12}:${String(mm).padStart(2,'0')} ${ampm}`; }
+  function minToHHMM(m) { const h = Math.floor(m/60); const mm = m%60; return `${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`; }
+
+  function generateSlotsFromSchedule(sched) {
+    const startMin = timeToMin(sched.start_time);
+    const endMin   = timeToMin(sched.end_time);
+    const dur      = sched.slot_minutes;
+    const slots = [];
+    let i = 0;
+    // Last slot must finish by end_time, so its start must be <= endMin - dur
+    for (let t = startMin; t + dur <= endMin; t += dur) {
+      i++;
+      slots.push({
+        idx: String(i).padStart(2,'0'),
+        label: minToTime(t),
+        range: `${minToHHMM(t)} – ${minToHHMM(t + dur)}`
+      });
+    }
+    return slots;
+  }
+
+  async function loadScheduleAndSlots() {
+    // Defaults
+    ALL_SLOTS = generateSlotsFromSchedule(state.schedule);
+    state.slotSettings = {};
+    ALL_SLOTS.forEach(s => { state.slotSettings[s.label] = state.schedule.default_capacity; });
+
+    if (!SUPABASE_URL || SUPABASE_URL.includes('YOUR_')) return;
+    try {
+      // Fetch schedule
+      const r1 = await fetch(`${SUPABASE_URL}/rest/v1/business_schedule?select=*&id=eq.1`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      if (r1.ok) {
+        const rows = await r1.json();
+        if (Array.isArray(rows) && rows.length > 0) {
+          const s = rows[0];
+          state.schedule = {
+            start_time: s.start_time || '05:00',
+            end_time: s.end_time || '10:00',
+            slot_minutes: s.slot_minutes || 15,
+            default_capacity: s.default_capacity || 1,
+            days_open: Array.isArray(s.days_open) ? s.days_open : [1,2,3,4,5]
+          };
+          ALL_SLOTS = generateSlotsFromSchedule(state.schedule);
+          // Reset baseline capacities from default
+          state.slotSettings = {};
+          ALL_SLOTS.forEach(sl => { state.slotSettings[sl.label] = state.schedule.default_capacity; });
+        }
+      }
+      // Fetch per-slot capacity overrides
+      const r2 = await fetch(`${SUPABASE_URL}/rest/v1/slot_settings?select=*`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      if (r2.ok) {
+        const rows = await r2.json();
+        rows.forEach(row => { state.slotSettings[row.slot_label] = row.capacity; });
+      }
+      // Fetch closed days
+      const r3 = await fetch(`${SUPABASE_URL}/rest/v1/closed_days?select=closed_date`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      if (r3.ok) {
+        const rows = await r3.json();
+        state.closedDays = new Set(rows.map(r => r.closed_date));
+      }
+      // Fetch closed ranges
+      try {
+        const r4 = await fetch(`${SUPABASE_URL}/rest/v1/closed_ranges?select=*`, {
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+        });
+        if (r4.ok) {
+          state.closedRanges = await r4.json();
+        }
+      } catch(e) { /* table may not exist yet — silently ignore */ }
+    } catch(e) { console.warn('Schedule fetch failed, using defaults:', e); }
+  }
+
+  async function loadSlotCountsForRange(startDate, endDate) {
+    if (!SUPABASE_URL || SUPABASE_URL.includes('YOUR_')) return;
+    try {
+      const startISO = toISO(startDate);
+      const endISO   = toISO(endDate);
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/orders?select=pickup_date,pickup_slot&pickup_date=gte.${startISO}&pickup_date=lte.${endISO}`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      if (!r.ok) return;
+      const rows = await r.json();
+      state.slotCounts = {};
+      rows.forEach(row => {
+        const k = `${row.pickup_date}|${row.pickup_slot}`;
+        state.slotCounts[k] = (state.slotCounts[k] || 0) + 1;
+      });
+    } catch(e) { console.warn('Slot counts fetch failed:', e); }
+  }
+
+  function getAvailableSlotsForDate(iso) {
+    // Returns array of slots that still have capacity
+    return ALL_SLOTS.filter(s => {
+      const cap = state.slotSettings[s.label] || 1;
+      const count = state.slotCounts[`${iso}|${s.label}`] || 0;
+      return count < cap;
+    });
+  }
+
+  function dateHasAnyCapacity(iso) {
+    return getAvailableSlotsForDate(iso).length > 0;
+  }
+
+  // ============================================================
+  // DATE PICKER (6 weekdays with arrows)
+  // ============================================================
+  function isInClosedRange(iso) {
+    return (state.closedRanges || []).some(r => {
+      if (!r.start_date) return false;
+      if (iso < r.start_date) return false;
+      if (r.end_date === null || r.end_date === undefined) return true; // indefinite
+      return iso <= r.end_date;
+    });
+  }
+
+  function buildWeekdayList(numDaysToScan) {
+    // Returns open days (per schedule) that aren't in closed_days list or in any closed_range
+    const days = [];
+    const start = new Date();
+    start.setHours(0,0,0,0);
+    start.setDate(start.getDate() + 1); // tomorrow
+    let cursor = new Date(start);
+    const maxScan = numDaysToScan || 90;
+    const openDays = state.schedule.days_open || [1,2,3,4,5];
+    for (let i = 0; i < maxScan && days.length < 50; i++) {
+      const dow = cursor.getDay(); // 0=Sun ... 6=Sat
+      const iso = toISO(cursor);
+      if (openDays.includes(dow) && !state.closedDays.has(iso) && !isInClosedRange(iso)) {
+        days.push(new Date(cursor));
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return days;
+  }
+
+  function getVisibleDates() {
+    // Return the current page (5) of AVAILABLE weekdays
+    const all = buildWeekdayList(90); // scan up to ~3 months out
+    const available = all.filter(d => dateHasAnyCapacity(toISO(d)));
+    const startIdx = state.datePage * 6;
+    return {
+      dates: available.slice(startIdx, startIdx + 6),
+      hasPrev: state.datePage > 0,
+      hasNext: available.length > startIdx + 6
+    };
+  }
+
+  function renderDatePicker() {
+    const { dates, hasPrev, hasNext } = getVisibleDates();
+    const area = $('#date-picker-area');
+    if (dates.length === 0) {
+      area.innerHTML = `<div class="date-empty">No pickup dates available right now. ${hasPrev ? '<a href="#" id="reset-page" style="color:#ffcc00;">← Go back</a>' : 'Please check back later.'}</div>`;
+      if (hasPrev) {
+        $('#reset-page').addEventListener('click', (e) => {
+          e.preventDefault();
+          state.datePage = 0;
+          renderDatePicker();
+        });
+      }
+      return;
+    }
+    area.innerHTML = `
+      <div class="date-picker-row">
+        <button class="date-arrow" id="date-prev" ${hasPrev ? '' : 'disabled'}>◀</button>
+        <div class="date-cards">
+          ${dates.map(d => {
+            const iso = toISO(d);
+            const sel = state.date === iso ? ' selected' : '';
+            return `<div class="date-card${sel}" data-iso="${iso}">
+              <div class="weekday">${d.toLocaleDateString('en-US', { weekday: 'short' })}</div>
+              <div class="day-num">${d.getDate()}</div>
+              <div class="month">${d.toLocaleDateString('en-US', { month: 'short' })}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <button class="date-arrow" id="date-next" ${hasNext ? '' : 'disabled'}>▶</button>
+      </div>`;
+    $('#date-prev').addEventListener('click', () => { state.datePage--; renderDatePicker(); });
+    $('#date-next').addEventListener('click', () => { state.datePage++; renderDatePicker(); });
+    $$('.date-card').forEach(el => {
+      el.addEventListener('click', () => {
+        state.date = el.dataset.iso;
+        state.slot = null;
+        renderAll();
+      });
+    });
+  }
+
+  // ============================================================
+  // SLOTS
+  // ============================================================
+  function renderSlots() {
+    const el = $('#slots');
+    if (!state.date) {
+      $('#slots-wrap').classList.remove('show');
+      return;
+    }
+    $('#slots-wrap').classList.add('show');
+    const availableSlots = getAvailableSlotsForDate(state.date);
+    if (availableSlots.length === 0) {
+      el.innerHTML = `<div class="slot-empty-msg">All slots are booked for this day. Please pick a different date.</div>`;
+      return;
+    }
+    el.innerHTML = availableSlots.map(s => `
+      <div class="slot${state.slot===s.idx?' selected':''}" data-slot="${s.idx}">
+        <div class="slot-time">${s.label}</div>
+        <div class="slot-range">${s.range}</div>
+      </div>
+    `).join('');
+  }
+
+  // ============================================================
+  // STEP LOCKS / TILE STATE
+  // ============================================================
+  function updateStepLocks() {
+    const step1Done = !!(state.date && state.slot);
+    const step2Done = step1Done && hasAnyValidMeal();
+
+    $('#step-2').classList.toggle('locked', !step1Done);
+    $('#step-3').classList.toggle('locked', !step2Done);
+
+    $('#how-1').classList.toggle('done', step1Done);
+    $('#how-2').classList.toggle('done', step2Done);
+    $('#how-3').classList.toggle('done', submitReady());
+
+    $$('.how-step').forEach(el => {
+      const lbl = el.querySelector('.how-led-label');
+      if (lbl) lbl.textContent = el.classList.contains('done') ? 'Complete' : 'Incomplete';
+    });
+
+    $('#done-1').style.display = step1Done ? 'inline' : 'none';
+    $('#done-2').style.display = step2Done ? 'inline' : 'none';
+
+    $('#submit-btn').disabled = !submitReady();
+  }
+
+  // A meal counts if it has at least 1 food OR 1 drink
+  function isMealValid(meal) { return !!(meal.food || meal.drink); }
+  function hasAnyValidMeal() { return state.meals.some(isMealValid); }
+  function submitReady() { return !!(state.date && state.slot && hasAnyValidMeal()); }
+
+  // ============================================================
+  // PRICING
+  // ============================================================
+  function priceForMeal(meal) {
+    if (meal.food && meal.drink) return MEAL_FULL;
+    if (meal.food) return MEAL_FOOD_ONLY;
+    if (meal.drink) return MEAL_DRINK_ONLY;
+    return 0;
+  }
+  function discountForMeal(meal) {
+    if (!isMealValid(meal)) return 0;
+    return state.cashPayment ? CASH_DISCOUNT_PER_MEAL : 0;
+  }
+  function netForMeal(meal) {
+    return Math.max(0, priceForMeal(meal) - discountForMeal(meal));
+  }
+  function orderTotal() {
+    return state.meals.reduce((s, m) => s + netForMeal(m), 0);
+  }
+  function orderSubtotal() {
+    return state.meals.reduce((s, m) => s + priceForMeal(m), 0);
+  }
+  function orderDiscount() {
+    return state.meals.reduce((s, m) => s + discountForMeal(m), 0);
+  }
+
+  function formatExtrasText(extras) {
+    if (!extras) return null;
+    const keys = Object.keys(extras).filter(k => extras[k] > 0);
+    if (keys.length === 0) return null;
+    return keys.map(id => {
+      const meta = drinkExtras.find(e => e.id === id);
+      const n = extras[id];
+      if (meta.counted) return `${meta.label} ×${n}`;
+      return meta.label;
+    }).join(', ');
+  }
+
+  // ============================================================
+  // MEAL BUILDER RENDER
+  // ============================================================
+  function renderMeals() {
+    const area = $('#meals-area');
+    if (!area) return;
+    area.innerHTML = state.meals.map((meal, idx) => renderMealBlock(meal, idx)).join('');
+
+    // Wire food/drink picker clicks
+    $$('.meal-block').forEach(blockEl => {
+      const mealId = parseInt(blockEl.dataset.mealId, 10);
+      const meal = state.meals.find(m => m.id === mealId);
+      if (!meal) return;
+
+      blockEl.querySelectorAll('.meal-pick-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const code = card.dataset.code;
+          const kind = card.dataset.kind; // 'food' or 'drink'
+          if (kind === 'food') {
+            // Toggle: clicking the selected food unsets it
+            meal.food = (meal.food === code) ? null : code;
+          } else if (kind === 'drink') {
+            const def = getItem(code);
+            if (meal.drink === code) {
+              // Clicking selected drink → reopen the customizer
+              openExtrasModalForMeal(meal, def);
+            } else if (def && def.hasExtras) {
+              openExtrasModalForMeal(meal, def);
+            } else {
+              meal.drink = code;
+              meal.drinkExtras = {};
+              renderAll();
+            }
+          }
+          if (kind === 'food') renderAll();
+        });
+      });
+
+      const removeBtn = blockEl.querySelector('.meal-remove');
+      if (removeBtn) {
+        removeBtn.addEventListener('click', () => {
+          if (state.meals.length <= 1) {
+            // Don't remove the last meal — clear it instead
+            meal.food = null;
+            meal.drink = null;
+            meal.drinkExtras = {};
+          } else {
+            const idx = state.meals.findIndex(m => m.id === mealId);
+            if (idx !== -1) state.meals.splice(idx, 1);
+          }
+          renderAll();
+        });
+      }
+
+      const clearFoodBtn = blockEl.querySelector('.clear-food');
+      if (clearFoodBtn) clearFoodBtn.addEventListener('click', () => { meal.food = null; renderAll(); });
+
+      const clearDrinkBtn = blockEl.querySelector('.clear-drink');
+      if (clearDrinkBtn) clearDrinkBtn.addEventListener('click', () => { meal.drink = null; meal.drinkExtras = {}; renderAll(); });
+    });
+
+    // Add meal button state
+    const addBtn = $('#add-meal-btn');
+    const note = $('#add-meal-note');
+    if (state.meals.length >= MAX_MEALS) {
+      addBtn.disabled = true;
+      note.textContent = `Max ${MAX_MEALS} meals per order.`;
+    } else {
+      addBtn.disabled = false;
+      note.textContent = `${state.meals.length} of ${MAX_MEALS}`;
+    }
+  }
+
+  function renderMealBlock(meal, idx) {
+    const sortedFoods = [...foods].sort((a,b) => a.name.localeCompare(b.name));
+    const foodCards = sortedFoods.map(f => `
+      <div class="meal-pick-card${meal.food === f.code ? ' selected' : ''}" data-code="${f.code}" data-kind="food">
+        <div class="code">▲ ${f.code}</div>
+        <div class="name">${escHtml(f.name)}</div>
+      </div>
+    `).join('');
+    const drinkCards = drinks.map(d => {
+      const sel = meal.drink === d.code;
+      const extrasText = sel ? formatExtrasText(meal.drinkExtras) : null;
+      return `
+      <div class="meal-pick-card${sel ? ' selected' : ''}" data-code="${d.code}" data-kind="drink">
+        <div class="code">▲ ${d.code}</div>
+        <div class="name">${escHtml(d.name)}</div>
+        ${sel && extrasText ? `<div class="extras-summary">+ ${escHtml(extrasText)}</div>` : ''}
+        ${sel && !extrasText ? `<div class="extras-summary">no extras</div>` : ''}
+      </div>`;
+    }).join('');
+
+    const price = priceForMeal(meal);
+    const cashDiscount = discountForMeal(meal);
+    const net = netForMeal(meal);
+    const priceLabel = price === 0
+      ? '<span style="color:#888;">— pick at least one</span>'
+      : (cashDiscount > 0
+        ? `<span class="strike">$${price}</span><span style="color:#4ade80;">$${net}</span> <span style="color:#888;font-weight:400;">(cash)</span>`
+        : `$${price}`);
+
+    return `
+      <div class="meal-block" data-meal-id="${meal.id}">
+        <div class="meal-block-head">
+          <h3>Meal ${idx + 1}</h3>
+          <span class="meal-price">${priceLabel}</span>
+          <button type="button" class="meal-remove">${state.meals.length <= 1 ? 'Clear' : '✕ Remove'}</button>
+        </div>
+        <div class="meal-section-label">Food ${meal.food ? '<span style="color:#4ade80;">· selected</span>' : '<span style="color:#888;">· optional</span>'}${meal.food ? '<span class="meal-clear-btn clear-food" style="margin-left:10px;">✕ clear</span>' : ''}</div>
+        <div class="meal-picker">${foodCards}</div>
+        <div class="meal-section-label">Drink ${meal.drink ? '<span style="color:#4ade80;">· selected</span>' : '<span style="color:#888;">· optional</span>'}${meal.drink ? '<span class="meal-clear-btn clear-drink" style="margin-left:10px;">✕ clear</span>' : ''}</div>
+        <div class="meal-picker">${drinkCards}</div>
+      </div>
+    `;
+  }
+
+  // ============================================================
+  // CART
+  // ============================================================
+  function renderCart() {
+    const subtotal = orderSubtotal();
+    const discount = orderDiscount();
+    const total = orderTotal();
+    const validMeals = state.meals.filter(isMealValid);
+    const totalItems = state.meals.reduce((s, m) => s + (m.food ? 1 : 0) + (m.drink ? 1 : 0), 0);
+
+    $('#cart-count').textContent = `${totalItems} item${totalItems===1?'':'s'}`;
+    $('#cart-total').textContent = '$' + total.toFixed(0);
+
+    const pickupEl = $('#cart-pickup');
+    if (state.date && state.slot) {
+      const slotLbl = ALL_SLOTS.find(s => s.idx === state.slot).label;
+      const dateStr = new Date(state.date + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric' });
+      pickupEl.innerHTML = `<span>PICKUP</span><span>${escHtml(dateStr)} · ${escHtml(slotLbl)}</span>`;
+    } else {
+      pickupEl.innerHTML = `<span>PICKUP</span><span class="not-set">— not set —</span>`;
+    }
+
+    const body = $('#cart-body');
+    if (validMeals.length === 0) {
+      body.innerHTML = state.date
+        ? `<div class="cart-empty">Build a meal in Step 2.</div>`
+        : `<div class="cart-empty">Pick a date to start building your order.</div>`;
+      return;
+    }
+
+    let html = '';
+    state.meals.forEach((meal, i) => {
+      if (!isMealValid(meal)) return;
+      const price = priceForMeal(meal);
+      const disc  = discountForMeal(meal);
+      const net   = netForMeal(meal);
+      html += `<div class="cart-line">
+        <div class="row1"><span class="name">Meal ${i+1}</span><span class="price">$${net}${disc>0?` <span style="color:#888;font-size:10px;font-weight:400;text-decoration:line-through;">$${price}</span>`:''}</span></div>`;
+      if (meal.food) {
+        const f = getItem(meal.food);
+        html += `<div class="sub">${escHtml(f.name)}</div>`;
+      }
+      if (meal.drink) {
+        const d = getItem(meal.drink);
+        const extras = formatExtrasText(meal.drinkExtras);
+        html += `<div class="sub">${escHtml(d.name)}${extras ? ` <span style="color:#666;">(${escHtml(extras)})</span>` : ''}</div>`;
+      }
+      html += `</div>`;
+    });
+    if (discount > 0) {
+      html += `<div class="cart-line" style="border-top:1px solid #4ade80;border-bottom:none;padding-top:10px;">
+        <div class="row1" style="color:#4ade80;"><span class="name">Cash discount</span><span class="price" style="color:#4ade80;">−$${discount}</span></div>
+      </div>`;
+    }
+    body.innerHTML = html;
+  }
+
+  function renderAll() {
+    renderDatePicker();
+    renderSlots();
+    renderMeals();
+    renderCart();
+    updateStepLocks();
+  }
+
+  // ============================================================
+  // EVENTS — date picker + slot pick (item clicks now handled in renderMeals)
+  // ============================================================
+  document.body.addEventListener('click', (e) => {
+    if (e.target.closest('.step-section.locked')) return;
+    const slot = e.target.closest('.slot');
+    if (slot && slot.dataset.slot) {
+      state.slot = slot.dataset.slot;
+      renderAll();
+    }
+  });
+
+  // Add meal button
+  $('#add-meal-btn').addEventListener('click', () => {
+    if (state.meals.length >= MAX_MEALS) return;
+    state.meals.push({ id: state.nextMealId++, food: null, drink: null, drinkExtras: {} });
+    renderAll();
+  });
+
+  // Cash payment toggle
+  document.body.addEventListener('change', (e) => {
+    if (e.target.classList && e.target.classList.contains('cust-cash')) {
+      state.cashPayment = e.target.checked;
+      renderAll();
+    }
+  });
+
+  // ============================================================
+  // EXTRAS MODAL
+  // ============================================================
+  const extrasState = { currentItem: null, counts: {}, targetMeal: null };
+
+  function openExtrasModalForMeal(meal, itemDef) {
+    extrasState.currentItem = itemDef;
+    extrasState.targetMeal = meal;
+    // Pre-load existing extras if this drink is already on the meal
+    extrasState.counts = (meal.drink === itemDef.code && meal.drinkExtras) ? { ...meal.drinkExtras } : {};
+    openExtrasModalUI();
+  }
+
+  function openExtrasModalUI() {
+    const itemDef = extrasState.currentItem;
+    if (!itemDef) return;
+    $('#extras-title').textContent = `Customize Your ${itemDef.name}`;
+    const container = $('#extras-options');
+    container.innerHTML = `<div class="extras-grid">` + drinkExtras.map(e => {
+      if (e.counted) {
+        const checked = !!extrasState.counts[e.id];
+        return `<div class="extra-opt counted-row${checked?' selected':''}" data-extra="${e.id}">
+          <label class="extra-chk-label">
+            <input type="checkbox" class="extra-chk" data-extra="${e.id}" ${checked?'checked':''}>
+            <span class="extra-label">${e.label}</span>
+          </label>
+          <div class="extra-counter" data-extra="${e.id}" style="display:${checked?'inline-flex':'none'};">
+            <button type="button" class="ct-btn ct-minus" data-extra="${e.id}">−</button>
+            <span class="ct-value" data-extra="${e.id}">${extrasState.counts[e.id] || 1}</span>
+            <button type="button" class="ct-btn ct-plus" data-extra="${e.id}">+</button>
+          </div>
+        </div>`;
+      }
+      const checked = !!extrasState.counts[e.id];
+      return `<label class="extra-opt toggle-row${checked?' selected':''}" data-extra="${e.id}">
+        <input type="checkbox" class="extra-chk-plain" data-extra="${e.id}" ${checked?'checked':''}>
+        <span class="extra-label">${e.label}</span>
+      </label>`;
+    }).join('') + `</div>`;
+
+    container.querySelectorAll('.extra-chk').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const id = cb.dataset.extra;
+        const counter = container.querySelector(`.extra-counter[data-extra="${id}"]`);
+        const row = container.querySelector(`.counted-row[data-extra="${id}"]`);
+        if (cb.checked) {
+          extrasState.counts[id] = 1;
+          counter.style.display = 'inline-flex';
+          row.classList.add('selected');
+          updateCountDisplay(container, id);
+        } else {
+          delete extrasState.counts[id];
+          counter.style.display = 'none';
+          row.classList.remove('selected');
+        }
+      });
+    });
+    container.querySelectorAll('.ct-plus').forEach(btn => {
+      btn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const id = btn.dataset.extra;
+        const cur = extrasState.counts[id] || 0;
+        if (cur < 12) extrasState.counts[id] = cur + 1;
+        updateCountDisplay(container, id);
+      });
+    });
+    container.querySelectorAll('.ct-minus').forEach(btn => {
+      btn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const id = btn.dataset.extra;
+        const cur = extrasState.counts[id] || 0;
+        if (cur > 1) { extrasState.counts[id] = cur - 1; updateCountDisplay(container, id); }
+        else if (cur === 1) {
+          delete extrasState.counts[id];
+          const cb = container.querySelector(`.extra-chk[data-extra="${id}"]`);
+          const counter = container.querySelector(`.extra-counter[data-extra="${id}"]`);
+          const row = container.querySelector(`.counted-row[data-extra="${id}"]`);
+          if (cb) cb.checked = false;
+          if (counter) counter.style.display = 'none';
+          if (row) row.classList.remove('selected');
+        }
+      });
+    });
+    container.querySelectorAll('.extra-chk-plain').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const id = cb.dataset.extra;
+        const row = container.querySelector(`.toggle-row[data-extra="${id}"]`);
+        if (cb.checked) { extrasState.counts[id] = 1; row.classList.add('selected'); }
+        else { delete extrasState.counts[id]; row.classList.remove('selected'); }
+      });
+    });
+
+    $('#extras-modal').classList.add('show');
+  }
+
+  function updateCountDisplay(container, id) {
+    const valEl = container.querySelector(`.ct-value[data-extra="${id}"]`);
+    const count = extrasState.counts[id] || 0;
+    if (valEl) valEl.textContent = String(count);
+  }
+
+  window.cancelExtras = function() {
+    // "Skip" — assigns the drink to the meal without extras
+    if (extrasState.currentItem && extrasState.targetMeal) {
+      extrasState.targetMeal.drink = extrasState.currentItem.code;
+      extrasState.targetMeal.drinkExtras = {};
+      renderAll();
+    }
+    $('#extras-modal').classList.remove('show');
+    extrasState.currentItem = null;
+    extrasState.counts = {};
+    extrasState.targetMeal = null;
+  };
+
+  window.confirmExtras = function() {
+    if (!extrasState.currentItem || !extrasState.targetMeal) return;
+    extrasState.targetMeal.drink = extrasState.currentItem.code;
+    extrasState.targetMeal.drinkExtras = { ...extrasState.counts };
+    renderAll();
+    $('#extras-modal').classList.remove('show');
+    extrasState.currentItem = null;
+    extrasState.counts = {};
+    extrasState.targetMeal = null;
+  };
+
+  // ============================================================
+  // SUBMIT
+  // ============================================================
+  async function submitOrderToBackend(payload) {
+    const results = { supabase: null, formspree: null };
+    if (SUPABASE_URL && !SUPABASE_URL.includes('YOUR_') && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('YOUR_')) {
+      try {
+        const r = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify(payload)
+        });
+        results.supabase = r.ok ? 'ok' : `error: ${r.status}`;
+      } catch(e) { results.supabase = `error: ${e.message}`; }
+    } else results.supabase = 'skipped (not configured)';
+
+    if (FORMSPREE_FORM_ID && !FORMSPREE_FORM_ID.includes('YOUR_')) {
+      try {
+        const r = await fetch(`https://formspree.io/f/${FORMSPREE_FORM_ID}`, {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json', 'Accept':'application/json' },
+          body: JSON.stringify({
+            _subject: `New Order — ${payload.customer_name || 'unnamed'} — ${payload.pickup_date} @ ${payload.pickup_slot}`,
+            customer_name: payload.customer_name,
+            customer_phone: payload.customer_phone,
+            pickup_date: payload.pickup_date,
+            pickup_slot: payload.pickup_slot,
+            items: payload.items_summary,
+            notes: payload.notes,
+            total: `$${payload.total.toFixed(0)}`,
+            byoc_count: payload.byoc_count,
+            subscription: payload.subscription ? 'YES' : 'no'
+          })
+        });
+        results.formspree = r.ok ? 'ok' : `error: ${r.status}`;
+      } catch(e) { results.formspree = `error: ${e.message}`; }
+    } else results.formspree = 'skipped (not configured)';
+    return results;
+  }
+
+  $('#submit-btn').addEventListener('click', async () => {
+    const btn = $('#submit-btn');
+    const slotLbl = ALL_SLOTS.find(s => s.idx === state.slot).label;
+    const name = $('.cust-name').value.trim();
+    const phone = $('.cust-phone').value.trim();
+    const notes = $('.cust-notes').value.trim();
+    const subscribe = $('.cust-sub').checked;
+    const cashPayment = $('.cust-cash').checked;
+    const dateIso = state.date;
+
+    if (!name)  { alert('Please enter your name.'); return; }
+    if (!phone) { alert('Please enter a phone number.'); return; }
+
+    btn.disabled = true;
+    const originalLabel = btn.textContent;
+    btn.textContent = 'Checking availability…';
+    await loadSlotCountsForRange(parseLocalDate(dateIso), parseLocalDate(dateIso));
+    const currentCount = state.slotCounts[`${dateIso}|${slotLbl}`] || 0;
+    const cap = state.slotSettings[slotLbl] || 1;
+    if (currentCount >= cap) {
+      btn.textContent = originalLabel;
+      btn.disabled = false;
+      alert(`Sorry — the ${slotLbl} slot just filled up. Please pick a different time.`);
+      state.slot = null;
+      state.datePage = 0;
+      renderAll();
+      return;
+    }
+
+    // Build meal payload
+    const validMeals = state.meals.filter(isMealValid);
+    const subtotal = orderSubtotal();
+    const discount = orderDiscount();
+    const total = orderTotal();
+
+    const mealsPayload = validMeals.map((meal, i) => {
+      const food = meal.food ? getItem(meal.food) : null;
+      const drink = meal.drink ? getItem(meal.drink) : null;
+      const extrasText = formatExtrasText(meal.drinkExtras);
+      return {
+        meal_number: i + 1,
+        food: food ? { code: food.code, name: food.name } : null,
+        drink: drink ? { code: drink.code, name: drink.name, extras: extrasText, extras_raw: meal.drinkExtras } : null,
+        meal_price: priceForMeal(meal),
+        cash_discount: discountForMeal(meal),
+        net: netForMeal(meal)
+      };
+    });
+
+    const itemsSummary = mealsPayload.map(m => {
+      let s = `Meal ${m.meal_number} — $${m.net}${m.cash_discount?` (cash, was $${m.meal_price})`:''}`;
+      if (m.food) s += `\n    Food: ${m.food.name}`;
+      if (m.drink) {
+        s += `\n    Drink: ${m.drink.name}`;
+        if (m.drink.extras) s += ` (${m.drink.extras})`;
+      }
+      return s;
+    }).join('\n');
+
+    // For backwards compatibility with admin's items rendering, also produce flat items list
+    const flatItems = [];
+    mealsPayload.forEach(m => {
+      if (m.food) flatItems.push({ code: m.food.code, name: m.food.name, qty: 1, kind: 'food', meal_number: m.meal_number });
+      if (m.drink) flatItems.push({ code: m.drink.code, name: m.drink.name, qty: 1, kind: 'drink', extras: m.drink.extras, meal_number: m.meal_number });
+    });
+
+    const payload = {
+      customer_name: name, customer_phone: phone,
+      pickup_date: dateIso, pickup_slot: slotLbl,
+      items: flatItems,
+      items_summary: itemsSummary,
+      meals: mealsPayload,
+      meal_count: validMeals.length,
+      cash_payment: cashPayment,
+      subtotal: subtotal,
+      discount: discount,
+      byoc_count: 0,
+      notes: notes || null, subscription: subscribe,
+      total, status: 'pending',
+      created_at: new Date().toISOString()
+    };
+
+    btn.textContent = 'Sending…';
+    const result = await submitOrderToBackend(payload);
+    btn.textContent = originalLabel;
+
+    let msg = `Name: <b>${escHtml(name)}</b><br>Phone: <b>${escHtml(phone)}</b><br>`;
+    msg += `${validMeals.length} meal${validMeals.length===1?'':'s'} · <b>$${total.toFixed(0)}</b>${cashPayment?` <span style="color:#080;">(cash, saved $${discount})</span>`:''}<br>`;
+    msg += `Pickup: <b>${formatPickupDate(dateIso)} at ${escHtml(slotLbl)}</b>.`;
+    if (notes) msg += `<br><br>Notes: <i>${escHtml(notes)}</i>`;
+    if (subscribe) msg += `<br><br><b>✓ Signed up for The Usual.</b>`;
+
+    const failures = [];
+    if (result.supabase && result.supabase.startsWith('error')) failures.push(`Database: ${result.supabase}`);
+    if (result.formspree && result.formspree.startsWith('error')) failures.push(`Email alert: ${result.formspree}`);
+    if (failures.length) {
+      msg += `<br><br><b style="color:#c00;">⚠ Something went wrong sending your order:</b><br>${failures.join('<br>')}<br>Please call us.`;
+    } else {
+      msg += `<br><br>See you then.`;
+    }
+    $('#confirm-text').innerHTML = msg;
+    $('#confirm-modal').classList.add('show');
+  });
+
+  function parseLocalDate(iso) { const [y,m,d]=iso.split('-').map(Number); return new Date(y, m-1, d); }
+
+  window.closeConfirm = function() {
+    $('#confirm-modal').classList.remove('show');
+    state.date = null;
+    state.slot = null;
+    state.meals = [{ id: state.nextMealId++, food: null, drink: null, drinkExtras: {} }];
+    state.cashPayment = false;
+    state.datePage = 0;
+    $('.cust-name').value = '';
+    $('.cust-phone').value = '';
+    $('.cust-notes').value = '';
+    $('.cust-sub').checked = false;
+    $('.cust-cash').checked = false;
+    renderAll();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ============================================================
+  // INIT
+  // ============================================================
+  (async function init() {
+    await loadMenuFromDB();
+    await loadScheduleAndSlots();
+    // Load slot counts for the next ~3 months
+    const now = new Date();
+    const end = new Date();
+    end.setDate(end.getDate() + 90);
+    await loadSlotCountsForRange(now, end);
+    renderAll();
+  })();
+</script>
+<a href="https://NealMedia.app" target="_blank" rel="noopener noreferrer" class="nealmedia-float" aria-label="Visit NealMedia.app">
+  <img src="/assets/nealmedia-logo.png" alt="NealMedia">
+</a>
+
+</body>
+</html>
