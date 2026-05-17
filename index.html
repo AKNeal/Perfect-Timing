@@ -851,7 +851,7 @@
 
     $$('.how-step').forEach(el => {
       const lbl = el.querySelector('.how-led-label');
-      if (lbl) lbl.textContent = el.classList.contains('done') ? 'Complete' : 'Incomplete';
+      if (lbl) lbl.textContent = el.classList.contains('done') ? 'Complete' : '';
     });
 
     $('#done-1').style.display = step1Done ? 'inline' : 'none';
