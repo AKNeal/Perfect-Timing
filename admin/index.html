@@ -264,6 +264,21 @@
     .calendar-grid.month .cal-cell-weekday { display: none; }
     .main-tab { padding: 10px 14px; font-size: 16px; }
   }
+
+/* ── Staff Operations Guide ─────────────────────── */
+.staff-guide{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;padding:1rem 0}
+.staff-card{background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:1.25rem 1.5rem}
+.staff-card h3{margin:0 0 1rem;font-size:.95rem;color:#f5c842;letter-spacing:.03em}
+.sop-steps{display:flex;flex-direction:column;gap:.6rem}
+.sop-step{display:flex;align-items:flex-start;gap:.6rem}
+.sop-num{flex-shrink:0;width:1.4rem;height:1.4rem;background:#f5c842;color:#000;border-radius:50%;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:.1rem}
+.sop-txt{font-size:.86rem;color:#ccc;line-height:1.45}
+.sop-txt strong{color:#fff}
+.sop-note{margin:.9rem 0 0;font-size:.78rem;color:#aaa;border-left:3px solid #f5c842;padding-left:.7rem;line-height:1.4}
+.staff-contact{margin:.8rem 0 .5rem;display:flex;flex-direction:column;gap:.4rem}
+.staff-contact p{margin:0;font-size:.86rem;color:#ccc}
+.staff-contact a{color:#f5c842;text-decoration:none}
+.staff-contact a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -334,10 +349,58 @@
 
     <!-- STAFF -->
     <div class="section" id="section-staff">
-      <p class="settings-note">▲ Step-by-step prep instructions with images for every menu item. Use this as a training reference or day-of cheat sheet. Image slots are placeholders — swap in real photos later.</p>
-      <input type="text" class="recipe-search" id="staff-search" placeholder="Search items (e.g. 'coffee', 'casserole', 'potatoes')…">
-      <div class="staff-list" id="staff-list"></div>
+  <div class="staff-guide">
+
+    <div class="staff-card">
+      <h3>⏰ Opening &amp; Closing Routine</h3>
+      <div class="sop-steps">
+        <div class="sop-step"><span class="sop-num">1</span><span class="sop-txt">Arrive by <strong>4:45 AM</strong> to prepare before the first pickup window opens at 5:00 AM.</span></div>
+        <div class="sop-step"><span class="sop-num">2</span><span class="sop-txt">Open the <strong>Dashboard</strong> tab and review all pending orders for the day.</span></div>
+        <div class="sop-step"><span class="sop-num">3</span><span class="sop-txt">Pull, prep, and package all orders before their scheduled pickup windows.</span></div>
+        <div class="sop-step"><span class="sop-num">4</span><span class="sop-txt">Mark each order <strong>Ready</strong> in the app as soon as it is packaged.</span></div>
+        <div class="sop-step"><span class="sop-num">5</span><span class="sop-txt">After the last pickup, mark all fulfilled orders <strong>Complete</strong> and close down by <strong>10:00 AM</strong>.</span></div>
+      </div>
     </div>
+
+    <div class="staff-card">
+      <h3>📦 Order Fulfillment</h3>
+      <div class="sop-steps">
+        <div class="sop-step"><span class="sop-num">1</span><span class="sop-txt">Go to the <strong>Dashboard</strong> tab — new orders appear here automatically.</span></div>
+        <div class="sop-step"><span class="sop-num">2</span><span class="sop-txt">Read the order details: customer name, items, quantities, and pickup time.</span></div>
+        <div class="sop-step"><span class="sop-num">3</span><span class="sop-txt">Mark the order <strong>Prepping</strong> so the customer sees it is being worked on.</span></div>
+        <div class="sop-step"><span class="sop-num">4</span><span class="sop-txt">Package each item carefully. Label the bag with the customer name and order number.</span></div>
+        <div class="sop-step"><span class="sop-num">5</span><span class="sop-txt">Stage completed orders in the pickup area and mark <strong>Ready</strong> in the app.</span></div>
+        <div class="sop-step"><span class="sop-num">6</span><span class="sop-txt">Hand off to the customer and mark <strong>Complete</strong>.</span></div>
+      </div>
+      <p class="sop-note">💡 Cash discount pricing is applied automatically at checkout — no manual adjustment needed.</p>
+    </div>
+
+    <div class="staff-card">
+      <h3>🍽️ Menu &amp; Pricing Changes</h3>
+      <div class="sop-steps">
+        <div class="sop-step"><span class="sop-num">1</span><span class="sop-txt">Go to the <strong>Menu Mgmt</strong> tab in this admin panel.</span></div>
+        <div class="sop-step"><span class="sop-num">2</span><span class="sop-txt">Toggle item <strong>availability</strong> on or off to reflect what is in stock today.</span></div>
+        <div class="sop-step"><span class="sop-num">3</span><span class="sop-txt">To change a <strong>price</strong>, locate the item and update the price field. Save before leaving the tab.</span></div>
+        <div class="sop-step"><span class="sop-num">4</span><span class="sop-txt">To <strong>add or permanently remove</strong> a menu item, contact Neal Media — new item codes must be added at the system level.</span></div>
+      </div>
+      <p class="sop-note">⚠️ If ownership of this location changes, notify Neal Media immediately so the account can be transferred.</p>
+    </div>
+
+    <div class="staff-card">
+      <h3>🛠️ App Changes &amp; Support</h3>
+      <div class="sop-steps">
+        <div class="sop-step"><span class="sop-num">1</span><span class="sop-txt">For app updates, feature requests, or technical issues, contact <strong>Neal Media</strong>.</span></div>
+        <div class="sop-step"><span class="sop-num">2</span><span class="sop-txt">Response time is typically within <strong>1 business day</strong>.</span></div>
+      </div>
+      <div class="staff-contact">
+        <p>📧 <a href="mailto:NealMedia@yahoo.com">NealMedia@yahoo.com</a></p>
+        <p>🌐 <a href="https://NealMedia.app" target="_blank">NealMedia.app</a></p>
+      </div>
+      <p class="sop-note">ℹ️ A <strong>10% platform fee</strong> is automatically deducted from all sales. This covers hosting, updates, and ongoing support.</p>
+    </div>
+
+  </div>
+</div>
 
     <!-- CUSTOMERS -->
     <div class="section" id="section-customers">
