@@ -1,0 +1,2596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfect Timing — Menu Repository</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d0d;color:#fff;font-family:'Courier New',monospace;min-height:100vh}
+.pt-stripe{height:14px;background:repeating-linear-gradient(90deg,#f5c842 0,#f5c842 20px,#111 20px,#111 40px)}
+.pt-header{padding:28px 24px 20px;text-align:center}
+.pt-logo{font-size:2.4rem;font-weight:900;letter-spacing:4px;text-transform:uppercase}
+.pt-logo span{color:#f5c842}
+.pt-subtitle{font-size:.7rem;letter-spacing:3px;color:#888;margin-top:6px}
+.cat-nav{display:flex;justify-content:center;gap:8px;padding:20px 16px;flex-wrap:wrap;border-bottom:1px solid #222}
+.cat-btn{background:#1a1a1a;border:1px solid #333;color:#aaa;padding:10px 22px;font-family:'Courier New',monospace;font-size:.75rem;font-weight:700;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all .2s}
+.cat-btn:hover{border-color:#f5c842;color:#f5c842}
+.cat-btn.active{background:#f5c842;border-color:#f5c842;color:#111}
+.cat-section{display:none;padding:24px 16px 40px;max-width:1400px;margin:0 auto}
+.cat-section.active{display:block}
+.skill-block{margin-bottom:48px}
+.skill-header{display:flex;align-items:center;gap:16px;padding:14px 0 12px;border-bottom:2px solid #222;margin-bottom:24px}
+.skill-badge{font-size:.75rem;font-weight:700;letter-spacing:1px;padding:4px 12px;border-radius:3px}
+.skill-badge.easy{background:#1a3a1a;color:#4caf50;border:1px solid #2d6a2d}
+.skill-badge.intermediate{background:#3a2d0a;color:#f5c842;border:1px solid #7a6010}
+.skill-badge.expert{background:#3a0a0a;color:#e05555;border:1px solid #7a1010}
+.skill-label{font-size:.65rem;letter-spacing:2px;color:#555;text-transform:uppercase}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px}
+.mic-card{background:#111;border:1px solid #252525;border-radius:6px;overflow:hidden}
+.mic-card:hover{border-color:#333}
+.mic-code{font-size:.6rem;letter-spacing:2px;color:#555;padding:10px 14px 0}
+.mic-header{padding:8px 14px 12px}
+.mic-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.mic-name{font-size:.95rem;font-weight:700;letter-spacing:1px;color:#fff;text-transform:uppercase;line-height:1.3}
+.mic-badge{font-size:.6rem;font-weight:700;padding:3px 8px;border-radius:2px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.mic-badge--easy{background:#1a3a1a;color:#4caf50;border:1px solid #2d6a2d}
+.mic-badge--intermediate{background:#3a2d0a;color:#f5c842;border:1px solid #7a6010}
+.mic-badge--expert{background:#3a0a0a;color:#e05555;border:1px solid #7a1010}
+.mic-meta{display:flex;gap:12px}
+.mic-method,.mic-time{font-size:.65rem;color:#666;letter-spacing:1px}
+.mic-exploded{background:#111;padding:12px 0;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;overflow:hidden}
+.mic-exploded svg{display:block;overflow:visible}
+.mic-exploded svg{display:block;margin:0 auto}
+.mic-ingredients,.mic-instructions{padding:12px 14px}
+.mic-ingredients h3,.mic-instructions h3{font-size:.65rem;letter-spacing:2px;color:#555;text-transform:uppercase;margin-bottom:8px}
+/* ---- Component list ---- */
+.mic-component-list{padding-left:0;list-style:none}
+.mic-component-list li{font-size:.73rem;color:#bbb;margin-bottom:5px;line-height:1.5;padding-left:14px;position:relative}
+.mic-component-list li::before{content:'▸';position:absolute;left:0;color:#f5c842;font-size:10px;top:2px}
+
+/* ---- Instruction steps with numbered circles ---- */
+.mic-steps{list-style:none;padding-left:0;counter-reset:step-count}
+.mic-steps>li{counter-increment:step-count;display:flex;align-items:flex-start;gap:10px;margin-bottom:0;padding:8px 0;border-bottom:1px solid #1c1c1c;font-size:.73rem;color:#ccc;line-height:1.55}
+.mic-steps>li:last-child{border-bottom:none;padding-bottom:0}
+.mic-steps>li::before{content:counter(step-count);min-width:22px;height:22px;background:#f5c842;color:#111;font-family:'Courier New',monospace;font-size:10px;font-weight:900;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;line-height:1}
+.mic-steps>li strong{color:#fff;font-weight:700}
+.mic-notes{padding:8px 14px 12px;font-size:.65rem;color:#555;letter-spacing:.5px;line-height:1.6;border-top:1px solid #1a1a1a}
+.json-section{background:#0d0d0d;border-top:2px solid #222;padding:32px 16px 40px;max-width:1400px;margin:0 auto}
+.json-section h2{font-size:.8rem;letter-spacing:3px;color:#555;text-transform:uppercase;margin-bottom:16px}
+.json-toolbar{display:flex;gap:10px;margin-bottom:16px}
+.json-btn{background:#1a1a1a;border:1px solid #333;color:#f5c842;padding:8px 18px;font-family:'Courier New',monospace;font-size:.7rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase}
+.json-btn:hover{background:#f5c842;color:#111}
+#json-output{background:#0a0a0a;border:1px solid #222;padding:16px;font-size:.65rem;color:#6a9a6a;line-height:1.6;max-height:400px;overflow:auto;white-space:pre;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="pt-stripe"></div>
+<div class="pt-header">
+  <div class="pt-logo">PERFECT <span>TIMING</span></div>
+  <p class="pt-subtitle">▲ MENU REPOSITORY · NORTH POLE AK · STAFF TRAINING GUIDE</p>
+</div>
+<div class="pt-stripe"></div>
+
+<nav class="cat-nav">
+  <button class="cat-btn active" onclick="showCat('breakfast')">🍳 BREAKFAST</button>
+  <button class="cat-btn" onclick="showCat('drinks')">☕ DRINKS</button>
+  <button class="cat-btn" onclick="showCat('lunch')">🥪 LUNCH</button>
+  <button class="cat-btn" onclick="showCat('desserts')">🍰 DESSERTS</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ BREAKFAST -->
+<section id="breakfast" class="cat-section active">
+
+  <!-- EASY -->
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge easy">⭐ EASY</span>
+      <span class="skill-label">Microwave · No Cook · Day-One Ready</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- M-01 EGG & CHEESE MUG -->
+      <div class="mic-card" data-level="easy" data-id="egg-cheese-mug">
+        <div class="mic-code">▲ M-01</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Egg &amp; Cheese Mug</h2>
+            <span class="mic-badge mic-badge--easy">⭐ Easy</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🌡️ Microwave</span>
+            <span class="mic-time">⏱ 2 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <!-- L0 bottom: Mug/Container -->
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#444"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">MUG</text>
+            <line x1="80" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L1: Egg -->
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">EGGS (2)</text>
+            <line x1="330" y1="265" x2="270" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L2: Cheese -->
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#f5c842"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">CHEDDAR</text>
+            <line x1="120" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L3 top: Seasoning -->
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#555"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">SALT &amp; PEPPER</text>
+            <line x1="330" y1="115" x2="230" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>Microwave-safe mug</li>
+            <li>2 large eggs</li>
+            <li>2 tbsp shredded cheddar cheese</li>
+            <li>Salt &amp; pepper to taste</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Crack</strong> 2 eggs directly into a microwave-safe mug.</li>
+            <li><strong>Whisk</strong> eggs with a fork until yolks and whites are fully combined.</li>
+            <li><strong>Microwave</strong> on HIGH for 60 seconds; stir at 30 seconds.</li>
+            <li><strong>Top</strong> immediately with shredded cheddar and season with salt &amp; pepper.</li>
+            <li><strong>Let stand</strong> 30 seconds until cheese melts, then serve.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: egg, milk. Keep eggs refrigerated. Cook to 160°F internal temp.</div>
+      </div>
+
+      <!-- M-02 LOADED OATMEAL BOWL -->
+      <div class="mic-card" data-level="easy" data-id="loaded-oatmeal-bowl">
+        <div class="mic-code">▲ M-02</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Loaded Oatmeal Bowl</h2>
+            <span class="mic-badge mic-badge--easy">⭐ Easy</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🌡️ Microwave</span>
+            <span class="mic-time">⏱ 3 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="455" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="455" fill="#111"/>
+            <!-- L0: Oats -->
+            <rect x="50" y="396" width="280" height="38" rx="6" fill="#e8dfc0"/>
+            <text x="5" y="419" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">INSTANT OATS</text>
+            <line x1="140" y1="415" x2="50" y2="415" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L1: Brown Sugar -->
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="375" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">BROWN SUGAR</text>
+            <line x1="330" y1="340" x2="230" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L2: Banana -->
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="5" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BANANA SLICES</text>
+            <line x1="160" y1="265" x2="50" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L3: Cinnamon -->
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#8b5e3c"/>
+            <text x="375" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CINNAMON</text>
+            <line x1="330" y1="190" x2="260" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L4 top: Honey -->
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#e8955a"/>
+            <text x="5" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">HONEY DRIZZLE</text>
+            <line x1="160" y1="115" x2="50" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1 packet instant oats (or ½ cup quick oats)</li>
+            <li>1 tbsp brown sugar</li>
+            <li>½ banana, sliced</li>
+            <li>¼ tsp cinnamon</li>
+            <li>1 tsp honey</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Combine</strong> oats and 1 cup water in a microwave-safe bowl.</li>
+            <li><strong>Microwave</strong> on HIGH for 2–2.5 minutes, until water is absorbed.</li>
+            <li><strong>Stir</strong> in brown sugar and cinnamon.</li>
+            <li><strong>Top</strong> with banana slices and drizzle with honey.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: oats (gluten). Vegan — omit honey for strict vegan. Bananas must be ripe (yellow, not green).</div>
+      </div>
+
+      <!-- M-03 PB BANANA TOAST MELT -->
+      <div class="mic-card" data-level="easy" data-id="pb-banana-toast-melt">
+        <div class="mic-code">▲ M-03</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">PB Banana Toast Melt</h2>
+            <span class="mic-badge mic-badge--easy">⭐ Easy</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🌡️ Microwave</span>
+            <span class="mic-time">⏱ 2 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <!-- L0: Bread -->
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BREAD SLICE</text>
+            <line x1="130" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L1: Peanut Butter -->
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#c9a84c"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">PEANUT BUTTER</text>
+            <line x1="330" y1="265" x2="225" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L2: Banana -->
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BANANA SLICES</text>
+            <line x1="160" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L3 top: Honey -->
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#e8955a"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">HONEY DRIZZLE</text>
+            <line x1="330" y1="115" x2="225" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>2 slices bread</li>
+            <li>2 tbsp peanut butter</li>
+            <li>½ banana, sliced thin</li>
+            <li>1 tsp honey</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Toast</strong> bread slices in toaster until golden.</li>
+            <li><strong>Spread</strong> 1 tbsp peanut butter evenly on each slice.</li>
+            <li><strong>Layer</strong> banana slices across both pieces.</li>
+            <li><strong>Drizzle</strong> honey over banana slices and serve open-face.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, peanut. Ask about nut allergies before serving. Sub sunflower butter for nut-free.</div>
+      </div>
+
+    </div>
+  </div><!-- /easy -->
+
+  <!-- INTERMEDIATE -->
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge intermediate">⭐⭐ INTERMEDIATE</span>
+      <span class="skill-label">Air Fryer · Basic Assembly · Some Prep Required</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- A-01 AIR FRYER BACON & EGG BITES -->
+      <div class="mic-card" data-level="intermediate" data-id="af-bacon-egg-bites">
+        <div class="mic-code">▲ A-01</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Air Fryer Bacon &amp; Egg Bites</h2>
+            <span class="mic-badge mic-badge--intermediate">⭐⭐ Intermediate</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🌀 Air Fryer</span>
+            <span class="mic-time">⏱ 12 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <!-- L0: Silicone cups -->
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#444"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">SILICONE CUPS</text>
+            <line x1="150" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L1: Bacon -->
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#8b2e12"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">BACON CRUMBLES</text>
+            <line x1="330" y1="265" x2="215" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L2: Egg mixture -->
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">EGG MIXTURE</text>
+            <line x1="145" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L3 top: Cheese -->
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#f5c842"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">SHREDDED CHEESE</text>
+            <line x1="330" y1="115" x2="210" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>Silicone muffin cups (6-cup tray)</li>
+            <li>4 strips cooked bacon, crumbled</li>
+            <li>6 large eggs + 2 tbsp milk, whisked</li>
+            <li>¼ cup shredded cheddar</li>
+            <li>Salt, pepper, garlic powder</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Preheat</strong> air fryer to 300°F for 3 minutes.</li>
+            <li><strong>Place</strong> silicone cups in air fryer basket.</li>
+            <li><strong>Divide</strong> bacon crumbles evenly among all 6 cups.</li>
+            <li><strong>Pour</strong> egg mixture over bacon, filling each cup ¾ full.</li>
+            <li><strong>Top</strong> each cup with a pinch of shredded cheese.</li>
+            <li><strong>Cook</strong> at 300°F for 10–12 minutes until eggs are set and no longer jiggly.</li>
+            <li><strong>Cool</strong> 1 minute before removing from cups.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: egg, milk, wheat (bacon). Internal egg temp must reach 160°F. Serve 3 bites per order.</div>
+      </div>
+
+      <!-- A-02 AIR FRYER BREAKFAST POTATOES -->
+      <div class="mic-card" data-level="intermediate" data-id="af-breakfast-potatoes">
+        <div class="mic-code">▲ A-02</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Air Fryer Breakfast Potatoes</h2>
+            <span class="mic-badge mic-badge--intermediate">⭐⭐ Intermediate</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🌀 Air Fryer</span>
+            <span class="mic-time">⏱ 18 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <!-- L0: Potato cubes -->
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#c9a84c"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">POTATO CUBES</text>
+            <line x1="145" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L1: Bell peppers -->
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#c0392b"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">BELL PEPPERS</text>
+            <line x1="330" y1="265" x2="240" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L2: Onion -->
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#d6c3d9"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">DICED ONION</text>
+            <line x1="130" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L3 top: Seasoning -->
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#555"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">OIL + SEASONING</text>
+            <line x1="330" y1="115" x2="215" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>2 cups diced russet potatoes (½-inch cubes)</li>
+            <li>½ cup diced bell pepper (mixed colors)</li>
+            <li>¼ cup diced yellow onion</li>
+            <li>1 tbsp olive oil</li>
+            <li>1 tsp each: garlic powder, paprika, salt, pepper</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Toss</strong> potatoes, peppers, and onion in oil and all seasonings until evenly coated.</li>
+            <li><strong>Preheat</strong> air fryer to 400°F for 3 minutes.</li>
+            <li><strong>Spread</strong> vegetable mixture in a single layer in the basket — no piling.</li>
+            <li><strong>Cook</strong> at 400°F for 15 minutes, shaking basket halfway at 7 minutes.</li>
+            <li><strong>Check</strong> for golden-brown edges and fork-tender texture before serving.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Gluten-free, vegan. Dice potatoes ahead in cold water to prevent browning; drain and dry before seasoning.</div>
+      </div>
+
+      <!-- A-03 AIR FRYER FRENCH TOAST STICKS -->
+      <div class="mic-card" data-level="intermediate" data-id="af-french-toast-sticks">
+        <div class="mic-code">▲ A-03</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Air Fryer French Toast Sticks</h2>
+            <span class="mic-badge mic-badge--intermediate">⭐⭐ Intermediate</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🌀 Air Fryer</span>
+            <span class="mic-time">⏱ 10 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <!-- L0: Bread -->
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">THICK BREAD STICKS</text>
+            <line x1="190" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L1: Egg batter -->
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">EGG + MILK BATTER</text>
+            <line x1="330" y1="265" x2="205" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L2: Cinnamon sugar -->
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#c9933a" opacity="0.7"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">CINNAMON SUGAR</text>
+            <line x1="165" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L3 top: Maple syrup -->
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#e8955a"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">MAPLE SYRUP</text>
+            <line x1="330" y1="115" x2="240" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>4 slices thick-cut bread, cut into 3 sticks each</li>
+            <li>2 eggs + ¼ cup milk (batter)</li>
+            <li>1 tsp vanilla extract</li>
+            <li>2 tbsp cinnamon sugar (mixed)</li>
+            <li>Maple syrup for serving</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Whisk</strong> eggs, milk, and vanilla together in a shallow bowl.</li>
+            <li><strong>Dip</strong> each bread stick into the batter, coating all sides; let excess drip off.</li>
+            <li><strong>Roll</strong> each soaked stick in cinnamon sugar.</li>
+            <li><strong>Preheat</strong> air fryer to 375°F for 2 minutes.</li>
+            <li><strong>Arrange</strong> sticks in basket in a single layer; do not overlap.</li>
+            <li><strong>Cook</strong> at 375°F for 8 minutes, flipping once at 4 minutes, until golden and crisp.</li>
+            <li><strong>Serve</strong> with a small cup of warm maple syrup on the side.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, egg, milk. Serve immediately — sticks go soft within 10 minutes. Yields 12 sticks per batch.</div>
+      </div>
+
+    </div>
+  </div><!-- /intermediate -->
+
+  <!-- EXPERT -->
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge expert">⭐⭐⭐ EXPERT</span>
+      <span class="skill-label">Oven · Slow Cooker · Multi-Component Timing</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- S-01 OVERNIGHT STEEL-CUT OATS -->
+      <div class="mic-card" data-level="expert" data-id="overnight-steel-cut-oats">
+        <div class="mic-code">▲ S-01</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Overnight Steel-Cut Oats</h2>
+            <span class="mic-badge mic-badge--expert">⭐⭐⭐ Expert</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🍲 Slow Cooker</span>
+            <span class="mic-time">⏱ Prep night before · 8 hr cook</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="455" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="455" fill="#111"/>
+            <!-- L0: Steel-cut oats -->
+            <rect x="50" y="396" width="280" height="38" rx="6" fill="#e8dfc0"/>
+            <text x="5" y="419" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">STEEL-CUT OATS</text>
+            <line x1="165" y1="415" x2="50" y2="415" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L1: Milk/water -->
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#d6eeff"/>
+            <text x="375" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">MILK + WATER</text>
+            <line x1="330" y1="340" x2="240" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L2: Apple pieces -->
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#4a8c3f"/>
+            <text x="5" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">APPLE PIECES</text>
+            <line x1="145" y1="265" x2="50" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L3: Pecans -->
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#7a5c2e"/>
+            <text x="375" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">TOASTED PECANS</text>
+            <line x1="330" y1="190" x2="215" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L4 top: Honey -->
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#e8955a"/>
+            <text x="5" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">HONEY FINISH</text>
+            <line x1="145" y1="115" x2="50" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1 cup steel-cut oats</li>
+            <li>2 cups whole milk + 2 cups water</li>
+            <li>1 apple, peeled and diced small</li>
+            <li>¼ cup toasted pecans (toast day before)</li>
+            <li>2 tbsp honey per bowl</li>
+            <li>1 tsp cinnamon, pinch of salt</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Spray</strong> slow cooker insert with non-stick spray the night before service.</li>
+            <li><strong>Combine</strong> oats, milk, water, cinnamon, salt, and diced apple in slow cooker.</li>
+            <li><strong>Set</strong> slow cooker to LOW; cook 7–8 hours overnight (start by 10 PM for 6 AM service).</li>
+            <li><strong>Stir</strong> vigorously in the morning — oats will have thickened; add splash of milk if too thick.</li>
+            <li><strong>Portion</strong> into bowls using a 1-cup scoop (yields ~6 servings).</li>
+            <li><strong>Top</strong> each bowl with 1 tbsp toasted pecans and drizzle 2 tbsp honey.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: oats, milk, tree nuts (pecans). Pre-toast pecans in 350°F oven for 8 min. Oats hold on WARM setting up to 2 hours.</div>
+      </div>
+
+      <!-- S-02 BREAKFAST CASSEROLE CUP -->
+      <div class="mic-card" data-level="expert" data-id="breakfast-casserole-cup">
+        <div class="mic-code">▲ S-02</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Breakfast Casserole Cup</h2>
+            <span class="mic-badge mic-badge--expert">⭐⭐⭐ Expert</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🔥 Oven</span>
+            <span class="mic-time">⏱ 35 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="455" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="455" fill="#111"/>
+            <!-- L0: Hash browns -->
+            <rect x="50" y="396" width="280" height="38" rx="6" fill="#c9a84c"/>
+            <text x="5" y="419" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">HASH BROWN CRUST</text>
+            <line x1="185" y1="415" x2="50" y2="415" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L1: Sausage -->
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#7a3b1e"/>
+            <text x="375" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">SAUSAGE CRUMBLES</text>
+            <line x1="330" y1="340" x2="210" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L2: Egg mixture -->
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="5" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">EGG CUSTARD</text>
+            <line x1="140" y1="265" x2="50" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L3: Cheese -->
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#f5c842"/>
+            <text x="375" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CHEDDAR CHEESE</text>
+            <line x1="330" y1="190" x2="225" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L4 top: Seasoning -->
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#555"/>
+            <text x="5" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">SEASONING</text>
+            <line x1="130" y1="115" x2="50" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1½ cups frozen hash browns, thawed and pressed dry</li>
+            <li>½ lb breakfast sausage, cooked and crumbled</li>
+            <li>6 eggs + ¼ cup milk, whisked (custard)</li>
+            <li>1 cup shredded sharp cheddar</li>
+            <li>Salt, pepper, onion powder</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Preheat</strong> oven to 375°F. Spray a 6-cup muffin tin generously.</li>
+            <li><strong>Press</strong> 2–3 tbsp of thawed, dried hash browns into each muffin cup to form a crust shell.</li>
+            <li><strong>Bake</strong> hash brown crusts alone for 10 minutes until beginning to crisp.</li>
+            <li><strong>Layer</strong> 1 tbsp sausage crumbles into each cup on top of the crust.</li>
+            <li><strong>Pour</strong> egg custard over sausage, filling each cup to ¾ full.</li>
+            <li><strong>Top</strong> each cup with a generous pinch of cheddar.</li>
+            <li><strong>Bake</strong> at 375°F for 20–22 minutes until eggs are set and cheese is bubbly.</li>
+            <li><strong>Cool</strong> 3 minutes; run a knife around edge before releasing from pan.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: egg, milk, wheat, soy. Internal temp must hit 165°F. Makes 6 cups per batch. Holds up to 2 hrs in warming oven at 170°F.</div>
+      </div>
+
+      <!-- S-03 CINNAMON ROLL BAKE -->
+      <div class="mic-card" data-level="expert" data-id="cinnamon-roll-bake">
+        <div class="mic-code">▲ S-03</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Cinnamon Roll Bake</h2>
+            <span class="mic-badge mic-badge--expert">⭐⭐⭐ Expert</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🔥 Oven</span>
+            <span class="mic-time">⏱ 30 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <!-- L0: Pan -->
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#555"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BAKING DISH</text>
+            <line x1="130" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L1: Roll pieces -->
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CINNAMON ROLL PIECES</text>
+            <line x1="330" y1="265" x2="185" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L2: Butter/cinnamon -->
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#e8955a"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BUTTER + CINN. SUGAR</text>
+            <line x1="215" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <!-- L3 top: Glaze -->
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#f5f0e0"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CREAM CHEESE GLAZE</text>
+            <line x1="330" y1="115" x2="185" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>2 cans (12.4 oz each) Pillsbury cinnamon rolls</li>
+            <li>2 tbsp melted butter</li>
+            <li>1 tbsp cinnamon sugar</li>
+            <li>Included cream cheese frosting (both cans)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Preheat</strong> oven to 350°F.</li>
+            <li><strong>Butter</strong> a 9×13 baking dish generously.</li>
+            <li><strong>Quarter</strong> each cinnamon roll into bite-sized pieces.</li>
+            <li><strong>Arrange</strong> pieces in a single loose layer across the dish — don't pack tightly.</li>
+            <li><strong>Drizzle</strong> melted butter over pieces and dust with cinnamon sugar.</li>
+            <li><strong>Bake</strong> at 350°F for 22–25 minutes until golden on top and cooked through center.</li>
+            <li><strong>Warm</strong> both containers of frosting (microwave 20 seconds) and drizzle over hot bake.</li>
+            <li><strong>Scoop</strong> into serving cups while still warm; ~8 portions per batch.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, milk, egg, soy. Use Pillsbury Grands for extra-soft result. Serve within 45 minutes of baking.</div>
+      </div>
+
+    </div>
+  </div><!-- /expert -->
+</section>
+<!-- END BREAKFAST -->
+
+<!-- ═══════════════════════════════════════════════════════ DRINKS -->
+<section id="drinks" class="cat-section">
+
+  <!-- EASY -->
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge easy">⭐ EASY</span>
+      <span class="skill-label">No Cook · Pour &amp; Serve · Day-One Ready</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- C-01 HOT COFFEE -->
+      <div class="mic-card" data-level="easy" data-id="hot-coffee">
+        <div class="mic-code">▲ C-01</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Hot Coffee</h2>
+            <span class="mic-badge mic-badge--easy">⭐ Easy</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🥗 No Cook</span>
+            <span class="mic-time">⏱ 1 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#444"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">16 OZ CUP + LID</text>
+            <line x1="155" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#2c1a0e"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">DRIP COFFEE</text>
+            <line x1="330" y1="265" x2="245" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#f5e6a3" opacity="0.6"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">CREAM (opt.)</text>
+            <line x1="130" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#555" opacity="0.5"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">SWEETENER (opt.)</text>
+            <line x1="330" y1="115" x2="215" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>16 oz hot cup with lid</li>
+            <li>Fresh brewed drip coffee (from batch brewer)</li>
+            <li>Cream/creamer per customer request (up to 12 tbsp)</li>
+            <li>Sweetener per customer request (sugar/agave/honey)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Check</strong> coffee batch — brew fresh if pot is older than 30 minutes.</li>
+            <li><strong>Pour</strong> customer's requested add-ins (cream/sweetener) into cup first.</li>
+            <li><strong>Fill</strong> cup to ½ inch from rim with hot coffee.</li>
+            <li><strong>Lid</strong> the cup and hand off.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Customizations saved with order. Add creamer/sweetener BEFORE coffee so it self-mixes. Never let a pot sit over 30 min.</div>
+      </div>
+
+      <!-- C-02 ICED COFFEE -->
+      <div class="mic-card" data-level="easy" data-id="iced-coffee">
+        <div class="mic-code">▲ C-02</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Iced Coffee</h2>
+            <span class="mic-badge mic-badge--easy">⭐ Easy</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🥗 No Cook</span>
+            <span class="mic-time">⏱ 1 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#555"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">20 OZ CUP + LID</text>
+            <line x1="155" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#c5dff8"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">ICE (full)</text>
+            <line x1="330" y1="265" x2="280" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#2c1a0e"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">STRONG DRIP COFFEE</text>
+            <line x1="200" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#f5e6a3" opacity="0.6"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CREAM (opt.)</text>
+            <line x1="330" y1="115" x2="255" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>20 oz plastic cup with straw + lid</li>
+            <li>Ice (fill cup full)</li>
+            <li>Strong drip coffee (brewed double-strength or use cold brew concentrate)</li>
+            <li>Cream/sweetener per order</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Fill</strong> 20 oz cup completely with ice.</li>
+            <li><strong>Add</strong> any cream or sweetener per the customer's saved order.</li>
+            <li><strong>Pour</strong> strong coffee over ice to ½ inch from rim.</li>
+            <li><strong>Lid</strong> and insert straw; hand off.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Use double-strength or day-old coffee for iced — weak coffee over ice tastes watery. Never use hot coffee straight; let cool 5 min minimum.</div>
+      </div>
+
+      <!-- C-03 HOT COCOA -->
+      <div class="mic-card" data-level="easy" data-id="hot-cocoa">
+        <div class="mic-code">▲ C-03</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Hot Cocoa</h2>
+            <span class="mic-badge mic-badge--easy">⭐ Easy</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🌡️ Microwave</span>
+            <span class="mic-time">⏱ 3 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#444"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">12 OZ MUG</text>
+            <line x1="105" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#3d2b1e"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">COCOA MIX (2 tbsp)</text>
+            <line x1="330" y1="265" x2="200" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">HOT MILK</text>
+            <line x1="110" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#f0f0f0"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">WHIPPED CREAM (opt.)</text>
+            <line x1="330" y1="115" x2="180" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>12 oz mug</li>
+            <li>2 tbsp hot cocoa mix</li>
+            <li>10 oz whole milk</li>
+            <li>Whipped cream (if requested)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Pour</strong> 10 oz milk into mug.</li>
+            <li><strong>Microwave</strong> on HIGH 2 minutes until steaming (do not boil).</li>
+            <li><strong>Add</strong> cocoa mix and whisk until fully dissolved.</li>
+            <li><strong>Top</strong> with whipped cream if requested and serve immediately.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: milk, soy (cocoa mix). For extra smooth cocoa, sub half &amp; half for milk. Check temp before serving — target 150–160°F.</div>
+      </div>
+    </div>
+  </div><!-- /easy drinks -->
+
+  <!-- INTERMEDIATE DRINKS -->
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge intermediate">⭐⭐ INTERMEDIATE</span>
+      <span class="skill-label">Stovetop Steaming · Assembly · Flavor Building</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- C-04 CHAI LATTE -->
+      <div class="mic-card" data-level="intermediate" data-id="chai-latte">
+        <div class="mic-code">▲ C-04</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Chai Latte</h2>
+            <span class="mic-badge mic-badge--intermediate">⭐⭐ Intermediate</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🍳 Stovetop</span>
+            <span class="mic-time">⏱ 6 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#444"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">12 OZ CUP</text>
+            <line x1="105" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CHAI CONCENTRATE (3 oz)</text>
+            <line x1="330" y1="265" x2="175" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">STEAMED MILK (8 oz)</text>
+            <line x1="185" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#8b5e3c"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CINNAMON DUST</text>
+            <line x1="330" y1="115" x2="235" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>3 oz Oregon Chai concentrate (or equivalent)</li>
+            <li>8 oz whole milk</li>
+            <li>Pinch of ground cinnamon (garnish)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Pour</strong> chai concentrate into 12 oz cup.</li>
+            <li><strong>Heat</strong> milk in small saucepan over medium heat until steaming (150°F), stirring constantly.</li>
+            <li><strong>Froth</strong> milk with handheld frother for 15 seconds until foamy.</li>
+            <li><strong>Pour</strong> steamed milk over chai concentrate.</li>
+            <li><strong>Dust</strong> with a pinch of cinnamon and serve immediately.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: milk, soy (chai mix). For iced version: skip heating, pour over ice. Adjust chai:milk ratio to taste (sweeter = more chai).</div>
+      </div>
+
+      <!-- C-05 BLENDED MOCHA FRAPPE -->
+      <div class="mic-card" data-level="intermediate" data-id="blended-mocha-frappe">
+        <div class="mic-code">▲ C-05</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Blended Mocha Frappé</h2>
+            <span class="mic-badge mic-badge--intermediate">⭐⭐ Intermediate</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🌀 Blender</span>
+            <span class="mic-time">⏱ 4 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="455" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="455" fill="#111"/>
+            <rect x="50" y="396" width="280" height="38" rx="6" fill="#555"/>
+            <text x="5" y="419" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">16 OZ CUP</text>
+            <line x1="110" y1="415" x2="50" y2="415" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#c5dff8"/>
+            <text x="375" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">ICE (1.5 cups)</text>
+            <line x1="330" y1="340" x2="240" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#2c1a0e"/>
+            <text x="5" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">COLD BREW (4 oz)</text>
+            <line x1="165" y1="265" x2="50" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#3d1c02"/>
+            <text x="375" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CHOCOLATE SYRUP</text>
+            <line x1="330" y1="190" x2="220" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#f0f0f0"/>
+            <text x="5" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">WHIPPED CREAM</text>
+            <line x1="165" y1="115" x2="50" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1½ cups ice</li>
+            <li>4 oz cold brew concentrate</li>
+            <li>2 tbsp chocolate syrup</li>
+            <li>3 oz whole milk</li>
+            <li>Whipped cream for top</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Add</strong> ice, cold brew, chocolate syrup, and milk to blender.</li>
+            <li><strong>Blend</strong> on HIGH for 30–45 seconds until smooth and no ice chunks remain.</li>
+            <li><strong>Pour</strong> into 16 oz cup.</li>
+            <li><strong>Top</strong> with whipped cream and drizzle extra chocolate syrup if desired.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: milk, soy. Clean blender immediately after each use. Use cold brew concentrate — not hot brewed coffee — for best texture.</div>
+      </div>
+    </div>
+  </div><!-- /intermediate drinks -->
+
+  <!-- EXPERT DRINKS -->
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge expert">⭐⭐⭐ EXPERT</span>
+      <span class="skill-label">Pour-Over Technique · Temperature Control · Precision</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- C-06 POUR-OVER COFFEE -->
+      <div class="mic-card" data-level="expert" data-id="pour-over-coffee">
+        <div class="mic-code">▲ C-06</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Single-Cup Pour-Over</h2>
+            <span class="mic-badge mic-badge--expert">⭐⭐⭐ Expert</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🍳 Stovetop / Kettle</span>
+            <span class="mic-time">⏱ 5 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#444"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">CARAFE + DRIPPER</text>
+            <line x1="165" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f5e6a3" opacity="0.7"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">PAPER FILTER</text>
+            <line x1="330" y1="265" x2="245" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#2c1a0e"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">GROUND COFFEE (18g)</text>
+            <line x1="200" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#c5dff8"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">HOT WATER (200°F)</text>
+            <line x1="330" y1="115" x2="210" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>Pour-over dripper + carafe or mug</li>
+            <li>1 paper filter (size #2)</li>
+            <li>18g freshly ground coffee (medium-fine grind)</li>
+            <li>300ml water at 200°F (just off boil)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Place</strong> filter in dripper; rinse with hot water to remove paper taste, then discard rinse water.</li>
+            <li><strong>Add</strong> 18g ground coffee to filter; tap to level.</li>
+            <li><strong>Bloom</strong>: pour 36ml water in slow circles; wait 30 seconds until coffee expands.</li>
+            <li><strong>Pour</strong> remaining water in steady slow circles, center outward, over 2–3 minutes.</li>
+            <li><strong>Wait</strong> for drip to stop completely before removing dripper.</li>
+            <li><strong>Serve</strong> in 12 oz cup with requested cream/sweetener on the side.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Grind fresh per order — pre-ground deteriorates within 15 min. Total brew time should be 3–3.5 min. Too fast = weak; too slow = bitter.</div>
+      </div>
+
+      <!-- C-07 MATCHA OAT MILK LATTE -->
+      <div class="mic-card" data-level="expert" data-id="matcha-oat-latte">
+        <div class="mic-code">▲ C-07</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Matcha Oat Milk Latte</h2>
+            <span class="mic-badge mic-badge--expert">⭐⭐⭐ Expert</span>
+          </div>
+          <div class="mic-meta">
+            <span class="mic-method">🍳 Stovetop</span>
+            <span class="mic-time">⏱ 6 min</span>
+          </div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#444"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">12 OZ MUG</text>
+            <line x1="105" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#3d7a3d"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">MATCHA POWDER (2 tsp)</text>
+            <line x1="330" y1="265" x2="175" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#c5dff8" opacity="0.6"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">HOT WATER (2 oz / 175°F)</text>
+            <line x1="215" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#e8dfc0"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">STEAMED OAT MILK (8 oz)</text>
+            <line x1="330" y1="115" x2="165" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>2 tsp ceremonial-grade matcha powder</li>
+            <li>2 oz hot water (175°F — NOT boiling)</li>
+            <li>8 oz oat milk, steamed to 150°F</li>
+            <li>1 tsp honey or agave (optional)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Sift</strong> matcha powder into mug to prevent clumping.</li>
+            <li><strong>Add</strong> 2 oz water at 175°F (not boiling — damages matcha flavor).</li>
+            <li><strong>Whisk</strong> vigorously in a W-motion with bamboo whisk for 20 seconds until frothy paste forms.</li>
+            <li><strong>Heat</strong> oat milk on stovetop to 150°F, stirring; froth with handheld frother.</li>
+            <li><strong>Pour</strong> steamed oat milk over matcha paste, stirring gently as you pour.</li>
+            <li><strong>Sweeten</strong> with honey if requested; serve immediately.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Dairy-free, vegan. Use ceremonial-grade matcha only — culinary grade is bitter. Water MUST be under 180°F or matcha turns bitter.</div>
+      </div>
+    </div>
+  </div><!-- /expert drinks -->
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ LUNCH -->
+<section id="lunch" class="cat-section">
+
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge easy">⭐ EASY</span>
+      <span class="skill-label">No Cook · Heat &amp; Serve · Grab-and-Go</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- L-01 PB&J LUNCHBOX -->
+      <div class="mic-card" data-level="easy" data-id="pbj-lunchbox">
+        <div class="mic-code">▲ L-01</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">PB&amp;J Lunchbox</h2>
+            <span class="mic-badge mic-badge--easy">⭐ Easy</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🥗 No Cook</span><span class="mic-time">⏱ 3 min</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BREAD (bottom)</text>
+            <line x1="165" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#c9a84c"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">PEANUT BUTTER</text>
+            <line x1="330" y1="265" x2="225" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#c0392b"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">STRAWBERRY JELLY</text>
+            <line x1="185" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">BREAD (top)</text>
+            <line x1="330" y1="115" x2="245" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>2 slices sandwich bread</li>
+            <li>2 tbsp peanut butter</li>
+            <li>1.5 tbsp strawberry jelly</li>
+            <li>Small bag of chips + fruit cup (sides)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Spread</strong> peanut butter on one slice of bread.</li>
+            <li><strong>Spread</strong> jelly on the other slice.</li>
+            <li><strong>Press</strong> slices together and cut diagonally.</li>
+            <li><strong>Pack</strong> in clamshell container with chips and fruit cup.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, peanut. Ask about nut allergies. Sub sunflower butter for nut-free orders.</div>
+      </div>
+
+      <!-- L-02 CUP NOODLES DELUXE -->
+      <div class="mic-card" data-level="easy" data-id="cup-noodles-deluxe">
+        <div class="mic-code">▲ L-02</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Cup Noodles Deluxe</h2>
+            <span class="mic-badge mic-badge--easy">⭐ Easy</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🌡️ Microwave</span><span class="mic-time">⏱ 4 min</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#555"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">NOODLE CUP</text>
+            <line x1="130" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f0d890"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">RAMEN NOODLES</text>
+            <line x1="330" y1="265" x2="230" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#e8955a"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">SEASONING PACKET</text>
+            <line x1="185" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#c5dff8"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">BOILING WATER</text>
+            <line x1="330" y1="115" x2="235" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1 Nissin Cup Noodles (chicken or beef)</li>
+            <li>Hot water to fill line</li>
+            <li>Optional: soft-boiled egg, green onion garnish</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Remove</strong> lid halfway; pour out any loose seasoning packet.</li>
+            <li><strong>Fill</strong> with boiling water to the inside fill line.</li>
+            <li><strong>Replace</strong> lid and wait exactly 3 minutes.</li>
+            <li><strong>Stir</strong> noodles and serve in cup with fork/chopsticks.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, soy, egg (may vary by flavor). Check label. Do NOT microwave the cup — use a kettle or hot water dispenser.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INTERMEDIATE LUNCH -->
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge intermediate">⭐⭐ INTERMEDIATE</span>
+      <span class="skill-label">Air Fryer · Assembly · Some Knife Work</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- L-03 AIR FRYER GRILLED CHEESE -->
+      <div class="mic-card" data-level="intermediate" data-id="af-grilled-cheese">
+        <div class="mic-code">▲ L-03</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Air Fryer Grilled Cheese</h2>
+            <span class="mic-badge mic-badge--intermediate">⭐⭐ Intermediate</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🌀 Air Fryer</span><span class="mic-time">⏱ 8 min</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BREAD (bottom)</text>
+            <line x1="165" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f5c842" opacity="0.6"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">BUTTER (outside)</text>
+            <line x1="330" y1="265" x2="225" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#f5c842"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">AMERICAN CHEESE (2)</text>
+            <line x1="210" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">BREAD (top, buttered)</text>
+            <line x1="330" y1="115" x2="190" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>2 slices sandwich bread</li>
+            <li>2 slices American cheese</li>
+            <li>1 tbsp softened butter</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Spread</strong> butter evenly on the outside of both bread slices.</li>
+            <li><strong>Layer</strong> 2 slices of cheese between the bread, butter-side out.</li>
+            <li><strong>Preheat</strong> air fryer to 370°F for 2 minutes.</li>
+            <li><strong>Place</strong> sandwich in basket; use a toothpick through center to prevent it opening.</li>
+            <li><strong>Cook</strong> at 370°F for 4 minutes; flip; cook 3 more minutes until golden.</li>
+            <li><strong>Cut</strong> diagonally and serve immediately.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, milk. Serve within 5 minutes or bread softens. Upgrade with tomato slices or bacon for premium version.</div>
+      </div>
+
+      <!-- L-04 TURKEY RANCH WRAP -->
+      <div class="mic-card" data-level="intermediate" data-id="turkey-ranch-wrap">
+        <div class="mic-code">▲ L-04</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Turkey Ranch Wrap</h2>
+            <span class="mic-badge mic-badge--intermediate">⭐⭐ Intermediate</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🥗 No Cook</span><span class="mic-time">⏱ 5 min</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="455" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="455" fill="#111"/>
+            <rect x="50" y="396" width="280" height="38" rx="6" fill="#e8c87a"/>
+            <text x="5" y="419" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">FLOUR TORTILLA</text>
+            <line x1="165" y1="415" x2="50" y2="415" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="375" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">RANCH DRESSING</text>
+            <line x1="330" y1="340" x2="230" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#c96060"/>
+            <text x="5" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">DELI TURKEY (3 oz)</text>
+            <line x1="175" y1="265" x2="50" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#4a8c3f"/>
+            <text x="375" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">ROMAINE LETTUCE</text>
+            <line x1="330" y1="190" x2="225" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#c0392b"/>
+            <text x="5" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">TOMATO SLICES</text>
+            <line x1="155" y1="115" x2="50" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1 large (10-inch) flour tortilla</li>
+            <li>2 tbsp ranch dressing</li>
+            <li>3 oz sliced deli turkey</li>
+            <li>¼ cup shredded romaine lettuce</li>
+            <li>3 tomato slices</li>
+            <li>1 slice provolone (optional)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Warm</strong> tortilla 10 seconds in microwave to make it pliable.</li>
+            <li><strong>Spread</strong> ranch dressing across center of tortilla, leaving 2-inch border.</li>
+            <li><strong>Layer</strong> turkey, lettuce, then tomato across the center.</li>
+            <li><strong>Fold</strong> sides in 1 inch, then roll tightly away from you.</li>
+            <li><strong>Cut</strong> wrap in half on the diagonal and wrap bottom half in foil.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, milk, egg (ranch). Roll tight — a loose wrap falls apart. Keep refrigerated; assemble to-order only.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EXPERT LUNCH -->
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge expert">⭐⭐⭐ EXPERT</span>
+      <span class="skill-label">Slow Cooker · Oven · Multi-Ingredient · Overnight Prep</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- L-05 SLOW COOKER CHILI CUP -->
+      <div class="mic-card" data-level="expert" data-id="slow-cooker-chili">
+        <div class="mic-code">▲ L-05</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Slow Cooker Chili Cup</h2>
+            <span class="mic-badge mic-badge--expert">⭐⭐⭐ Expert</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🍲 Slow Cooker</span><span class="mic-time">⏱ 6–8 hr</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="455" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="455" fill="#111"/>
+            <rect x="50" y="396" width="280" height="38" rx="6" fill="#7a3b1e"/>
+            <text x="5" y="419" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">GROUND BEEF</text>
+            <line x1="145" y1="415" x2="50" y2="415" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#8b2e12"/>
+            <text x="375" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">KIDNEY BEANS</text>
+            <line x1="330" y1="340" x2="245" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#c0392b"/>
+            <text x="5" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">DICED TOMATOES</text>
+            <line x1="165" y1="265" x2="50" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#e8955a"/>
+            <text x="375" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CHILI SPICE BLEND</text>
+            <line x1="330" y1="190" x2="220" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#f5c842"/>
+            <text x="5" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">CHEDDAR TOPPING</text>
+            <line x1="175" y1="115" x2="50" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1 lb ground beef (80/20), browned and drained</li>
+            <li>1 can (15 oz) kidney beans, drained</li>
+            <li>1 can (14.5 oz) diced tomatoes with juices</li>
+            <li>1 packet chili seasoning mix</li>
+            <li>½ cup beef broth</li>
+            <li>Shredded cheddar for topping</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Brown</strong> ground beef in skillet over medium-high heat; drain fat completely.</li>
+            <li><strong>Transfer</strong> beef to slow cooker.</li>
+            <li><strong>Add</strong> beans, tomatoes, seasoning packet, and broth; stir to combine.</li>
+            <li><strong>Cook</strong> on LOW 6–8 hours or HIGH 3–4 hours.</li>
+            <li><strong>Taste</strong> and adjust salt before service.</li>
+            <li><strong>Portion</strong> into 8 oz cups using ladle; top with cheddar.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: milk (cheese), soy (seasoning). Brown beef day-of for food safety. Holds on WARM up to 4 hours. Yields ~8 cups per batch.</div>
+      </div>
+
+      <!-- L-06 LOADED BAKED POTATO BOWL -->
+      <div class="mic-card" data-level="expert" data-id="loaded-baked-potato">
+        <div class="mic-code">▲ L-06</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Loaded Baked Potato Bowl</h2>
+            <span class="mic-badge mic-badge--expert">⭐⭐⭐ Expert</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🔥 Oven</span><span class="mic-time">⏱ 60 min</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="455" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="455" fill="#111"/>
+            <rect x="50" y="396" width="280" height="38" rx="6" fill="#c9a84c"/>
+            <text x="5" y="419" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BAKED POTATO</text>
+            <line x1="150" y1="415" x2="50" y2="415" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#fff"/>
+            <text x="375" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">SOUR CREAM</text>
+            <line x1="330" y1="340" x2="250" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f5c842"/>
+            <text x="5" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">CHEDDAR CHEESE</text>
+            <line x1="165" y1="265" x2="50" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#8b2e12"/>
+            <text x="375" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">BACON BITS</text>
+            <line x1="330" y1="190" x2="265" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#4a8c3f"/>
+            <text x="5" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">GREEN ONION</text>
+            <line x1="140" y1="115" x2="50" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1 large russet potato (8–10 oz)</li>
+            <li>2 tbsp sour cream</li>
+            <li>2 tbsp shredded cheddar cheese</li>
+            <li>1 tbsp real bacon bits</li>
+            <li>1 tbsp sliced green onion</li>
+            <li>1 tsp butter, salt &amp; pepper</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Scrub</strong> potato and poke all over with fork (10–12 times).</li>
+            <li><strong>Rub</strong> skin with oil and salt.</li>
+            <li><strong>Bake</strong> directly on oven rack at 400°F for 50–60 minutes until skin is crisp and inside is fork-tender.</li>
+            <li><strong>Cut</strong> open lengthwise; fluff insides with fork.</li>
+            <li><strong>Press</strong> sides to open potato into a bowl shape.</li>
+            <li><strong>Layer</strong> butter, sour cream, cheddar, bacon bits, and green onion in that order.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Gluten-free. Bake potatoes in large batches; hold wrapped in foil in 200°F oven up to 2 hrs. Top to-order only.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ DESSERTS -->
+<section id="desserts" class="cat-section">
+
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge easy">⭐ EASY</span>
+      <span class="skill-label">No Cook · Premade · Heat &amp; Serve</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- D-01 COSMIC BROWNIE BITE -->
+      <div class="mic-card" data-level="easy" data-id="cosmic-brownie-bite">
+        <div class="mic-code">▲ D-01</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Cosmic Brownie Bite</h2>
+            <span class="mic-badge mic-badge--easy">⭐ Easy</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🥗 No Cook</span><span class="mic-time">⏱ 1 min</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="305" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="305" fill="#111"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#2c1008"/>
+            <text x="5" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">FUDGE BROWNIE BASE</text>
+            <line x1="195" y1="265" x2="50" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#5a2d0c"/>
+            <text x="375" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CHOCOLATE FUDGE LAYER</text>
+            <line x1="330" y1="190" x2="175" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#c0392b"/>
+            <text x="5" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">RAINBOW CANDY CHIPS</text>
+            <line x1="200" y1="115" x2="50" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1 Little Debbie Cosmic Brownie</li>
+            <li>Dessert cup or wrapper for serving</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Remove</strong> brownie from outer packaging.</li>
+            <li><strong>Place</strong> in dessert cup or serve on napkin.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, milk, soy, egg. Keep at room temperature. Do not refrigerate — brownie hardens.</div>
+      </div>
+
+      <!-- D-02 BANANA PUDDING CUP -->
+      <div class="mic-card" data-level="easy" data-id="banana-pudding-cup">
+        <div class="mic-code">▲ D-02</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Banana Pudding Cup</h2>
+            <span class="mic-badge mic-badge--easy">⭐ Easy</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🥗 No Cook</span><span class="mic-time">⏱ 3 min</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">VANILLA WAFERS</text>
+            <line x1="160" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f5e8a0"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">VANILLA PUDDING</text>
+            <line x1="330" y1="265" x2="230" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BANANA SLICES</text>
+            <line x1="160" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#f0f0f0"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">WHIPPED CREAM</text>
+            <line x1="330" y1="115" x2="240" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>6–8 Nilla wafers</li>
+            <li>¼ cup prepared vanilla pudding (Jell-O ready-to-eat)</li>
+            <li>½ banana, sliced</li>
+            <li>Whipped cream from can</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Layer</strong> wafers across the bottom of an 8 oz cup.</li>
+            <li><strong>Spoon</strong> pudding over wafers and spread evenly.</li>
+            <li><strong>Arrange</strong> banana slices across pudding layer.</li>
+            <li><strong>Top</strong> with a swirl of whipped cream and serve chilled.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, milk, egg. Assemble to-order — wafers go soggy within 20 min. Use ripe bananas only.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INTERMEDIATE DESSERTS -->
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge intermediate">⭐⭐ INTERMEDIATE</span>
+      <span class="skill-label">Air Fryer · Microwave Baking · Quick Technique</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- D-03 AIR FRYER CINNAMON DONUT HOLES -->
+      <div class="mic-card" data-level="intermediate" data-id="af-donut-holes">
+        <div class="mic-code">▲ D-03</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Air Fryer Cinnamon Donut Holes</h2>
+            <span class="mic-badge mic-badge--intermediate">⭐⭐ Intermediate</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🌀 Air Fryer</span><span class="mic-time">⏱ 12 min</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#e8c87a"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BISCUIT DOUGH BALLS</text>
+            <line x1="200" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f5c842" opacity="0.7"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">MELTED BUTTER COAT</text>
+            <line x1="330" y1="265" x2="210" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">CINNAMON SUGAR ROLL</text>
+            <line x1="205" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#f0f0f0"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">POWDERED SUGAR DUST</text>
+            <line x1="330" y1="115" x2="190" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1 can Pillsbury Grands biscuit dough</li>
+            <li>3 tbsp melted butter</li>
+            <li>¼ cup cinnamon sugar (3 tbsp sugar + 1 tsp cinnamon)</li>
+            <li>2 tbsp powdered sugar (finish)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Cut</strong> each biscuit round into 4 pieces; roll each into a ball.</li>
+            <li><strong>Preheat</strong> air fryer to 350°F for 2 minutes.</li>
+            <li><strong>Cook</strong> dough balls at 350°F for 6–7 minutes until golden and cooked through.</li>
+            <li><strong>Brush</strong> hot donut holes immediately with melted butter.</li>
+            <li><strong>Roll</strong> buttered holes in cinnamon sugar until fully coated.</li>
+            <li><strong>Dust</strong> lightly with powdered sugar; serve warm in a cup.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, milk. Serve within 15 minutes for best texture. Makes ~32 holes per can. Batch size: 1 can per service window.</div>
+      </div>
+
+      <!-- D-04 MUG CAKE -->
+      <div class="mic-card" data-level="intermediate" data-id="mug-cake">
+        <div class="mic-code">▲ D-04</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Chocolate Mug Cake</h2>
+            <span class="mic-badge mic-badge--intermediate">⭐⭐ Intermediate</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🌡️ Microwave</span><span class="mic-time">⏱ 3 min</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#444"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">MUG (12 oz)</text>
+            <line x1="110" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#3d1c02"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">FLOUR + COCOA BATTER</text>
+            <line x1="330" y1="265" x2="185" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#5a2d0c"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">CHOCOLATE CHIPS</text>
+            <line x1="170" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#f0f0f0"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">POWDERED SUGAR</text>
+            <line x1="330" y1="115" x2="230" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>4 tbsp all-purpose flour</li>
+            <li>4 tbsp sugar</li>
+            <li>2 tbsp unsweetened cocoa powder</li>
+            <li>1 egg</li>
+            <li>3 tbsp milk + 3 tbsp vegetable oil</li>
+            <li>2 tbsp chocolate chips (fold in)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Combine</strong> flour, sugar, and cocoa powder in mug; stir dry ingredients.</li>
+            <li><strong>Add</strong> egg, milk, and oil; stir until smooth with no dry clumps.</li>
+            <li><strong>Fold</strong> in chocolate chips.</li>
+            <li><strong>Microwave</strong> on HIGH for 90 seconds — top should be just set, not wet.</li>
+            <li><strong>Dust</strong> with powdered sugar and serve in the mug immediately.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, egg, milk, soy. Do not overcook — 90 sec is exact. Cake continues cooking 30 sec after stopping. One serving per mug.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EXPERT DESSERTS -->
+  <div class="skill-block">
+    <div class="skill-header">
+      <span class="skill-badge expert">⭐⭐⭐ EXPERT</span>
+      <span class="skill-label">Oven · Slow Cooker · Scratch Baking</span>
+    </div>
+    <div class="cards-grid">
+
+      <!-- D-05 SLOW COOKER APPLE CRISP -->
+      <div class="mic-card" data-level="expert" data-id="sc-apple-crisp">
+        <div class="mic-code">▲ D-05</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Slow Cooker Apple Crisp</h2>
+            <span class="mic-badge mic-badge--expert">⭐⭐⭐ Expert</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🍲 Slow Cooker</span><span class="mic-time">⏱ 3–4 hr</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#4a8c3f"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">SLICED APPLES (4 cups)</text>
+            <line x1="215" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#c9933a"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CINNAMON SUGAR</text>
+            <line x1="330" y1="265" x2="235" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#e8dfc0"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">OAT CRUMBLE TOPPING</text>
+            <line x1="210" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#f5c842" opacity="0.7"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">BUTTER BITS</text>
+            <line x1="330" y1="115" x2="260" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>4 cups Granny Smith apples, peeled and sliced thin</li>
+            <li>2 tbsp sugar + 1 tsp cinnamon (toss with apples)</li>
+            <li>Crumble: ½ cup rolled oats, ¼ cup brown sugar, ¼ cup flour</li>
+            <li>4 tbsp cold butter, cut in small cubes (for crumble)</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Toss</strong> sliced apples with cinnamon and sugar in slow cooker insert.</li>
+            <li><strong>Mix</strong> oats, brown sugar, and flour in a bowl.</li>
+            <li><strong>Cut</strong> cold butter into oat mixture with a fork until crumbly.</li>
+            <li><strong>Spread</strong> crumble evenly over apple layer — do not stir.</li>
+            <li><strong>Cook</strong> on HIGH 2.5–3 hours, lid slightly vented with a chopstick.</li>
+            <li><strong>Check</strong>: apples should be soft, crumble golden and set.</li>
+            <li><strong>Scoop</strong> into serving cups; top with whipped cream if available.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, milk. Use Granny Smith — sweeter apples turn mushy. Vent lid slightly to prevent soggy topping. Yields 8 servings.</div>
+      </div>
+
+      <!-- D-06 SCRATCH CHOCOLATE CHIP COOKIES -->
+      <div class="mic-card" data-level="expert" data-id="scratch-cookies">
+        <div class="mic-code">▲ D-06</div>
+        <div class="mic-header">
+          <div class="mic-title-row">
+            <h2 class="mic-name">Scratch Chocolate Chip Cookies</h2>
+            <span class="mic-badge mic-badge--expert">⭐⭐⭐ Expert</span>
+          </div>
+          <div class="mic-meta"><span class="mic-method">🔥 Oven</span><span class="mic-time">⏱ 25 min</span></div>
+        </div>
+        <div class="mic-exploded">
+          <svg width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="380" fill="#111"/>
+            <rect x="50" y="321" width="280" height="38" rx="6" fill="#f5c842" opacity="0.8"/>
+            <text x="5" y="344" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">BUTTER + SUGAR BASE</text>
+            <line x1="190" y1="340" x2="50" y2="340" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="246" width="280" height="38" rx="6" fill="#f5e6a3"/>
+            <text x="375" y="269" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">EGGS + VANILLA</text>
+            <line x1="330" y1="265" x2="240" y2="265" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="171" width="280" height="38" rx="6" fill="#e8dfc0"/>
+            <text x="5" y="194" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace">FLOUR + LEAVENING</text>
+            <line x1="190" y1="190" x2="50" y2="190" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+            <rect x="50" y="96" width="280" height="38" rx="6" fill="#3d1c02"/>
+            <text x="375" y="119" fill="#f5c842" font-size="12" font-weight="bold" font-family="'Courier New',monospace" text-anchor="end">CHOCOLATE CHIPS</text>
+            <line x1="330" y1="115" x2="235" y2="115" stroke="#f5c842" stroke-dasharray="4,3" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="mic-ingredients">
+          <h3>Components</h3>
+          <ol class="mic-component-list">
+            <li>1 cup (2 sticks) softened butter</li>
+            <li>¾ cup white sugar + ¾ cup brown sugar</li>
+            <li>2 large eggs + 2 tsp vanilla extract</li>
+            <li>2¼ cups all-purpose flour</li>
+            <li>1 tsp baking soda + 1 tsp salt</li>
+            <li>2 cups semi-sweet chocolate chips</li>
+          </ol>
+        </div>
+        <div class="mic-instructions">
+          <h3>How to Make It</h3>
+          <ol class="mic-steps">
+            <li><strong>Preheat</strong> oven to 375°F. Line baking sheets with parchment.</li>
+            <li><strong>Cream</strong> butter and both sugars until light and fluffy (2–3 min by hand or mixer).</li>
+            <li><strong>Beat</strong> in eggs one at a time; add vanilla.</li>
+            <li><strong>Whisk</strong> flour, baking soda, and salt in separate bowl; gradually fold into wet mixture.</li>
+            <li><strong>Fold</strong> in chocolate chips until evenly distributed.</li>
+            <li><strong>Drop</strong> rounded tablespoons onto parchment 2 inches apart.</li>
+            <li><strong>Bake</strong> 9–11 minutes until edges are golden — centers should look slightly underdone.</li>
+            <li><strong>Cool</strong> on sheet 5 minutes before transferring; cookies set as they cool.</li>
+          </ol>
+        </div>
+        <div class="mic-notes">Contains: wheat, egg, milk, soy. Pull at golden edges — overbaking makes them hard by morning. Makes ~48 cookies. Store in airtight container up to 3 days.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ JSON EXPORT -->
+<div class="json-section">
+  <h2>▲ Menu JSON Export — Import to Menu Mgmt</h2>
+  <div class="json-toolbar">
+    <button class="json-btn" onclick="copyJSON()">📋 Copy JSON</button>
+    <button class="json-btn" onclick="downloadJSON()">⬇ Download .json</button>
+  </div>
+  <div id="json-output"></div>
+</div>
+
+<script>
+function showCat(cat) {
+  document.querySelectorAll('.cat-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(cat).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+const menuData = [
+  {"id":"egg-cheese-mug","name":"Egg & Cheese Mug","category":"breakfast","skill_level":"easy","method":"microwave","prep_time_minutes":2,"price":10,"components":[{"name":"Mug","layer":1,"color":"#444"},{"name":"Eggs (2)","layer":2,"color":"#f5e6a3"},{"name":"Cheddar cheese","layer":3,"color":"#f5c842"},{"name":"Salt & pepper","layer":4,"color":"#555"}],"instructions":["Crack 2 eggs into a microwave-safe mug.","Whisk until fully combined.","Microwave on HIGH for 60 seconds, stirring at 30 seconds.","Top with cheddar; let stand 30 seconds until melted."],"notes":"Contains: egg, milk. Cook to 160°F.","available":true,"tags":["breakfast","easy","microwave","protein"]},
+  {"id":"loaded-oatmeal-bowl","name":"Loaded Oatmeal Bowl","category":"breakfast","skill_level":"easy","method":"microwave","prep_time_minutes":3,"price":10,"components":[{"name":"Instant oats","layer":1,"color":"#e8dfc0"},{"name":"Brown sugar","layer":2,"color":"#c9933a"},{"name":"Banana slices","layer":3,"color":"#f5e6a3"},{"name":"Cinnamon","layer":4,"color":"#8b5e3c"},{"name":"Honey drizzle","layer":5,"color":"#e8955a"}],"instructions":["Combine oats and 1 cup water in microwave-safe bowl.","Microwave on HIGH 2–2.5 minutes.","Stir in brown sugar and cinnamon.","Top with banana slices and honey."],"notes":"Contains: oats (gluten). Vegan option available.","available":true,"tags":["breakfast","easy","vegan","bowl"]},
+  {"id":"pb-banana-toast-melt","name":"PB Banana Toast Melt","category":"breakfast","skill_level":"easy","method":"toaster","prep_time_minutes":2,"price":10,"components":[{"name":"Bread slice","layer":1,"color":"#c9933a"},{"name":"Peanut butter","layer":2,"color":"#c9a84c"},{"name":"Banana slices","layer":3,"color":"#f5e6a3"},{"name":"Honey drizzle","layer":4,"color":"#e8955a"}],"instructions":["Toast bread until golden.","Spread 1 tbsp peanut butter on each slice.","Layer banana slices across.","Drizzle with honey; serve open-face."],"notes":"Contains: wheat, peanut. Sub sunflower butter for nut-free.","available":true,"tags":["breakfast","easy","toast","handheld"]},
+  {"id":"af-bacon-egg-bites","name":"Air Fryer Bacon & Egg Bites","category":"breakfast","skill_level":"intermediate","method":"air_fryer","prep_time_minutes":12,"price":10,"components":[{"name":"Silicone cups","layer":1,"color":"#444"},{"name":"Bacon crumbles","layer":2,"color":"#8b2e12"},{"name":"Egg mixture","layer":3,"color":"#f5e6a3"},{"name":"Shredded cheese","layer":4,"color":"#f5c842"}],"instructions":["Preheat air fryer to 300°F.","Place silicone cups in basket.","Add bacon crumbles to each cup.","Pour egg mixture to 3/4 full.","Top with cheese.","Cook at 300°F for 10–12 min until set.","Cool 1 min before removing."],"notes":"Contains: egg, milk. Internal temp 160°F. Yields 6 per batch.","available":true,"tags":["breakfast","intermediate","protein","air-fryer"]},
+  {"id":"af-breakfast-potatoes","name":"Air Fryer Breakfast Potatoes","category":"breakfast","skill_level":"intermediate","method":"air_fryer","prep_time_minutes":18,"price":10,"components":[{"name":"Potato cubes","layer":1,"color":"#c9a84c"},{"name":"Bell peppers","layer":2,"color":"#c0392b"},{"name":"Diced onion","layer":3,"color":"#d6c3d9"},{"name":"Oil & seasoning","layer":4,"color":"#555"}],"instructions":["Toss potatoes, peppers, onion with oil and seasonings.","Preheat air fryer to 400°F.","Spread in single layer in basket.","Cook at 400°F for 15 min, shake at 7 min.","Serve when golden-brown and fork-tender."],"notes":"Gluten-free, vegan. Dice potatoes fresh day-of.","available":true,"tags":["breakfast","intermediate","vegan","air-fryer","side"]},
+  {"id":"af-french-toast-sticks","name":"Air Fryer French Toast Sticks","category":"breakfast","skill_level":"intermediate","method":"air_fryer","prep_time_minutes":10,"price":10,"components":[{"name":"Thick bread sticks","layer":1,"color":"#c9933a"},{"name":"Egg & milk batter","layer":2,"color":"#f5e6a3"},{"name":"Cinnamon sugar","layer":3,"color":"#c9933a"},{"name":"Maple syrup","layer":4,"color":"#e8955a"}],"instructions":["Whisk eggs, milk, and vanilla.","Dip bread sticks; roll in cinnamon sugar.","Preheat air fryer to 375°F.","Cook 8 min, flipping at 4 min.","Serve with warm maple syrup."],"notes":"Contains: wheat, egg, milk. Yields 12 sticks per batch.","available":true,"tags":["breakfast","intermediate","air-fryer","sweet"]},
+  {"id":"overnight-steel-cut-oats","name":"Overnight Steel-Cut Oats","category":"breakfast","skill_level":"expert","method":"slow_cooker","prep_time_minutes":480,"price":10,"components":[{"name":"Steel-cut oats","layer":1,"color":"#e8dfc0"},{"name":"Milk + water","layer":2,"color":"#d6eeff"},{"name":"Apple pieces","layer":3,"color":"#4a8c3f"},{"name":"Toasted pecans","layer":4,"color":"#7a5c2e"},{"name":"Honey finish","layer":5,"color":"#e8955a"}],"instructions":["Spray slow cooker; combine oats, milk, water, cinnamon, salt, apple.","Cook on LOW 7–8 hours overnight.","Stir in morning; adjust thickness with milk.","Portion into bowls; top with pecans and honey."],"notes":"Contains: oats, milk, tree nuts. Pre-toast pecans at 350°F for 8 min.","available":true,"tags":["breakfast","expert","slow-cooker","overnight","bowl"]},
+  {"id":"breakfast-casserole-cup","name":"Breakfast Casserole Cup","category":"breakfast","skill_level":"expert","method":"oven","prep_time_minutes":35,"price":10,"components":[{"name":"Hash brown crust","layer":1,"color":"#c9a84c"},{"name":"Sausage crumbles","layer":2,"color":"#7a3b1e"},{"name":"Egg custard","layer":3,"color":"#f5e6a3"},{"name":"Cheddar cheese","layer":4,"color":"#f5c842"},{"name":"Seasoning","layer":5,"color":"#555"}],"instructions":["Preheat oven to 375°F; spray muffin tin.","Press hash browns into each cup; bake 10 min.","Add sausage; pour egg mixture to 3/4 full.","Top with cheddar; bake 20–22 min until set.","Cool 3 min; run knife around edge to release."],"notes":"Contains: egg, milk, wheat. Internal temp 165°F. Makes 6 per batch.","available":true,"tags":["breakfast","expert","oven","protein","casserole"]},
+  {"id":"cinnamon-roll-bake","name":"Cinnamon Roll Bake","category":"breakfast","skill_level":"expert","method":"oven","prep_time_minutes":30,"price":10,"components":[{"name":"Baking dish","layer":1,"color":"#555"},{"name":"Cinnamon roll pieces","layer":2,"color":"#c9933a"},{"name":"Butter + cinnamon sugar","layer":3,"color":"#e8955a"},{"name":"Cream cheese glaze","layer":4,"color":"#f5f0e0"}],"instructions":["Preheat oven to 350°F; butter 9x13 dish.","Quarter cinnamon rolls; arrange in loose layer.","Drizzle butter; dust cinnamon sugar.","Bake 22–25 min until golden.","Warm frosting 20 sec; drizzle over hot bake.","Scoop into serving cups."],"notes":"Contains: wheat, milk, egg, soy. Serve within 45 min of baking.","available":true,"tags":["breakfast","expert","oven","sweet","bakery"]},
+  {"id":"hot-coffee","name":"Hot Coffee","category":"beverage","skill_level":"easy","method":"no_cook","prep_time_minutes":1,"price":4,"components":[{"name":"16 oz cup + lid","layer":1,"color":"#444"},{"name":"Drip coffee","layer":2,"color":"#2c1a0e"},{"name":"Cream (optional)","layer":3,"color":"#f5e6a3"},{"name":"Sweetener (optional)","layer":4,"color":"#555"}],"instructions":["Check coffee freshness — brew fresh if over 30 min old.","Add cream/sweetener to cup first.","Fill to 1/2 inch from rim with hot coffee.","Lid and hand off."],"notes":"Add-ins per saved order. Never let pot sit over 30 min.","available":true,"tags":["beverage","easy","coffee","hot"]},
+  {"id":"iced-coffee","name":"Iced Coffee","category":"beverage","skill_level":"easy","method":"no_cook","prep_time_minutes":1,"price":4,"components":[{"name":"20 oz cup + lid","layer":1,"color":"#555"},{"name":"Ice (full)","layer":2,"color":"#c5dff8"},{"name":"Strong drip coffee","layer":3,"color":"#2c1a0e"},{"name":"Cream (optional)","layer":4,"color":"#f5e6a3"}],"instructions":["Fill 20 oz cup with ice.","Add cream/sweetener per order.","Pour strong coffee over ice to 1/2 inch from rim.","Lid, insert straw, hand off."],"notes":"Use double-strength coffee. Never pour hot coffee straight — cool 5 min minimum.","available":true,"tags":["beverage","easy","coffee","iced"]},
+  {"id":"hot-cocoa","name":"Hot Cocoa","category":"beverage","skill_level":"easy","method":"microwave","prep_time_minutes":3,"price":4,"components":[{"name":"12 oz mug","layer":1,"color":"#444"},{"name":"Cocoa mix (2 tbsp)","layer":2,"color":"#3d2b1e"},{"name":"Hot milk","layer":3,"color":"#f5e6a3"},{"name":"Whipped cream (optional)","layer":4,"color":"#f0f0f0"}],"instructions":["Pour 10 oz milk into mug.","Microwave on HIGH 2 min until steaming.","Add cocoa mix; whisk until dissolved.","Top with whipped cream if requested."],"notes":"Contains: milk, soy. Target temp 150–160°F.","available":true,"tags":["beverage","easy","cocoa","hot"]},
+  {"id":"chai-latte","name":"Chai Latte","category":"beverage","skill_level":"intermediate","method":"stovetop","prep_time_minutes":6,"price":4,"components":[{"name":"12 oz cup","layer":1,"color":"#444"},{"name":"Chai concentrate (3 oz)","layer":2,"color":"#c9933a"},{"name":"Steamed milk (8 oz)","layer":3,"color":"#f5e6a3"},{"name":"Cinnamon dust","layer":4,"color":"#8b5e3c"}],"instructions":["Pour chai concentrate into cup.","Heat milk to 150°F, stirring; froth 15 sec.","Pour steamed milk over chai.","Dust with cinnamon; serve immediately."],"notes":"Contains: milk, soy. Iced version available.","available":true,"tags":["beverage","intermediate","chai","hot"]},
+  {"id":"blended-mocha-frappe","name":"Blended Mocha Frappé","category":"beverage","skill_level":"intermediate","method":"blender","prep_time_minutes":4,"price":4,"components":[{"name":"16 oz cup","layer":1,"color":"#555"},{"name":"Ice (1.5 cups)","layer":2,"color":"#c5dff8"},{"name":"Cold brew (4 oz)","layer":3,"color":"#2c1a0e"},{"name":"Chocolate syrup","layer":4,"color":"#3d1c02"},{"name":"Whipped cream","layer":5,"color":"#f0f0f0"}],"instructions":["Add ice, cold brew, chocolate syrup, and milk to blender.","Blend HIGH 30–45 sec until smooth.","Pour into cup; top with whipped cream.","Drizzle extra chocolate if desired."],"notes":"Contains: milk, soy. Clean blender immediately after use.","available":true,"tags":["beverage","intermediate","coffee","blended","cold"]},
+  {"id":"pour-over-coffee","name":"Single-Cup Pour-Over","category":"beverage","skill_level":"expert","method":"stovetop","prep_time_minutes":5,"price":4,"components":[{"name":"Carafe + dripper","layer":1,"color":"#444"},{"name":"Paper filter","layer":2,"color":"#f5e6a3"},{"name":"Ground coffee (18g)","layer":3,"color":"#2c1a0e"},{"name":"Hot water (200°F)","layer":4,"color":"#c5dff8"}],"instructions":["Rinse filter with hot water; discard rinse.","Add 18g ground coffee; tap level.","Bloom: pour 36ml, wait 30 sec.","Pour remaining water in slow circles over 2–3 min.","Wait for drip to stop; serve in 12 oz cup."],"notes":"Grind fresh per order. Total brew time 3–3.5 min.","available":false,"tags":["beverage","expert","coffee","pour-over","specialty"]},
+  {"id":"matcha-oat-latte","name":"Matcha Oat Milk Latte","category":"beverage","skill_level":"expert","method":"stovetop","prep_time_minutes":6,"price":4,"components":[{"name":"12 oz mug","layer":1,"color":"#444"},{"name":"Matcha powder (2 tsp)","layer":2,"color":"#3d7a3d"},{"name":"Hot water (2 oz / 175°F)","layer":3,"color":"#c5dff8"},{"name":"Steamed oat milk (8 oz)","layer":4,"color":"#e8dfc0"}],"instructions":["Sift matcha into mug.","Add 2 oz water at 175°F — not boiling.","Whisk W-motion 20 sec until frothy.","Steam oat milk to 150°F; froth.","Pour oat milk over matcha, stirring gently."],"notes":"Dairy-free, vegan. Water must be under 180°F.","available":false,"tags":["beverage","expert","matcha","dairy-free","specialty"]},
+  {"id":"pbj-lunchbox","name":"PB&J Lunchbox","category":"lunch","skill_level":"easy","method":"no_cook","prep_time_minutes":3,"price":10,"components":[{"name":"Bread (bottom)","layer":1,"color":"#c9933a"},{"name":"Peanut butter","layer":2,"color":"#c9a84c"},{"name":"Strawberry jelly","layer":3,"color":"#c0392b"},{"name":"Bread (top)","layer":4,"color":"#c9933a"}],"instructions":["Spread peanut butter on one slice.","Spread jelly on other slice.","Press together; cut diagonally.","Pack with chips and fruit cup."],"notes":"Contains: wheat, peanut. Sub sunflower butter for nut-free.","available":false,"tags":["lunch","easy","sandwich","no-cook"]},
+  {"id":"cup-noodles-deluxe","name":"Cup Noodles Deluxe","category":"lunch","skill_level":"easy","method":"hot_water","prep_time_minutes":4,"price":10,"components":[{"name":"Noodle cup","layer":1,"color":"#555"},{"name":"Ramen noodles","layer":2,"color":"#f0d890"},{"name":"Seasoning packet","layer":3,"color":"#e8955a"},{"name":"Boiling water","layer":4,"color":"#c5dff8"}],"instructions":["Remove lid halfway; set aside seasoning packet.","Fill with boiling water to fill line.","Replace lid; wait exactly 3 minutes.","Stir and serve in cup."],"notes":"Contains: wheat, soy, egg. Do NOT microwave the cup.","available":false,"tags":["lunch","easy","noodles","hot"]},
+  {"id":"af-grilled-cheese","name":"Air Fryer Grilled Cheese","category":"lunch","skill_level":"intermediate","method":"air_fryer","prep_time_minutes":8,"price":10,"components":[{"name":"Bread (bottom)","layer":1,"color":"#c9933a"},{"name":"Butter (outside)","layer":2,"color":"#f5c842"},{"name":"American cheese (2)","layer":3,"color":"#f5c842"},{"name":"Bread (top, buttered)","layer":4,"color":"#c9933a"}],"instructions":["Spread butter on outside of both slices.","Layer 2 cheese slices between bread, butter-side out.","Preheat air fryer to 370°F.","Cook 4 min; flip; cook 3 more min until golden.","Cut diagonally; serve immediately."],"notes":"Contains: wheat, milk. Serve within 5 min.","available":false,"tags":["lunch","intermediate","sandwich","air-fryer"]},
+  {"id":"turkey-ranch-wrap","name":"Turkey Ranch Wrap","category":"lunch","skill_level":"intermediate","method":"no_cook","prep_time_minutes":5,"price":10,"components":[{"name":"Flour tortilla","layer":1,"color":"#e8c87a"},{"name":"Ranch dressing","layer":2,"color":"#f5e6a3"},{"name":"Deli turkey (3 oz)","layer":3,"color":"#c96060"},{"name":"Romaine lettuce","layer":4,"color":"#4a8c3f"},{"name":"Tomato slices","layer":5,"color":"#c0392b"}],"instructions":["Warm tortilla 10 sec in microwave.","Spread ranch, leaving 2-inch border.","Layer turkey, lettuce, tomato.","Fold sides in; roll tight.","Cut diagonally; wrap bottom in foil."],"notes":"Contains: wheat, milk, egg (ranch). Assemble to-order only.","available":false,"tags":["lunch","intermediate","wrap","no-cook"]},
+  {"id":"slow-cooker-chili","name":"Slow Cooker Chili Cup","category":"lunch","skill_level":"expert","method":"slow_cooker","prep_time_minutes":360,"price":10,"components":[{"name":"Ground beef","layer":1,"color":"#7a3b1e"},{"name":"Kidney beans","layer":2,"color":"#8b2e12"},{"name":"Diced tomatoes","layer":3,"color":"#c0392b"},{"name":"Chili spice blend","layer":4,"color":"#e8955a"},{"name":"Cheddar topping","layer":5,"color":"#f5c842"}],"instructions":["Brown beef; drain fat.","Transfer to slow cooker.","Add beans, tomatoes, seasoning, broth; stir.","Cook LOW 6–8 hrs or HIGH 3–4 hrs.","Adjust salt; portion into 8 oz cups with cheddar."],"notes":"Contains: milk (cheese), soy. Brown beef day-of. Yields ~8 cups.","available":false,"tags":["lunch","expert","slow-cooker","comfort-food"]},
+  {"id":"loaded-baked-potato","name":"Loaded Baked Potato Bowl","category":"lunch","skill_level":"expert","method":"oven","prep_time_minutes":60,"price":10,"components":[{"name":"Baked potato","layer":1,"color":"#c9a84c"},{"name":"Sour cream","layer":2,"color":"#fff"},{"name":"Cheddar cheese","layer":3,"color":"#f5c842"},{"name":"Bacon bits","layer":4,"color":"#8b2e12"},{"name":"Green onion","layer":5,"color":"#4a8c3f"}],"instructions":["Scrub potato; poke with fork 10–12 times; rub with oil and salt.","Bake at 400°F for 50–60 min until skin crisp and fork-tender.","Cut open; fluff with fork.","Press sides open into bowl shape.","Layer butter, sour cream, cheddar, bacon, green onion."],"notes":"Gluten-free. Hold wrapped in foil at 200°F up to 2 hrs.","available":false,"tags":["lunch","expert","oven","gluten-free","bowl"]},
+  {"id":"cosmic-brownie-bite","name":"Cosmic Brownie Bite","category":"dessert","skill_level":"easy","method":"no_cook","prep_time_minutes":1,"price":4,"components":[{"name":"Fudge brownie base","layer":1,"color":"#2c1008"},{"name":"Chocolate fudge layer","layer":2,"color":"#5a2d0c"},{"name":"Rainbow candy chips","layer":3,"color":"#c0392b"}],"instructions":["Remove brownie from packaging.","Place in dessert cup or on napkin."],"notes":"Contains: wheat, milk, soy, egg. Keep at room temp.","available":false,"tags":["dessert","easy","premade","chocolate"]},
+  {"id":"banana-pudding-cup","name":"Banana Pudding Cup","category":"dessert","skill_level":"easy","method":"no_cook","prep_time_minutes":3,"price":4,"components":[{"name":"Vanilla wafers","layer":1,"color":"#c9933a"},{"name":"Vanilla pudding","layer":2,"color":"#f5e8a0"},{"name":"Banana slices","layer":3,"color":"#f5e6a3"},{"name":"Whipped cream","layer":4,"color":"#f0f0f0"}],"instructions":["Layer wafers in 8 oz cup.","Spoon pudding over wafers.","Arrange banana slices on top.","Add whipped cream swirl; serve chilled."],"notes":"Contains: wheat, milk, egg. Assemble to-order.","available":false,"tags":["dessert","easy","no-cook","creamy"]},
+  {"id":"af-donut-holes","name":"Air Fryer Cinnamon Donut Holes","category":"dessert","skill_level":"intermediate","method":"air_fryer","prep_time_minutes":12,"price":4,"components":[{"name":"Biscuit dough balls","layer":1,"color":"#e8c87a"},{"name":"Melted butter coat","layer":2,"color":"#f5c842"},{"name":"Cinnamon sugar roll","layer":3,"color":"#c9933a"},{"name":"Powdered sugar dust","layer":4,"color":"#f0f0f0"}],"instructions":["Cut each biscuit into 4; roll into balls.","Preheat air fryer to 350°F.","Cook at 350°F for 6–7 min until golden.","Brush hot holes with butter immediately.","Roll in cinnamon sugar; dust powdered sugar."],"notes":"Contains: wheat, milk. Serve within 15 min. ~32 holes per can.","available":false,"tags":["dessert","intermediate","air-fryer","sweet","fried"]},
+  {"id":"mug-cake","name":"Chocolate Mug Cake","category":"dessert","skill_level":"intermediate","method":"microwave","prep_time_minutes":3,"price":4,"components":[{"name":"Mug (12 oz)","layer":1,"color":"#444"},{"name":"Flour + cocoa batter","layer":2,"color":"#3d1c02"},{"name":"Chocolate chips","layer":3,"color":"#5a2d0c"},{"name":"Powdered sugar","layer":4,"color":"#f0f0f0"}],"instructions":["Mix flour, sugar, cocoa in mug.","Add egg, milk, oil; stir until smooth.","Fold in chocolate chips.","Microwave HIGH 90 seconds exactly.","Dust with powdered sugar; serve in mug."],"notes":"Contains: wheat, egg, milk, soy. Do not overcook.","available":false,"tags":["dessert","intermediate","microwave","chocolate"]},
+  {"id":"sc-apple-crisp","name":"Slow Cooker Apple Crisp","category":"dessert","skill_level":"expert","method":"slow_cooker","prep_time_minutes":180,"price":4,"components":[{"name":"Sliced apples (4 cups)","layer":1,"color":"#4a8c3f"},{"name":"Cinnamon sugar","layer":2,"color":"#c9933a"},{"name":"Oat crumble topping","layer":3,"color":"#e8dfc0"},{"name":"Butter bits","layer":4,"color":"#f5c842"}],"instructions":["Toss apples with cinnamon and sugar in slow cooker.","Mix oats, brown sugar, flour; cut in cold butter until crumbly.","Spread crumble over apples — do not stir.","Cook HIGH 2.5–3 hrs, lid slightly vented.","Scoop into serving cups; top with whipped cream."],"notes":"Contains: wheat, milk. Use Granny Smith. Vent lid to prevent soggy topping.","available":false,"tags":["dessert","expert","slow-cooker","fruit"]},
+  {"id":"scratch-cookies","name":"Scratch Chocolate Chip Cookies","category":"dessert","skill_level":"expert","method":"oven","prep_time_minutes":25,"price":4,"components":[{"name":"Butter + sugar base","layer":1,"color":"#f5c842"},{"name":"Eggs + vanilla","layer":2,"color":"#f5e6a3"},{"name":"Flour + leavening","layer":3,"color":"#e8dfc0"},{"name":"Chocolate chips","layer":4,"color":"#3d1c02"}],"instructions":["Preheat oven to 375°F; line sheets with parchment.","Cream butter and sugars until fluffy.","Beat in eggs one at a time; add vanilla.","Whisk dry ingredients; fold into wet.","Fold in chocolate chips.","Drop rounded tbsp 2 inches apart.","Bake 9–11 min until edges golden.","Cool on sheet 5 min before moving."],"notes":"Contains: wheat, egg, milk, soy. Pull at golden edges. Makes ~48 cookies.","available":false,"tags":["dessert","expert","oven","cookies","baked"]}
+];
+
+document.getElementById('json-output').textContent = JSON.stringify(menuData, null, 2);
+
+function copyJSON() {
+  navigator.clipboard.writeText(JSON.stringify(menuData, null, 2))
+    .then(() => alert('JSON copied to clipboard!'));
+}
+
+function downloadJSON() {
+  const blob = new Blob([JSON.stringify(menuData, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pt-menu-repository.json';
+  a.click();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ILLUSTRATED EXPLODED-VIEW SVG GENERATOR  v3
+   Each ingredient is drawn as a recognisable food illustration.
+   Leader-line labels sit outside the shape on alternating sides.
+   viewBox extends ±70px beyond the 380px display width so labels
+   have room without being clipped by the card's overflow:hidden.
+═══════════════════════════════════════════════════════════════ */
+(function buildIllustratedSVGs() {
+
+  /* ── Colour helpers ─────────────────────────────────────── */
+  function h2r(hex){
+    const h=(hex||'#888').replace('#','').replace(/^([0-9a-f]{3})$/i,'$1$1$1$1$1$1');
+    return [parseInt(h.slice(0,2),16)||128,parseInt(h.slice(2,4),16)||128,parseInt(h.slice(4,6),16)||128];
+  }
+  function r2h(r,g,b){return '#'+[r,g,b].map(x=>Math.min(255,Math.max(0,Math.round(x))).toString(16).padStart(2,'0')).join('');}
+  function lighten(c,t){const[r,g,b]=h2r(c);return r2h(r+(255-r)*t,g+(255-g)*t,b+(255-b)*t);}
+  function darken(c,t){const[r,g,b]=h2r(c);return r2h(r*(1-t),g*(1-t),b*(1-t));}
+  function luma(c){const[r,g,b]=h2r(c);return(r*299+g*587+b*114)/1000;}
+  function xe(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  /* ── Short label (≤13 chars per line, max 2 lines) ──────── */
+  function shortLabel(name){
+    let s=name.replace(/\s*\([^)]*\)/g,'')
+              .replace(/\b(optional|opt\.?|slices?|pieces?|cups?|tbsp|oz|g\b|tsp|sticks?|crumbles?|mixture|drizzle|finish|crust|strips?|bits?|dust|coat|roll)\b/gi,'')
+              .replace(/[+&]/g,' ')
+              .replace(/\s+/g,' ').trim();
+    const words=s.split(' ').filter(Boolean);
+    const line1=[];let len=0;
+    for(const w of words){if(len+w.length+(len?1:0)<=13){line1.push(w);len+=w.length+(len?1:0);}else break;}
+    const rest=words.slice(line1.length);
+    const line2=[];len=0;
+    for(const w of rest){if(len+w.length+(len?1:0)<=13){line2.push(w);len+=w.length+(len?1:0);}else break;}
+    return[line1.join(' ').toUpperCase(),line2.join(' ').toUpperCase()].filter(Boolean);
+  }
+
+  /* ── Illustrated shape library  v4 ──────────────────────── */
+  /* Shapes may extend ABOVE y (VY=-50 in viewBox gives room). */
+  /* NOTE: keyword order matters — more-specific checks first. */
+  function drawShape(rawName, base, lx, y, lw, lh, uid, idx){
+    const n   = rawName.toLowerCase();
+    const cx  = lx+lw/2, cy=y+lh/2;
+    const L   = lighten(base,0.32), M=lighten(base,0.12), D=darken(base,0.36), DD=darken(base,0.60);
+    const gid = `ig-${uid}-${idx}`;
+    const has = (...kw)=>kw.some(k=>n.includes(k));
+
+    /* helpers */
+    const baseRect=(rx=10,x1=lx+2,y1=y+2,w1=lw-4,h1=lh-4)=>
+      `<rect x="${x1}" y="${y1}" width="${w1}" height="${h1}" rx="${rx}" fill="url(#${gid})"/>`;
+    const shine=(op=0.24)=>
+      `<rect x="${lx+8}" y="${y+4}" width="${lw-16}" height="9" rx="4" fill="white" opacity="${op}"/>`;
+    const shadow=(op=0.32)=>
+      `<rect x="${lx+6}" y="${y+lh-10}" width="${lw-12}" height="7" rx="3" fill="${DD}" opacity="${op}"/>`;
+
+    let out = '';
+
+    /* ── BUN ────────────────────────────────────────────── */
+    if(has('bun')){
+      const isTop = has('top') || (!has('bottom') && !has('biscuit'));
+      if(isTop){
+        /* Tall dome — center at 70% down so dome crests ABOVE y (VY=-50 catches it) */
+        const domeCY = y + lh*0.72;
+        const domeRX = lw*0.48;
+        const domeRY = lh*1.10;
+        out+=`<ellipse cx="${cx}" cy="${domeCY}" rx="${domeRX}" ry="${domeRY}" fill="url(#${gid})"/>`;
+        /* flat plate under the dome center */
+        out+=`<rect x="${lx+2}" y="${domeCY}" width="${lw-4}" height="${y+lh-domeCY+2}" rx="0" fill="url(#${gid})"/>`;
+        /* bottom rim shadow */
+        out+=`<ellipse cx="${cx}" cy="${y+lh-3}" rx="${lw*0.44}" ry="8" fill="${DD}" opacity="0.35"/>`;
+        /* sesame seeds scattered on dome surface */
+        [[-0.25,-0.52],[0.06,-0.63],[0.30,-0.48],[-0.08,-0.37],[0.20,-0.30],
+         [-0.34,-0.30],[0.42,-0.26],[0.01,-0.52],[-0.16,-0.18],[0.28,-0.16],[0.14,-0.42],[-0.40,-0.14]].forEach(([dx,dy])=>{
+          const sx=cx+dx*domeRX*0.86, sy=domeCY+dy*domeRY;
+          out+=`<ellipse cx="${sx}" cy="${sy}" rx="5.5" ry="2.2" fill="${lighten(base,0.80)}" opacity="0.82" transform="rotate(${dx*55} ${sx} ${sy})"/>`;
+        });
+        /* glossy dome shine */
+        out+=`<ellipse cx="${cx-lw*0.09}" cy="${domeCY-domeRY*0.58}" rx="${lw*0.18}" ry="${lh*0.12}" fill="white" opacity="0.18"/>`;
+      } else {
+        /* Bottom heel — broad flat disc */
+        out+=`<rect x="${lx+6}" y="${y+lh*0.36}" width="${lw-12}" height="${lh*0.60}" rx="12" fill="url(#${gid})"/>`;
+        out+=`<ellipse cx="${cx}" cy="${y+lh*0.38}" rx="${lw*0.44}" ry="${lh*0.20}" fill="${L}" opacity="0.9"/>`;
+        /* crumb texture on top face */
+        [[0.14,0.44],[-0.12,0.57],[0.28,0.37],[-0.24,0.42],[0.06,0.64],[-0.38,0.50],[0.40,0.46]].forEach(([dx,dy])=>{
+          const sx=cx+dx*lw*0.70, sy=y+lh*dy+lh*0.08;
+          out+=`<ellipse cx="${sx}" cy="${sy}" rx="4.5" ry="2" fill="${lighten(base,0.65)}" opacity="0.60" transform="rotate(${dx*50} ${sx} ${sy})"/>`;
+        });
+      }
+    }
+
+    /* ── BREAD / TOAST ─────────────────────────────────── */
+    else if(has('bread','toast','croissant','wrap','tortilla','wafer','roll','dough','biscuit')){
+      out+=baseRect(8);
+      /* crust border */
+      out+=`<rect x="${lx+2}" y="${y+2}" width="${lw-4}" height="${lh-4}" rx="8" fill="none" stroke="${D}" stroke-width="4.5" opacity="0.50"/>`;
+      /* air pockets */
+      [[0.12,0.42,6,3.5],[0.28,0.30,7,4],[0.44,0.64,5,3],[0.60,0.38,8,4.5],[0.76,0.58,6,3.5],[0.88,0.42,5,3],[0.36,0.66,5,2.8],[0.64,0.26,5,3]].forEach(([fx,fy,rx,ry])=>{
+        out+=`<ellipse cx="${lx+fx*lw}" cy="${y+fy*lh}" rx="${rx}" ry="${ry}" fill="${DD}" opacity="0.30"/>`;
+      });
+      out+=shine(0.22);
+      out+=shadow();
+    }
+
+    /* ── EGG ────────────────────────────────────────────── */
+    else if(has('egg')){
+      if(has('fried','sunny','whole') || !has('mixture','custard','batter','scramble','whisked')){
+        /* Fried egg — irregular white pool + bold golden yolk */
+        const ew=lw*0.46, eh=lh*0.45;
+        /* main white pool */
+        out+=`<ellipse cx="${cx-4}" cy="${cy+4}" rx="${ew}" ry="${eh}" fill="#f8f2e0"/>`;
+        /* irregular blob extensions */
+        out+=`<ellipse cx="${cx+ew*0.66}" cy="${cy-2}" rx="${ew*0.28}" ry="${eh*0.54}" fill="#f8f2e0"/>`;
+        out+=`<ellipse cx="${cx-ew*0.55}" cy="${cy+eh*0.32}" rx="${ew*0.30}" ry="${eh*0.42}" fill="#f8f2e0"/>`;
+        out+=`<ellipse cx="${cx+ew*0.18}" cy="${cy+eh*0.72}" rx="${ew*0.34}" ry="${eh*0.24}" fill="#f8f2e0"/>`;
+        /* yolk — large golden sphere with 3-D shading */
+        const yr = lh*0.34;
+        out+=`<circle cx="${cx-5}" cy="${cy-2}" r="${yr}" fill="#e8880a"/>`;
+        out+=`<circle cx="${cx-5}" cy="${cy-2}" r="${yr*0.88}" fill="#f5a500"/>`;
+        out+=`<circle cx="${cx-5}" cy="${cy-2}" r="${yr*0.72}" fill="#ffc820"/>`;
+        /* yolk highlight */
+        out+=`<circle cx="${cx-5-yr*0.34}" cy="${cy-2-yr*0.36}" r="${yr*0.28}" fill="white" opacity="0.42"/>`;
+        /* faint cast shadow */
+        out+=`<ellipse cx="${cx-2}" cy="${cy+yr*0.90}" rx="${yr*0.85}" ry="${yr*0.20}" fill="#a06000" opacity="0.16"/>`;
+      } else {
+        /* Scrambled / mixture — fluffy overlapping egg clouds */
+        /* base fill */
+        out+=`<rect x="${lx+2}" y="${y+lh*0.30}" width="${lw-4}" height="${lh*0.68}" rx="10" fill="url(#${gid})" opacity="0.80"/>`;
+        /* 7 rounded cloud puffs across */
+        const puffData=[[0.08,0.44,0.48],[0.22,0.34,0.52],[0.38,0.42,0.44],[0.52,0.30,0.50],[0.64,0.38,0.46],[0.78,0.32,0.52],[0.92,0.42,0.48]];
+        puffData.forEach(([fx,fy,rs])=>{
+          const px=lx+fx*lw, py=y+fy*lh, pr=lh*rs;
+          out+=`<circle cx="${px}" cy="${py}" r="${pr}" fill="url(#${gid})"/>`;
+          /* highlight on each puff */
+          out+=`<circle cx="${px-pr*0.32}" cy="${py-pr*0.30}" r="${pr*0.32}" fill="white" opacity="0.24"/>`;
+        });
+        /* golden yolk bits scattered */
+        [[0.18,0.68],[0.44,0.58],[0.66,0.65],[0.84,0.60]].forEach(([fx,fy])=>{
+          out+=`<circle cx="${lx+fx*lw}" cy="${y+fy*lh}" r="${lh*0.08}" fill="#f5c500" opacity="0.72"/>`;
+          out+=`<circle cx="${lx+fx*lw-2}" cy="${y+fy*lh-2}" r="${lh*0.04}" fill="white" opacity="0.36"/>`;
+        });
+      }
+    }
+
+    /* ── CHEESE ─────────────────────────────────────────── */
+    else if(has('cheese')){
+      const ext=26;
+      out+=`<polygon points="${lx-ext+4},${y+5} ${lx+lw+ext-4},${y+5} ${lx+lw+ext+8},${y+lh-5} ${lx-ext-8},${y+lh-5}" fill="url(#${gid})"/>`;
+      /* holes */
+      [[0.14,0.50],[0.34,0.35],[0.52,0.68],[0.70,0.42],[0.88,0.60]].forEach(([fx,fy])=>{
+        out+=`<circle cx="${lx+fx*lw}" cy="${y+fy*lh}" r="${5+fx*2.5}" fill="${DD}" opacity="0.24"/>`;
+      });
+      /* top shine strip */
+      out+=`<polygon points="${lx-ext+4},${y+5} ${lx+lw+ext-4},${y+5} ${lx+lw+ext-4},${y+14} ${lx-ext+4},${y+14}" fill="white" opacity="0.22"/>`;
+      /* melt drip corners */
+      out+=`<path d="M${lx-ext-8},${y+lh-5} Q${lx-ext+10},${y+lh+12} ${lx-ext+22},${y+lh-5}" fill="${M}" opacity="0.60"/>`;
+      out+=`<path d="M${lx+lw+ext+8},${y+lh-5} Q${lx+lw+ext-10},${y+lh+12} ${lx+lw+ext-22},${y+lh-5}" fill="${M}" opacity="0.60"/>`;
+    }
+
+    /* ── BACON (before 'crumble' / 'sausage') ──────────── */
+    else if(has('bacon')){
+      /* 3 bold wavy fat-marbled strips */
+      for(let strip=0;strip<3;strip++){
+        const sy   = y + 10 + strip*(lh-20)/2.5;
+        const sw   = 20 - strip*4;
+        const phase= strip * 1.6;
+        let d=`M${lx+4},${sy}`;
+        for(let px=lx+4;px<lx+lw-4;px+=16){
+          const wave=Math.sin((px-lx)/lw*Math.PI*4.5+phase)*13;
+          d+=` Q${px+8},${sy+wave} ${px+16},${sy}`;
+        }
+        out+=`<path d="${d}" stroke="${M}"                    stroke-width="${sw}"      fill="none" stroke-linecap="round"/>`;
+        out+=`<path d="${d}" stroke="${lighten(base,0.70)}"   stroke-width="${sw*0.35}" fill="none" stroke-linecap="round" opacity="0.50"/>`;
+        out+=`<path d="${d}" stroke="rgba(255,240,200,0.28)" stroke-width="${sw*0.15}" fill="none" stroke-linecap="round"/>`;
+      }
+    }
+
+    /* ── BELL PEPPER (before 'seasoning') ───────────────── */
+    else if(has('bell pepper','bell pep','capsicum')||(has('bell')&&has('pepper'))){
+      /* Dark background so rings stand out */
+      out+=`<rect x="${lx+2}" y="${y+2}" width="${lw-4}" height="${lh-4}" rx="10" fill="${DD}" opacity="0.55"/>`;
+      /* 3 pepper cross-section rings across the width */
+      [[0.20,0.50,1.00],[0.50,0.50,1.00],[0.80,0.50,1.00]].forEach(([fx,fy,op],ri)=>{
+        const px=lx+fx*lw, py=y+fy*lh;
+        const rx=lw*0.20, ry=lh*0.42;
+        /* outer wall — filled with gradient */
+        out+=`<ellipse cx="${px}" cy="${py}" rx="${rx}" ry="${ry}" fill="url(#${gid})" opacity="${op}" stroke="${DD}" stroke-width="2.5"/>`;
+        /* hollow interior — dark center */
+        out+=`<ellipse cx="${px}" cy="${py}" rx="${rx*0.50}" ry="${ry*0.50}" fill="#111" opacity="0.80"/>`;
+        /* 4 white ribs from wall to core */
+        for(let a=0;a<4;a++){
+          const ang=a/4*Math.PI*2;
+          const x1=px+Math.cos(ang)*rx*0.50, y1=py+Math.sin(ang)*ry*0.50;
+          const x2=px+Math.cos(ang)*rx*0.92, y2=py+Math.sin(ang)*ry*0.92;
+          out+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${lighten(base,0.60)}" stroke-width="2.8" opacity="0.70"/>`;
+        }
+        /* wall highlight arc */
+        out+=`<ellipse cx="${px-rx*0.28}" cy="${py-ry*0.36}" rx="${rx*0.32}" ry="${ry*0.22}" fill="white" opacity="0.30"/>`;
+        /* seed dots in center */
+        [[0,0],[0.18,0.14],[-0.16,0.12],[0.08,-0.18]].forEach(([sdx,sdy])=>{
+          out+=`<circle cx="${px+sdx*rx}" cy="${py+sdy*ry}" r="2.2" fill="${lighten(base,0.55)}" opacity="0.60"/>`;
+        });
+      });
+    }
+
+    /* ── SAUSAGE / MEAT CRUMBLE ─────────────────────────── */
+    else if(has('sausage','crumble')){
+      out+=baseRect(10);
+      /* irregular browned meat chunks — varied sizes, slight rotation */
+      for(let i=0;i<14;i++){
+        const seed1=i*61+23, seed2=i*43+9;
+        const bx=lx+8+(seed1%(lw-22)), by=y+4+(seed2%(lh-12));
+        const bw=16+i%4*7, bh=12+i%3*5;
+        const angle=(i*37)%50-25;
+        const tx=bx+bw/2, ty=by+bh/2;
+        /* darker body */
+        out+=`<ellipse cx="${tx}" cy="${ty}" rx="${bw/2}" ry="${bh/2}" fill="${D}" opacity="${0.62+i%3*0.12}" transform="rotate(${angle} ${tx} ${ty})"/>`;
+        /* browned crust highlight */
+        out+=`<ellipse cx="${tx-bw*0.18}" cy="${ty-bh*0.18}" rx="${bw*0.30}" ry="${bh*0.24}" fill="${L}" opacity="0.24" transform="rotate(${angle} ${tx} ${ty})"/>`;
+        /* edge sear */
+        out+=`<ellipse cx="${tx}" cy="${ty}" rx="${bw/2}" ry="${bh/2}" fill="none" stroke="${DD}" stroke-width="1.5" opacity="0.32" transform="rotate(${angle} ${tx} ${ty})"/>`;
+      }
+      out+=shine(0.14);
+      out+=shadow(0.28);
+    }
+
+    /* ── BEEF / PATTY / BURGER ───────────────────────────── */
+    else if(has('beef','patty','burger','ground')){
+      /* Bold oval patty */
+      out+=`<ellipse cx="${cx}" cy="${cy}" rx="${lw*0.47}" ry="${lh*0.46}" fill="url(#${gid})"/>`;
+      /* 5 prominent grill marks */
+      for(let g=0;g<5;g++){
+        const gx=lx+18+g*52;
+        out+=`<line x1="${gx}"    y1="${y+lh*0.14}" x2="${gx+28}" y2="${y+lh*0.86}" stroke="${DD}" stroke-width="7" stroke-linecap="round" opacity="0.50"/>`;
+        out+=`<line x1="${gx+2}" y1="${y+lh*0.14}" x2="${gx+30}" y2="${y+lh*0.86}" stroke="${lighten(base,0.20)}" stroke-width="2" stroke-linecap="round" opacity="0.24"/>`;
+      }
+      /* surface texture */
+      [[0.22,0.42],[0.48,0.64],[0.68,0.35],[0.84,0.58]].forEach(([fx,fy])=>{
+        out+=`<ellipse cx="${lx+fx*lw}" cy="${y+fy*lh}" rx="9" ry="5.5" fill="${D}" opacity="0.22"/>`;
+      });
+      out+=`<ellipse cx="${cx-lw*0.12}" cy="${cy-lh*0.22}" rx="${lw*0.20}" ry="${lh*0.14}" fill="white" opacity="0.11"/>`;
+    }
+
+    /* ── POULTRY / DELI MEAT ────────────────────────────── */
+    else if(has('turkey','chicken','deli','poultry','rotisserie')){
+      /* thin sliced deli-style rounds with visible grain lines */
+      [[0.18,0.50,0.82],[0.48,0.52,1.00],[0.76,0.50,0.88]].forEach(([fx,fy,op])=>{
+        const px=lx+fx*lw, py=y+fy*lh;
+        const rx=lw*0.24, ry=lh*0.44;
+        out+=`<ellipse cx="${px}" cy="${py}" rx="${rx}" ry="${ry}" fill="url(#${gid})" opacity="${op}"/>`;
+        /* meat grain lines — gently curved across the slice */
+        for(let g=0;g<5;g++){
+          const goy=py-ry*0.60+g*ry*0.28;
+          out+=`<path d="M${px-rx*0.82},${goy} Q${px},${goy+ry*0.06} ${px+rx*0.82},${goy}" stroke="${D}" stroke-width="1.2" fill="none" opacity="0.28"/>`;
+        }
+        /* edge skin ring */
+        out+=`<ellipse cx="${px}" cy="${py}" rx="${rx}" ry="${ry}" fill="none" stroke="${DD}" stroke-width="3.5" opacity="0.38"/>`;
+        /* highlight */
+        out+=`<ellipse cx="${px-rx*0.32}" cy="${py-ry*0.34}" rx="${rx*0.28}" ry="${ry*0.20}" fill="white" opacity="0.22"/>`;
+      });
+    }
+
+    /* ── LETTUCE / GREENS ────────────────────────────────── */
+    else if(has('lettuce','greens','cabbage','spinach','romaine','arugula')){
+      /* Big ruffled wave — crests are allowed above y with VY safety */
+      const amp=lh*0.54;
+      const mid=y+lh*0.50;
+      /* back leaf — slightly offset, darker */
+      let back=`M${lx},${y+lh}`;
+      for(let px=lx;px<=lx+lw;px+=5){
+        const w2=Math.sin((px-lx)/lw*Math.PI*5+0.9)*amp*0.70+amp*0.25;
+        back+=` L${px},${mid+w2}`;
+      }
+      back+=` L${lx+lw},${y+lh} Z`;
+      out+=`<path d="${back}" fill="${D}" opacity="0.32"/>`;
+      /* main front leaf */
+      let front=`M${lx},${y+lh}`;
+      for(let px=lx;px<=lx+lw;px+=5){
+        const w1=Math.sin((px-lx)/lw*Math.PI*5.8)*amp + Math.sin((px-lx)/lw*Math.PI*2)*amp*0.20;
+        front+=` L${px},${mid+w1}`;
+      }
+      front+=` L${lx+lw},${y+lh} Z`;
+      out+=`<path d="${front}" fill="url(#${gid})"/>`;
+      /* centre vein */
+      out+=`<line x1="${cx}" y1="${mid+amp*0.05}" x2="${cx}" y2="${y+lh-4}" stroke="${DD}" stroke-width="2.2" opacity="0.36"/>`;
+      /* side veins */
+      [[0.24,0.62],[0.38,0.74],[0.58,0.60],[0.70,0.72]].forEach(([fx,fy])=>{
+        out+=`<line x1="${cx}" y1="${mid+amp*0.22}" x2="${lx+fx*lw}" y2="${y+fy*lh}" stroke="${DD}" stroke-width="1" opacity="0.24"/>`;
+      });
+    }
+
+    /* ── TOMATO ──────────────────────────────────────────── */
+    else if(has('tomato')){
+      /* Two round slices, overlapping */
+      [[0.27,0.50,0.80],[0.62,0.52,1.00]].forEach(([fx,fy,op])=>{
+        const tx=lx+fx*lw, ty=y+fy*lh;
+        const rx=lw*0.27, ry=lh*0.46;
+        out+=`<ellipse cx="${tx}" cy="${ty}" rx="${rx}" ry="${ry}" fill="url(#${gid})" opacity="${op}"/>`;
+        /* seed segments */
+        for(let a=0;a<7;a++){
+          const ang=a/7*Math.PI*2;
+          out+=`<line x1="${tx}" y1="${ty}" x2="${tx+Math.cos(ang)*rx*0.88}" y2="${ty+Math.sin(ang)*ry*0.88}" stroke="${L}" stroke-width="1.3" opacity="0.46"/>`;
+        }
+        /* center core */
+        out+=`<circle cx="${tx}" cy="${ty}" r="5.5" fill="${L}" opacity="0.55"/>`;
+        /* highlight */
+        out+=`<ellipse cx="${tx-rx*0.36}" cy="${ty-ry*0.40}" rx="${rx*0.30}" ry="${ry*0.22}" fill="white" opacity="0.22"/>`;
+      });
+    }
+
+    /* ── ONION ───────────────────────────────────────────── */
+    else if(has('onion')){
+      if(has('ring')){
+        [[lw*0.28,lh*0.39],[lw*0.20,lh*0.27],[lw*0.36,lh*0.47]].forEach(([rx,ry],ri)=>{
+          out+=`<ellipse cx="${cx+(ri-1)*22}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="${M}" stroke-width="9" opacity="${0.92-ri*0.15}"/>`;
+          out+=`<ellipse cx="${cx+(ri-1)*22}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="${L}" stroke-width="3" opacity="0.52"/>`;
+        });
+      } else {
+        out+=baseRect(8);
+        /* organic scattered diced pieces at varying angles */
+        for(let i=0;i<22;i++){
+          const seed1=i*47+13, seed2=i*31+7;
+          const ox=lx+6+(seed1%(lw-20));
+          const oy=y+4+(seed2%(lh-12));
+          const pw=10+i%5*4, ph=7+i%4*3;
+          const angle=(i*23)%40-20; /* slight random rotation */
+          const tx=ox+pw/2, ty=oy+ph/2;
+          out+=`<rect x="${ox}" y="${oy}" width="${pw}" height="${ph}" rx="2.5" fill="${M}" opacity="${0.45+i%3*0.12}" transform="rotate(${angle} ${tx} ${ty})"/>`;
+          out+=`<rect x="${ox+2}" y="${oy+2}" width="${pw*0.36}" height="${ph*0.30}" rx="1" fill="white" opacity="0.22" transform="rotate(${angle} ${tx} ${ty})"/>`;
+        }
+        out+=shine(0.16);
+      }
+    }
+
+    /* ── PICKLE / CUCUMBER ───────────────────────────────── */
+    else if(has('pickle','cucumber')){
+      [0.20,0.50,0.80].forEach(fx=>{
+        const px=lx+fx*lw, pr=lh*0.44;
+        out+=`<ellipse cx="${px}" cy="${cy}" rx="${pr*1.22}" ry="${pr*0.84}" fill="url(#${gid})"/>`;
+        out+=`<ellipse cx="${px}" cy="${cy}" rx="${pr*0.54}" ry="${pr*0.40}" fill="${DD}" opacity="0.30"/>`;
+        for(let s=0;s<6;s++){
+          const a=s/6*Math.PI*2;
+          out+=`<ellipse cx="${px+Math.cos(a)*pr*0.64}" cy="${cy+Math.sin(a)*pr*0.50}" rx="3.2" ry="2" fill="${DD}" opacity="0.46"/>`;
+        }
+        out+=`<ellipse cx="${px-pr*0.26}" cy="${cy-pr*0.30}" rx="${pr*0.30}" ry="${pr*0.19}" fill="white" opacity="0.24"/>`;
+      });
+    }
+
+    /* ── BANANA ──────────────────────────────────────────── */
+    else if(has('banana')){
+      [0.13,0.35,0.57,0.79].forEach((fx,bi)=>{
+        const bx=lx+fx*lw+14;
+        out+=`<ellipse cx="${bx}" cy="${cy}" rx="25" ry="${lh*0.43}" fill="url(#${gid})"/>`;
+        out+=`<ellipse cx="${bx}" cy="${cy}" rx="10" ry="${lh*0.18}" fill="${L}" opacity="0.52"/>`;
+        out+=`<line x1="${bx-23}" y1="${cy-lh*0.38}" x2="${bx+23}" y2="${cy-lh*0.38}" stroke="${D}" stroke-width="1.3" opacity="0.30"/>`;
+        if(bi===0||bi===3) out+=`<line x1="${bx+(bi?13:-13)}" y1="${cy-lh*0.40}" x2="${bx+(bi?17:-17)}" y2="${cy-lh*0.52}" stroke="${D}" stroke-width="2.8" stroke-linecap="round" opacity="0.55"/>`;
+      });
+    }
+
+    /* ── OATS / GRAINS / RICE / CEREAL ──────────────────── */
+    else if(has('oat','grain','rice','cereal','wheat')){
+      out+=baseRect(8);
+      for(let g=0;g<32;g++){
+        const gx=lx+8+(g*43)%(lw-16);
+        const gy=y+6+(g*23)%(lh-12);
+        const ga=g*32;
+        out+=`<ellipse cx="${gx}" cy="${gy}" rx="6.5" ry="3"   fill="${M}" opacity="0.55" transform="rotate(${ga} ${gx} ${gy})"/>`;
+        out+=`<ellipse cx="${gx}" cy="${gy}" rx="2.8" ry="1.1" fill="${L}" opacity="0.38" transform="rotate(${ga} ${gx} ${gy})"/>`;
+      }
+      out+=shine(0.22);
+      out+=shadow();
+    }
+
+    /* ── BEANS / LENTILS / LEGUMES ─────────────────────── */
+    else if(has('bean','lentil','chickpea','legume','kidney')){
+      out+=baseRect(8);
+      /* kidney-shaped beans — ellipse with a bottom indent + highlight */
+      for(let i=0;i<9;i++){
+        const seed1=i*53+17, seed2=i*37+11;
+        const bx=lx+12+(seed1%(lw-26));
+        const by=y+5+(seed2%(lh-14));
+        const bw=24+i%3*6, bh=17+i%2*5;
+        const angle=(i*29)%60-30;
+        const tx=bx+bw/2, ty=by+bh/2;
+        /* main bean body */
+        out+=`<ellipse cx="${tx}" cy="${ty}" rx="${bw/2}" ry="${bh/2}" fill="url(#${gid})" opacity="0.88" transform="rotate(${angle} ${tx} ${ty})"/>`;
+        /* kidney indent (concave belly) */
+        out+=`<ellipse cx="${tx}" cy="${ty+bh*0.30}" rx="${bw*0.28}" ry="${bh*0.20}" fill="${DD}" opacity="0.40" transform="rotate(${angle} ${tx} ${ty})"/>`;
+        /* highlight */
+        out+=`<ellipse cx="${tx-bw*0.20}" cy="${ty-bh*0.20}" rx="${bw*0.20}" ry="${bh*0.14}" fill="white" opacity="0.22" transform="rotate(${angle} ${tx} ${ty})"/>`;
+      }
+      out+=shine(0.18);
+      out+=shadow(0.22);
+    }
+
+    /* ── POTATO / HASH BROWN ─────────────────────────────── */
+    else if(has('potato','hash')){
+      out+=baseRect(8);
+      if(has('hash','shred')){
+        for(let s=0;s<10;s++){
+          const sy2=y+6+s*(lh-12)/9;
+          const phase=s*0.8;
+          let sd=`M${lx+6},${sy2}`;
+          for(let px=lx+6;px<lx+lw-6;px+=14){
+            sd+=` Q${px+7},${sy2+Math.sin((px+phase)/17)*4.5} ${px+14},${sy2}`;
+          }
+          out+=`<path d="${sd}" stroke="${D}" stroke-width="3.2" fill="none" stroke-linecap="round" opacity="0.30"/>`;
+          out+=`<path d="${sd}" stroke="${L}" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.18"/>`;
+        }
+      } else {
+        /* isometric-style cubes: front face + top face + right shadow */
+        for(let c=0;c<5;c++) for(let r=0;r<2;r++){
+          const px=lx+8+c*(lw-16)/4.5, py=y+10+r*(lh-20)/1.7;
+          const cw=Math.floor((lw-16)/4.5)-4, ch=Math.floor((lh-20)/2)-4;
+          const ts=Math.round(ch*0.28); /* top face slant height */
+          /* top face (lightest) */
+          out+=`<polygon points="${px},${py} ${px+cw},${py} ${px+cw+ts},${py-ts} ${px+ts},${py-ts}" fill="${L}" opacity="0.82"/>`;
+          /* front face (gradient) */
+          out+=`<rect x="${px}" y="${py}" width="${cw}" height="${ch}" fill="url(#${gid})" opacity="0.92"/>`;
+          /* right side face (darkest) */
+          out+=`<polygon points="${px+cw},${py} ${px+cw+ts},${py-ts} ${px+cw+ts},${py+ch-ts} ${px+cw},${py+ch}" fill="${DD}" opacity="0.55"/>`;
+          /* front face shine */
+          out+=`<rect x="${px+2}" y="${py+2}" width="${cw*0.35}" height="${ch*0.28}" rx="1.5" fill="white" opacity="0.18"/>`;
+        }
+      }
+      out+=shine();
+      out+=shadow();
+    }
+
+    /* ── NOODLES / PASTA / RAMEN ────────────────────────── */
+    else if(has('noodle','ramen','pasta','spaghetti','fettuccine','linguine','penne','macaroni')){
+      out+=baseRect(8);
+      /* 8 wavy strands layered at different heights + phases */
+      for(let s=0;s<8;s++){
+        const sy=y+8+s*(lh-16)/7;
+        const amp=lh*0.10;
+        const phase=s*1.1;
+        let d=`M${lx+4},${sy}`;
+        for(let px=lx+4;px<lx+lw-4;px+=16){
+          const wave=Math.sin((px-lx)/lw*Math.PI*5+phase)*amp;
+          d+=` Q${px+8},${sy+wave} ${px+16},${sy}`;
+        }
+        out+=`<path d="${d}" stroke="${M}" stroke-width="5.5" fill="none" stroke-linecap="round" opacity="${0.62+s%3*0.10}"/>`;
+        out+=`<path d="${d}" stroke="${L}" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.36"/>`;
+      }
+      out+=shine(0.22);
+      out+=shadow(0.25);
+    }
+
+    /* ── ICE / WATER ─────────────────────────────────────── */
+    else if(has('ice','water')){
+      if(has('water')&&!has('ice')){
+        /* Liquid water — flowing wave lines */
+        out+=baseRect(8);
+        for(let w=0;w<6;w++){
+          const wy=y+10+w*(lh-20)/5;
+          const phase=w*0.7;
+          let wd=`M${lx+6},${wy}`;
+          for(let px=lx+6;px<lx+lw-6;px+=20){
+            wd+=` Q${px+10},${wy+Math.sin((px+phase*30)/28)*7-3} ${px+20},${wy}`;
+          }
+          out+=`<path d="${wd}" stroke="${lighten(base,0.55)}" stroke-width="${2.8-w*0.28}" fill="none" opacity="${0.55-w*0.07}" stroke-linecap="round"/>`;
+        }
+        out+=shine(0.32);
+      } else {
+        out+=baseRect(8);
+        for(let ic=0;ic<7;ic++){
+          const ix=lx+18+ic*(lw-36)/6;
+          const iy=cy+(ic%2-0.5)*15;
+          const iw=22+ic%3*7, ih=lh*0.62;
+          out+=`<polygon points="${ix},${iy-ih/2} ${ix+iw/2},${iy} ${ix},${iy+ih/2} ${ix-iw/2},${iy}" fill="${lighten(base,0.55)}" opacity="0.55"/>`;
+          out+=`<polygon points="${ix},${iy-ih/2} ${ix+iw/2},${iy} ${ix},${iy+ih/2} ${ix-iw/2},${iy}" fill="none" stroke="white" stroke-width="1.3" opacity="0.82"/>`;
+          out+=`<line x1="${ix}" y1="${iy-ih/2}" x2="${ix}" y2="${iy+ih/2}" stroke="white" stroke-width="0.7" opacity="0.62"/>`;
+          out+=`<line x1="${ix-iw/2}" y1="${iy}" x2="${ix+iw/2}" y2="${iy}" stroke="white" stroke-width="0.7" opacity="0.62"/>`;
+        }
+        out+=shine(0.40);
+      }
+    }
+
+    /* ── WHIPPED CREAM ───────────────────────────────────── */
+    else if(has('whip')||(has('cream')&&!has('ice','sour','cold')&&luma(base)>200)){
+      const numB=9;
+      for(let b=0;b<numB;b++){
+        const bx=lx+5+b*(lw-10)/(numB-1);
+        const br=lh*(0.45+(b%3)*0.09);
+        out+=`<circle cx="${bx}" cy="${y+lh*0.50}" r="${br}" fill="url(#${gid})"/>`;
+      }
+      for(let b=0;b<numB;b++){
+        const bx=lx+5+b*(lw-10)/(numB-1);
+        out+=`<circle cx="${bx-3}" cy="${y+lh*0.27}" r="${lh*0.11}" fill="white" opacity="0.34"/>`;
+      }
+    }
+
+    /* ── COFFEE / ESPRESSO ───────────────────────────────── */
+    else if(has('coffee','brew','espresso','drip')){
+      out+=baseRect(8);
+      out+=`<ellipse cx="${cx}" cy="${y+lh*0.28}" rx="${lw*0.44}" ry="${lh*0.22}" fill="${lighten(base,0.44)}" opacity="0.62"/>`;
+      out+=`<ellipse cx="${cx-lw*0.10}" cy="${y+lh*0.24}" rx="${lw*0.16}" ry="${lh*0.13}" fill="${lighten(base,0.68)}" opacity="0.50"/>`;
+      out+=`<path d="M${cx-22},${cy} Q${cx},${cy-18} ${cx+22},${cy} Q${cx+40},${cy+13} ${cx},${cy+17} Q${cx-34},${cy+9} ${cx-22},${cy}" stroke="${lighten(base,0.52)}" stroke-width="2.8" fill="none" opacity="0.48"/>`;
+      out+=shadow(0.25);
+    }
+
+    /* ── SOUR CREAM / CRÈME FRAÎCHE ────────────────────── */
+    else if(has('sour cream')||has('crème')||(has('sour')&&has('cream'))){
+      /* flat cool dollop — like whipped cream but lower, tangy white */
+      const numB=7;
+      for(let b=0;b<numB;b++){
+        const bx=lx+8+b*(lw-16)/(numB-1);
+        const br=lh*(0.36+(b%3)*0.07);
+        out+=`<circle cx="${bx}" cy="${y+lh*0.58}" r="${br}" fill="url(#${gid})"/>`;
+      }
+      /* swirl indent */
+      out+=`<path d="M${lx+lw*0.28},${cy} Q${cx},${cy-18} ${lx+lw*0.72},${cy} Q${cx+28},${cy+12} ${cx},${cy+15}" stroke="${darken(base,0.15)}" stroke-width="2.2" fill="none" opacity="0.36"/>`;
+      /* top highlights on each puff */
+      for(let b=0;b<numB;b++){
+        const bx=lx+8+b*(lw-16)/(numB-1);
+        out+=`<circle cx="${bx-4}" cy="${y+lh*0.40}" r="${lh*0.09}" fill="white" opacity="0.45"/>`;
+      }
+    }
+
+    /* ── MILK / CREAM ────────────────────────────────────── */
+    else if(has('milk')||(has('cream')&&!has('whip','sour','ice'))){
+      out+=baseRect(8);
+      for(let r=0;r<5;r++){
+        const ry2=y+8+r*(lh-16)/4.5;
+        out+=`<path d="M${lx+8},${ry2} Q${cx-54},${ry2+8} ${cx},${ry2} Q${cx+54},${ry2-8} ${lx+lw-8},${ry2}" stroke="white" stroke-width="${2.6-r*0.36}" fill="none" opacity="${0.42-r*0.07}"/>`;
+      }
+      out+=shine(0.34);
+    }
+
+    /* ── MATCHA ──────────────────────────────────────────── */
+    else if(has('matcha')){
+      out+=baseRect(8);
+      out+=`<path d="M${cx-40},${cy} Q${cx},${cy-28} ${cx+40},${cy} Q${cx+64},${cy+22} ${cx},${cy+28} Q${cx-52},${cy+14} ${cx-40},${cy}" stroke="${lighten(base,0.58)}" stroke-width="3.8" fill="none" opacity="0.75"/>`;
+      for(let p=0;p<16;p++){
+        const px=lx+10+(p*41)%(lw-20), py=y+5+(p*19)%(lh-10);
+        out+=`<circle cx="${px}" cy="${py}" r="1.6" fill="${D}" opacity="0.34"/>`;
+      }
+      out+=shine();
+    }
+
+    /* ── HONEY / SYRUP / JAM / SAUCE ─────────────────────── */
+    else if(has('honey','syrup','jam','jelly','glaze','sauce','drizzle','chocolate syrup','dressing','concentrate')){
+      out+=baseRect(8);
+      for(let d=0;d<6;d++){
+        const dx=lx+18+d*(lw-36)/5;
+        out+=`<path d="M${dx},${y+6} Q${dx+18},${cy} ${dx+8},${y+lh-6}" stroke="${lighten(base,0.55)}" stroke-width="6.5" fill="none" stroke-linecap="round" opacity="0.68"/>`;
+      }
+      out+=`<ellipse cx="${cx}" cy="${y+lh*0.26}" rx="${lw*0.40}" ry="${lh*0.18}" fill="white" opacity="0.17"/>`;
+      out+=shadow();
+    }
+
+    /* ── PUDDING / CUSTARD / VANILLA ───────────────────── */
+    else if(has('pudding','custard','mousse','flan','vanilla pudding')){
+      out+=baseRect(8);
+      /* smooth slow-rolling wave lines — creamier than the milk handler */
+      for(let r=0;r<4;r++){
+        const ry=y+12+r*(lh-24)/3.5;
+        out+=`<path d="M${lx+8},${ry} Q${cx-58},${ry+15} ${cx},${ry} Q${cx+58},${ry-15} ${lx+lw-8},${ry}" stroke="${L}" stroke-width="5" fill="none" opacity="${0.48-r*0.09}"/>`;
+      }
+      /* glossy sheen ellipse */
+      out+=`<ellipse cx="${cx}" cy="${y+lh*0.26}" rx="${lw*0.40}" ry="${lh*0.16}" fill="white" opacity="0.22"/>`;
+      out+=shine(0.28);
+      out+=shadow(0.20);
+    }
+
+    /* ── CHOCOLATE / COCOA ───────────────────────────────── */
+    else if(has('chocolate','cocoa','mocha','fudge','brownie')){
+      out+=baseRect(8);
+      [[0.12,0.45],[0.28,0.62],[0.45,0.38],[0.60,0.60],[0.74,0.42],[0.88,0.58]].forEach(([fx,fy])=>{
+        out+=`<ellipse cx="${lx+fx*lw}" cy="${y+fy*lh}" rx="12" ry="7.5" fill="${D}" opacity="0.58"/>`;
+        out+=`<ellipse cx="${lx+fx*lw-2}" cy="${y+fy*lh-2}" rx="4.5" ry="2.8" fill="${L}" opacity="0.28"/>`;
+      });
+      out+=`<ellipse cx="${cx}" cy="${y+lh*0.28}" rx="${lw*0.38}" ry="${lh*0.16}" fill="${L}" opacity="0.22"/>`;
+    }
+
+    /* ── PEANUT BUTTER ───────────────────────────────────── */
+    else if(has('peanut')){
+      out+=baseRect(8);
+      out+=`<path d="M${lx+14},${cy-5}  Q${cx-20},${cy-24} ${cx},${cy-12} Q${cx+30},${cy+10} ${lx+lw-14},${cy}" stroke="${L}" stroke-width="5" fill="none" opacity="0.56"/>`;
+      out+=`<path d="M${lx+14},${cy+10} Q${cx-8},${cy+22}  ${cx+20},${cy+6} Q${cx+44},${cy-9} ${lx+lw-14},${cy+10}" stroke="${L}" stroke-width="4" fill="none" opacity="0.40"/>`;
+      [[0.20,0.42],[0.50,0.62],[0.78,0.38]].forEach(([fx,fy])=>{
+        out+=`<ellipse cx="${lx+fx*lw}" cy="${y+fy*lh}" rx="7" ry="4.5" fill="${D}" opacity="0.28"/>`;
+      });
+      out+=shine(0.22);
+    }
+
+    /* ── BUTTER ──────────────────────────────────────────── */
+    else if(has('butter')&&!has('peanut')){
+      out+=baseRect(6);
+      out+=`<rect x="${lx+8}" y="${y+8}" width="${lw*0.32}" height="${lh-16}" rx="4" fill="${lighten(base,0.58)}" opacity="0.26"/>`;
+      out+=`<ellipse cx="${cx-28}" cy="${cy-5}" rx="28" ry="12" fill="white" opacity="0.22"/>`;
+      out+=shine(0.28);
+    }
+
+    /* ── FRUIT / APPLE / BERRIES ─────────────────────────── */
+    else if(has('apple','fruit','berry','peach','strawberry','blueberry','raspberry')){
+      if(has('apple','peach')){
+        /* apple cross-section: round slice with core + seeds + radial lines */
+        [[0.24,0.50,0.80],[0.60,0.52,1.00]].forEach(([fx,fy,op])=>{
+          const ax=lx+fx*lw, ay=y+fy*lh;
+          const rx=lw*0.28, ry=lh*0.44;
+          out+=`<ellipse cx="${ax}" cy="${ay}" rx="${rx}" ry="${ry}" fill="url(#${gid})" opacity="${op}"/>`;
+          /* radial segment lines */
+          for(let a=0;a<6;a++){
+            const ang=a/6*Math.PI*2;
+            out+=`<line x1="${ax}" y1="${ay}" x2="${ax+Math.cos(ang)*rx*0.86}" y2="${ay+Math.sin(ang)*ry*0.86}" stroke="${L}" stroke-width="1.2" opacity="0.40"/>`;
+          }
+          /* core */
+          out+=`<ellipse cx="${ax}" cy="${ay}" rx="${rx*0.16}" ry="${ry*0.16}" fill="${DD}" opacity="0.55"/>`;
+          /* highlight */
+          out+=`<ellipse cx="${ax-rx*0.34}" cy="${ay-ry*0.38}" rx="${rx*0.28}" ry="${ry*0.22}" fill="white" opacity="0.24"/>`;
+          /* stem nub top */
+          out+=`<line x1="${ax}" y1="${ay-ry}" x2="${ax+3}" y2="${ay-ry-7}" stroke="${D}" stroke-width="3" stroke-linecap="round" opacity="0.60"/>`;
+        });
+      } else {
+        /* berries: scattered round fruits with highlight gloss */
+        for(let i=0;i<10;i++){
+          const seed1=i*47+17, seed2=i*31+5;
+          const bx=lx+14+(seed1%(lw-28)), by=y+8+(seed2%(lh-18));
+          const br=10+i%3*5;
+          out+=`<circle cx="${bx}" cy="${by}" r="${br}" fill="url(#${gid})" opacity="${0.80+i%3*0.07}"/>`;
+          /* seed dot crown (berry tip) */
+          out+=`<circle cx="${bx}" cy="${by-br*0.78}" r="${br*0.18}" fill="${DD}" opacity="0.55"/>`;
+          /* gloss highlight */
+          out+=`<ellipse cx="${bx-br*0.30}" cy="${by-br*0.32}" rx="${br*0.36}" ry="${br*0.26}" fill="white" opacity="0.38"/>`;
+        }
+        out+=shine(0.16);
+      }
+    }
+
+    /* ── NUTS / PECANS ───────────────────────────────────── */
+    else if(has('pecan','nut','walnut','almond')){
+      out+=baseRect(8);
+      [[0.14,0.50],[0.34,0.38],[0.52,0.62],[0.68,0.42],[0.86,0.56]].forEach(([fx,fy])=>{
+        const nx=lx+fx*lw, ny=y+fy*lh;
+        out+=`<ellipse cx="${nx}" cy="${ny}" rx="17" ry="10" fill="${D}" opacity="0.72"/>`;
+        out+=`<path d="M${nx-11},${ny} Q${nx},${ny-8} ${nx+11},${ny}" stroke="${L}" stroke-width="2.2" fill="none" opacity="0.62"/>`;
+        out+=`<ellipse cx="${nx-4}" cy="${ny-3}" rx="5.5" ry="3" fill="${L}" opacity="0.38"/>`;
+      });
+      out+=shine();
+    }
+
+    /* ── MUG / CUP / CONTAINER ──────────────────────────── */
+    else if(has('mug','cup','bowl','dish','pan','carafe','container','package','silicon','tray')){
+      const cw=lw*0.84, cl=cx-cw/2;
+      out+=`<rect x="${cl}" y="${y+lh*0.15}" width="${cw}" height="${lh*0.80}" rx="7" fill="url(#${gid})"/>`;
+      out+=`<ellipse cx="${cx}" cy="${y+lh*0.17}" rx="${cw/2}"   ry="${lh*0.17}" fill="${L}"  opacity="0.72"/>`;
+      out+=`<ellipse cx="${cx}" cy="${y+lh*0.17}" rx="${cw/2-5}" ry="${lh*0.12}" fill="${DD}" opacity="0.62"/>`;
+      /* handle */
+      out+=`<path d="M${cl+cw},${cy-14} Q${cl+cw+28},${cy} ${cl+cw},${cy+16}" stroke="${D}" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.78"/>`;
+      out+=`<path d="M${cl+cw},${cy-14} Q${cl+cw+28},${cy} ${cl+cw},${cy+16}" stroke="${L}" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.44"/>`;
+    }
+
+    /* ── PAPER FILTER ────────────────────────────────────── */
+    else if(has('filter','paper')){
+      out+=`<polygon points="${cx},${y+6} ${lx+lw-6},${y+lh-4} ${lx+6},${y+lh-4}" fill="url(#${gid})"/>`;
+      for(let l=0;l<5;l++){
+        const lp=(l+1)/6, lw2=lw*lp*0.80;
+        const ly=y+6+(lh-10)*lp;
+        out+=`<line x1="${cx-lw2/2}" y1="${ly}" x2="${cx+lw2/2}" y2="${ly}" stroke="${D}" stroke-width="1" opacity="0.34"/>`;
+      }
+    }
+
+    /* ── CINNAMON ROLL ──────────────────────────────────── */
+    else if(has('cinnamon roll','cinnamon sugar roll')){
+      out+=baseRect(8);
+      /* 3 spiral cross-sections — concentric rings from outside in */
+      [[0.18,0.50],[0.50,0.52],[0.82,0.50]].forEach(([fx,fy])=>{
+        const px=lx+fx*lw, py=y+fy*lh;
+        const maxR=lh*0.40;
+        /* 5 rings from outside in, alternating dough/filling shades */
+        for(let ring=4;ring>=0;ring--){
+          const rr=maxR*(ring/4);
+          const fc=ring%2===0?M:darken(base,0.28+ring*0.04);
+          out+=`<circle cx="${px}" cy="${py}" r="${rr}" fill="${fc}" opacity="${0.72+ring*0.04}"/>`;
+        }
+        /* swirl arc suggestion */
+        out+=`<path d="M${px},${py-maxR*0.78} A${maxR*0.78},${maxR*0.78} 0 1,1 ${px-maxR*0.78},${py}" stroke="${DD}" stroke-width="1.8" fill="none" opacity="0.38"/>`;
+        /* center highlight */
+        out+=`<circle cx="${px-maxR*0.14}" cy="${py-maxR*0.16}" r="${maxR*0.22}" fill="white" opacity="0.24"/>`;
+      });
+      out+=shine(0.20);
+    }
+
+    /* ── SEASONING / SPICE / SALT ────────────────────────── */
+    else if(has('season','spice','salt','pepper','powder','cinnamon','paprika','garlic','herb','sugar','dust')&&!has('bell','cinnamon roll','chocolate')){
+      out+=baseRect(8);
+      for(let p=0;p<50;p++){
+        const px=lx+5+(p*47)%(lw-10), py=y+4+(p*23)%(lh-8);
+        out+=`<circle cx="${px}" cy="${py}" r="${0.9+p%5*0.38}" fill="${lighten(base,0.62)}" opacity="0.68"/>`;
+      }
+      out+=shine(0.22);
+    }
+
+    /* ── DEFAULT ─────────────────────────────────────────── */
+    else {
+      out+=baseRect(10);
+      out+=shine();
+      out+=shadow();
+      for(let i=0;i<6;i++){
+        const tx=lx+18+i*(lw-36)/5;
+        out+=`<line x1="${tx}" y1="${y+8}" x2="${tx+10}" y2="${y+lh-8}" stroke="${D}" stroke-width="1.3" opacity="0.15"/>`;
+      }
+    }
+
+    return out;
+  }
+
+  /* ── Main SVG builder ────────────────────────────────────── */
+  function buildSVG(components, cardId){
+    /* Layout constants  (v4)                                   */
+    /* VY=-50 lets domes/cream rise above the top of the stack  */
+    const VW=500, VX=-60, VY=-50; /* viewBox origin            */
+    const LX=58;           /* layer rect left x in SVG coords  */
+    const LW=268;          /* layer rect width                  */
+    const LH=92;           /* layer rect height (was 68)        */
+    const GAP=22;          /* gap between layers                */
+    const PAD=22;          /* top/bottom padding                */
+    const n=components.length;
+    const H=PAD+n*LH+(n-1)*GAP+PAD;
+    const SVGH=H-VY;       /* pixel height including VY offset  */
+    const uid=cardId?cardId.replace(/[^a-z0-9]/gi,''):Math.random().toString(36).slice(2,8);
+
+    /* Sort: layer 1 = bottom of dish */
+    const sorted=[...components].sort((a,b)=>(a.layer||0)-(b.layer||0));
+
+    /* ── Defs: one gradient per component ─────────────────── */
+    let defs='<defs>';
+    sorted.forEach((comp,i)=>{
+      const b=comp.color||'#666';
+      defs+=`<linearGradient id="ig-${uid}-${i}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="${lighten(b,0.28)}"/>
+        <stop offset="40%"  stop-color="${lighten(b,0.08)}"/>
+        <stop offset="100%" stop-color="${darken(b,0.32)}"/>
+      </linearGradient>`;
+    });
+    defs+='</defs>';
+
+    /* ── Layers ─────────────────────────────────────────────── */
+    let layers='';
+    sorted.forEach((comp,i)=>{
+      const iFromTop=n-1-i;
+      const y=PAD+iFromTop*(LH+GAP);
+      const base=comp.color||'#666';
+      const lm=luma(base);
+      const isDk=lm<148;
+      const cx=LX+LW/2;
+
+      /* drop shadow */
+      layers+=`<rect x="${LX+4}" y="${y+7}" width="${LW}" height="${LH}" rx="12" fill="${darken(base,0.6)}" opacity="0.32"/>`;
+
+      /* illustrated shape */
+      layers+=drawShape(comp.name||'', base, LX, y, LW, LH, uid, i);
+
+      /* bottom edge shadow inside shape */
+      layers+=`<rect x="${LX+8}" y="${y+LH-7}" width="${LW-16}" height="4" rx="2" fill="${darken(base,0.55)}" opacity="0.25"/>`;
+
+      /* ── Leader line + label ─────────────────────────── */
+      const isLeft=(i%2===0);
+      /* dot on shape edge */
+      const dotX=isLeft?LX:LX+LW;
+      const dotY=y+LH/2;
+      /* label text position */
+      const lblX=isLeft?(LX-10):(LX+LW+10);
+      const lblAnchor=isLeft?'end':'start';
+      /* horizontal leader */
+      const lineEndX=isLeft?(LX-8):(LX+LW+8);
+      layers+=`<line x1="${dotX}" y1="${dotY}" x2="${lineEndX}" y2="${dotY}" stroke="#f5c842" stroke-dasharray="3,3" stroke-width="1.5" opacity="0.75"/>`;
+      layers+=`<circle cx="${dotX}" cy="${dotY}" r="3.5" fill="#f5c842" opacity="0.9"/>`;
+
+      /* short label text (1–2 lines) */
+      const lines=shortLabel(comp.name||'');
+      const lineH=13;
+      const totalH=lines.length*lineH;
+      const ty=dotY-totalH/2+lineH*0.75;
+      lines.forEach((line,li)=>{
+        layers+=`<text x="${lblX}" y="${ty+li*lineH}" text-anchor="${lblAnchor}" font-family="'Courier New',monospace" font-size="10" font-weight="700" letter-spacing="0.8" fill="#f5c842">${xe(line)}</text>`;
+      });
+
+      /* layer-order badge */
+      const badgeX=LX+LW-14;
+      const badgeY=y+12;
+      layers+=`<circle cx="${badgeX}" cy="${badgeY}" r="9" fill="${darken(base,0.55)}" opacity="0.85"/>`;
+      layers+=`<text x="${badgeX}" y="${badgeY+4}" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" font-weight="900" fill="#f5c842">${i+1}</text>`;
+    });
+
+    /* build-direction hint */
+    layers+=`<text x="${LX+LW/2}" y="${H-4}" text-anchor="middle" font-family="'Courier New',monospace" font-size="7.5" fill="#3a3a3a" letter-spacing="2">▲ BUILD ORDER</text>`;
+
+    return `<svg width="380" height="${SVGH}" viewBox="${VX} ${VY} ${VW} ${SVGH}" xmlns="http://www.w3.org/2000/svg">
+  <rect x="${VX}" y="${VY}" width="${VW}" height="${SVGH}" fill="#111"/>
+  ${defs}
+  ${layers}
+</svg>`;
+  }
+
+  /* ── Inject into every card ─────────────────────────────── */
+  document.querySelectorAll('.mic-card[data-id]').forEach(card=>{
+    const id=card.dataset.id;
+    if(!id) return;
+    const data=menuData.find(m=>m.id===id);
+    if(!data||!Array.isArray(data.components)||!data.components.length) return;
+    const el=card.querySelector('.mic-exploded');
+    if(el) el.innerHTML=buildSVG(data.components,id);
+  });
+
+})();
+</script>
+</body>
+</html>
